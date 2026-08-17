@@ -1,0 +1,53 @@
+From: Delta Air Lines <DeltaAirLines@t.delta.com>
+To: traveler@example.com
+Subject: Your Flight Confirmation - H7QW3Z
+Date: Mon, 20 Apr 2026 10:00:00 -0400
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+<html>
+<head>
+<script type="application/ld+json">
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "FlightReservation",
+    "reservationNumber": "H7QW3Z",
+    "reservationStatus": "http://schema.org/ReservationConfirmed",
+    "underName": { "@type": "Person", "name": "FIRSTNAME LASTNAME" },
+    "airplaneSeat": "21C",
+    "reservationFor": {
+      "@type": "Flight",
+      "flightNumber": "447",
+      "airline": { "@type": "Airline", "name": "Delta Air Lines", "iataCode": "DL" },
+      "departureAirport": { "@type": "Airport", "name": "San Francisco International", "iataCode": "SFO" },
+      "departureTime": "2026-05-14T07:15:00-07:00",
+      "arrivalAirport": { "@type": "Airport", "name": "John F. Kennedy International", "iataCode": "JFK" },
+      "arrivalTime": "2026-05-14T15:45:00-04:00"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "FlightReservation",
+    "reservationNumber": "H7QW3Z",
+    "reservationStatus": "http://schema.org/ReservationConfirmed",
+    "underName": { "@type": "Person", "name": "FIRSTNAME LASTNAME" },
+    "airplaneSeat": "14D",
+    "reservationFor": {
+      "@type": "Flight",
+      "flightNumber": "DL448",
+      "airline": { "@type": "Airline", "name": "Delta Air Lines", "iataCode": "DL" },
+      "departureAirport": { "@type": "Airport", "name": "John F. Kennedy International", "iataCode": "JFK" },
+      "departureTime": "2026-05-18T18:30:00-04:00",
+      "arrivalAirport": { "@type": "Airport", "name": "San Francisco International", "iataCode": "SFO" },
+      "arrivalTime": "2026-05-18T22:05:00-07:00"
+    }
+  }
+]
+</script>
+</head>
+<body>
+<p>Thank you for choosing Delta. Your trip confirmation is H7QW3Z.</p>
+<p>SFO to JFK on May 14, JFK to SFO on May 18.</p>
+</body>
+</html>

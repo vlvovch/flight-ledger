@@ -1,0 +1,66 @@
+From: "RezConfirm@adtrav.com" <RezConfirm@adtrav.com>
+To: traveler@example.org
+Subject: TICKET(S) ISSUED Itinerary for Jane Traveler - Trip starts 3/6/2025 on RezID 0000-0000 PNR AAAAAA
+Date: Tue, 14 Jan 2025 20:32:46 -0600
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+<html><body><table>
+<tr><td>Jan 14, 2025 - 08:32 PM CST</td></tr>
+<tr><td>Ticket(s) Issued</td></tr>
+<tr><td>This is your travel invoice</td></tr>
+<tr><td>JANE TRAVELER</td></tr>
+<tr><td>Example National Laboratory</td></tr>
+<tr><td>Booking Locator: AAAAAA</td></tr>
+<tr><td>RezID: 0000-0000</td></tr>
+<tr><td>March 06 Trip to San Francisco, CA, US</td></tr>
+<tr><td>Primary Traveler</td></tr>
+<tr><td>JANE TRAVELER | Employee</td></tr>
+<tr><td>Date Created</td></tr><tr><td>1/14/2025 8:18 PM</td></tr>
+<tr><td>Date Ticketed/Confirmed</td></tr><tr><td>1/14/2025 8:29 PM</td></tr>
+<tr><td>Transaction Type</td></tr><tr><td>Original</td></tr>
+
+<tr><td>Thursday, March 6, 2025</td></tr>
+<tr><td>United Airlines</td></tr>
+<tr><td>UA 2206</td></tr>
+<tr><td>Depart</td></tr>
+<tr><td>Mar 06 - 08:18 PM</td></tr>
+<tr><td>IAH - Houston, TX, US</td></tr>
+<tr><td>George Bush Intercontinental Airport</td></tr>
+<tr><td>TERMINAL C</td></tr>
+<tr><td>Arrive</td></tr>
+<tr><td>Mar 06 - 10:52 PM</td></tr>
+<tr><td>SFO - San Francisco, CA, US</td></tr>
+<tr><td>San Francisco International Airport</td></tr>
+<tr><td>Seat: 11F</td></tr>
+<tr><td>Ticket # : 0167900000019-NONREF</td></tr>
+<tr><td>Class: ECONOMY (S)</td></tr>
+<tr><td>Status: Segment Confirmed</td></tr>
+<tr><td>Airline Booking Reference: ZZ0008</td></tr>
+
+<tr><td>Friday, March 14, 2025</td></tr>
+<tr><td>United Airlines</td></tr>
+<tr><td>UA 2409</td></tr>
+<tr><td>Depart</td></tr>
+<tr><td>Mar 14 - 08:08 PM</td></tr>
+<tr><td>SFO - San Francisco, CA, US</td></tr>
+<tr><td>TERMINAL 3</td></tr>
+<tr><td>Arrive</td></tr>
+<tr><td>Mar 14 - 09:30 PM</td></tr>
+<tr><td>BUR - Burbank, CA, US</td></tr>
+<tr><td>Seat: 11A</td></tr>
+<tr><td>Ticket # : 0167900000019-NONREF</td></tr>
+<tr><td>Class: ECONOMY (G)</td></tr>
+<tr><td>Airline Booking Reference: ZZ0008</td></tr>
+
+<tr><td>Trip Costs</td></tr>
+<tr><td>AIRFARE UNITED AIRLINES</td></tr>
+<tr><td>Ticket 0167900000019 Issued 01/14/2025 0829P</td></tr>
+<tr><td>Invoice 1619263 Charged To VI-4002</td></tr>
+<tr><td>$365.14</td></tr>
+<tr><td>Total Charges 01/14/2025 0829P</td></tr>
+<tr><td>$365.14</td></tr>
+<tr><td>Total Invoiced Charges</td></tr>
+<tr><td>$365.14</td></tr>
+<tr><td>&copy; 2025 ADTRAV Travel Management</td></tr>
+</table></body></html>

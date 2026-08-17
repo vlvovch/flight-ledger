@@ -1,0 +1,646 @@
+Date: Thu, 20 Jun 2024 00:02:36 +0000 (UTC)
+From: United Airlines <notifications@united.com>
+To: testuser@example.com
+Subject: Your flight cancellation is complete
+MIME-Version: 1.0
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<?xml version=3D"1.0" encoding=3D"UTF-8" standalone=3D"no"?><html xmlns:em=
+=3D"http://ual.com/raven/email/emailmessage" xmlns:o=3D"urn:schemas-microso=
+ft-com:office:office" xmlns:v=3D"urn:schemas-microsoft-com:vml">    <head> =
+       <META http-equiv=3D"Content-Type" content=3D"text/html; charset=3DUT=
+F-8">        <title>United Airlines - United MileagePlus</title>        <li=
+nk href=3D"https://www.united.com/ual/favicon.ico" rel=3D"shortcut icon" ty=
+pe=3D"image/x-icon">        <meta content=3D"text/html; charset=3Dutf-8" ht=
+tp-equiv=3D"Content-Type">        <meta content=3D"IE=3Dedge" http-equiv=3D=
+"X-UA-Compatible">        <meta content=3D"width=3Ddevice-width, initial-sc=
+ale=3D1.0 " name=3D"viewport">        <meta content=3D"telephone=3Dno" name=
+=3D"format-detection">        <link href=3D"https://fonts.googleapis.com/cs=
+s?REDACTED" rel=3D"stylesheet" type=3D"text/css">        <style type=3D"tex=
+t/css">      body { margin: 0; padding: 0; -webkit-text-size-adjust: 100% !=
+important; -ms-text-size-adjust: 100% !important; -webkit-font-smoothing: a=
+ntialiased !important; }      img { border: 0 !important; outline: none !im=
+portant; }      p { Margin: 0px !important; Padding: 0px !important; }     =
+ table { border-collapse: collapse; mso-table-lspace: 0px; mso-table-rspace=
+: 0px; }      td, a, span { border-collapse: collapse; mso-line-height-rule=
+: exactly; }      table th { margin:0 !important; padding:0 !important; ver=
+tical-align:top !important;}      .ExternalClass * { line-height: 100%; }  =
+    .em_defaultlink a { color: inherit; text-decoration: none; }      .lhfi=
+x {mso-line-height-rule: exactly !important;}      .aClass:hover, .aClass:a=
+ctive, .aClass:focus{      outline-style:solid;      outline-width:3px;    =
+  outline-color:#0033a0;      }      /* CSS for hiding content in desktop/w=
+ebmail clients */      .imghide { 	max-height: 0px; font-size: 0; display: =
+none; overflow:hidden;}      [id=3D"x_hide-outlook-mess"] {display:block !i=
+mportant;}      body[data-outlook-cycle] .oa {      display: block !importa=
+nt;}      .mobileContent {      display: none;      font-size: 0;      max-=
+height: 0;      line-height: 0;      mso-hide: all;/* hide elements in Outl=
+ook 2007-2013 */      width:0;      overflow:hidden;      max-height:0!impo=
+rtant; }      /*media query*/      @media only screen and (min-width:481px)=
+ and (max-width:667px) {      .em_main_table { width: 100% !important; }   =
+   .em_wrapper { width: 100% !important; }      .em_hide { display: none !i=
+mportant; }      .em_img {width: 100% !important;height: auto !important;} =
+     .em_full_img { width: 100% !important; height: auto !important; }     =
+ .em_full_img img { width: 100% !important; height: auto !important; }     =
+ .em_center { text-align: center !important; }      .em_side15 { width: 15p=
+x !important; }      .em_aside15 { padding: 0px 15px !important; } /* updat=
+e the N number as per width */      .em_aside30 { padding: 0px 30px !import=
+ant; }      .em_clear { clear: both !important; width: 100% !important; dis=
+play: block !important; }      .em_asidenone { padding: 0px !important; }  =
+    .em_full_img1 { width: 100% !important; height: auto !important; max-wi=
+dth: none !important; }      .em_full_img1 img { width: 100% !important; he=
+ight: auto !important; max-width: none !important; }      .em_menu { font-s=
+ize: 14px !important; line-height: 60px !important; border-bottom: 2px soli=
+d #ffffff !important; }      .em_h5 { height: 10px !important; }      .em_h=
+ide_desktop { display: table !important; float: none !important; width: 100=
+% !important; overflow: visible !important; height: auto !important; }     =
+ .em_wrapper3 { width: 100% !important; display: block !important; text-ali=
+gn: center !important; vertical-align: middle !important; border-top: 1px s=
+olid #ffffff !important; padding-top: 15px !important; padding-bottom: 15px=
+ !important; }      .em_hide_desktop { display: table !important; float: no=
+ne !important; width: 100% !important; overflow: visible !important; height=
+: auto !important; }      .heightAuto {height:auto !important;}      .cente=
+r {text-align:center !important;}      #em_drop:checked + .inn { margin-top=
+: 0%; }      #em_drop1:checked + .inn { margin-top: 0%; }      #em_drop2:ch=
+ecked + .inn { margin-top: 0%; }      #em_drop3:checked + .inn { margin-top=
+: 0%; }      .link { position: relative !important; width: 100% !important;=
+ padding: 0px !important; right: 0px !important; top: 0px !important; overf=
+low: hidden !important; transition: all 1.0s ease-in-out 0s; -webkit-transi=
+tion: all 1.0s ease-in-out 0s; -o-transition: all 1.0s ease-in-out 0s; heig=
+ht: auto !important; }      .inn { transition: all 1.0s ease-in-out 0s; -we=
+bkit-transition: all 1.0s ease-in-out 0s; -o-transition: all 1.0s ease-in-o=
+ut 0s; margin-top: -220px; padding: 0px !important; overflow: hidden !impor=
+tant; }      .em_hauto { height: auto !important; }      .em_h30 { height: =
+30px !important; }      .em_bom {padding: 0px 0px 5px 0px !important;}     =
+ /*Hamburger Menu*/      .showme{ display:block !important; width: auto !im=
+portant; overflow: visible !important; float: none !important; max-height:i=
+nherit !important; max-width:inherit !important; line-height: auto !importa=
+nt; margin-top:0px !important; visibility:inherit !important;}      /*B01*/=
+      #nav_handle_b { background:url("https://static.cdn.responsys.net/i2/r=
+esponsysimages/content/united/tmplt_sprite_trans.png") 0 0 no-repeat; backg=
+round-size:38px 104px !important; cursor: pointer; display: block !importan=
+t; width:38px !important; height:52px !important; -webkit-tap-highlight-col=
+or: rgba(0, 0, 0, 0); }      #nav_menu_b { background-color: #002244; max-h=
+eight: 0; overflow: hidden; transition: max-height .25s linear; }      #nav=
+_menu_b a { display:block; padding:0px 20px; text-decoration:none; font-fam=
+ily:  Helvetica, Arial; font-size:14px; font-weight: bold; }      #nav_chec=
+kbox_b { display:none !important; }      #nav_checkbox_b:checked + table #n=
+av_handle_b { background:url("https://static.cdn.responsys.net/i2/responsys=
+images/content/united/tmplt_sprite_trans.png") 0 -50px no-repeat; -webkit-t=
+ap-highlight-color: rgba(0, 0, 0, 0); }      #nav_checkbox_b:checked + tabl=
+e ~ #nav_menu_b { display:block !important; max-height: 580px !important; }=
+      .mobile_header_logo_b { position: absolute;top: 0px;}      /*B02*/   =
+   #nav_menu2 { background-color: #2a333b; max-height: 0; overflow: hidden;=
+ transition: max-height .25s linear; }      #nav_handle2 { background:url("=
+https://static.cdn.responsys.net/i2/responsysimages/content/united/tmplt_sp=
+rite_trans.png") 0 0 no-repeat; background-size:38px 104px !important; curs=
+or: pointer; display: block !important; width:38px !important; height:52px =
+!important; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }      #em_drop2=
+:checked + div table #nav_handle2 { background:url("https://static.cdn.resp=
+onsys.net/i2/responsysimages/content/united/tmplt_sprite_trans.png") 0 -50p=
+x no-repeat; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }      #em_drop=
+2:checked ~ #nav_menu2 { display:block !important; max-height: 250px !impor=
+tant; }      /*B02*/      [id=3D"x_hide-outlook-mess"] {      display:block=
+ !important;}      }      /*media query*/      @media screen and (max-width=
+: 480px) {      .imgResize2 {      background-image: url("https://static.cd=
+n.responsys.net/i2/responsysimages/content/united/sp.png") !important;     =
+ background-color:#002244 !important;      width: 414px !important;      he=
+ight: auto !important;      background-position: center top !important;    =
+  background-repeat: no-repeat !important;      }      .A06BG {height: auto=
+ !important; width: 414px !important; background-size: 100% auto !important=
+;}      .VMLHEROBG {height: auto !important; width: 100% !important; }     =
+ .em_h465 { height: 465px !important; }      .em_wrapper_25 { width: 25% !i=
+mportant; min-width: 20px !important;  }      .em_main_table { width: 100% =
+!important; }      .em_wrapper { width: 100% !important; }      .em_hide { =
+display: none !important; }      .em_img {width: 100% !important;height: au=
+to !important;}      .em_full_img { width: 100% !important; height: auto !i=
+mportant; }      .em_full_img img { width: 100% !important; height: auto !i=
+mportant; }      .em_center { text-align: center !important; }      .em_sid=
+e15 { width: 15px !important; }      .em_aside15 { padding: 0px 15px !impor=
+tant; } /* update the N number as per width */      .em_aside30 { padding: =
+0px 30px !important; }      .em_clear { clear: both !important; width: 100%=
+ !important; display: block !important; }      u + .em_body .em_full_wrap {=
+ width: 100% !important; width: 100vw !important; }      .em_asidenone { pa=
+dding: 0px !important; }      .em_full_img1 { width: 100% !important; heigh=
+t: auto !important; max-width: none !important; }      .em_full_img1 img { =
+width: 100% !important; height: auto !important; max-width: none !important=
+; }      .em_menu { font-size: 14px !important; line-height: 60px !importan=
+t; border-bottom: 2px solid #ffffff !important; }      .width480 {width:480=
+px !important;}      .width374 {width:374px !important;}      .width280 {wi=
+dth:280px !important;}      .em_hide1 { display: none !important; }      .e=
+m_br { display: block !important; }      .centercenter {margin-left: auto!i=
+mportant;margin-right: auto !important;padding: 0 !important;}      .imghid=
+e { max-height: none !important; font-size: 12px !important; display: block=
+ !important; }      .heightAuto {height:auto !important;}      .center {tex=
+t-align:center !important;}      .em_h5 { height: 10px !important; }      .=
+em_hide_desktop { display: table !important; float: none !important; width:=
+ 100% !important; overflow: visible !important; height: auto !important; } =
+     .em_wrapper3 { width: 100% !important; display: block !important; text=
+-align: center !important; vertical-align: middle !important; border-top: 1=
+px solid #ffffff !important; padding-top: 15px !important; padding-bottom: =
+15px !important; }      .em_hide_desktop { display: table !important; float=
+: none !important; width: 100% !important; overflow: visible !important; he=
+ight: auto !important; }      .em_hauto { height: auto !important; }      .=
+em_h30 { height: 30px !important; }      .em_h25 { height: 25px !important;=
+ }      .em_bg { background-image: none !important; height: auto !important=
+; }      .em_bom {padding: 0px 0px 5px 0px !important;}      /*Hamburger Me=
+nu*/      .showme{ display:block !important; width: auto !important; overfl=
+ow: visible !important; float: none !important; max-height:inherit !importa=
+nt; max-width:inherit !important; line-height: auto !important; margin-top:=
+0px !important; visibility:inherit !important;}      #em_drop:checked + .in=
+n { margin-top: 0%; }      #em_drop1:checked + .inn { margin-top: 0%; }    =
+  #em_drop2:checked + .inn { margin-top: 0%; }      #em_drop3:checked + .in=
+n { margin-top: 0%; }      .link { position: relative !important; width: 10=
+0% !important; padding: 0px !important; right: 0px !important; top: 0px !im=
+portant; overflow: hidden !important; transition: all 1.0s ease-in-out 0s; =
+-webkit-transition: all 1.0s ease-in-out 0s; -o-transition: all 1.0s ease-i=
+n-out 0s; height: auto !important; }      .inn { transition: all 1.0s ease-=
+in-out 0s; -webkit-transition: all 1.0s ease-in-out 0s; -o-transition: all =
+1.0s ease-in-out 0s; margin-top: -220px; padding: 0px !important; overflow:=
+ hidden !important; }      /*B01*/      #nav_handle_b { background:url("htt=
+ps://static.cdn.responsys.net/i2/responsysimages/content/united/tmplt_sprit=
+e_trans.png") 0 0 no-repeat; background-size:38px 104px !important; cursor:=
+ pointer; display: block !important; width:38px !important; height:52px !im=
+portant; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }      #nav_menu_b =
+{ background-color: #002244; max-height: 0; overflow: hidden; transition: m=
+ax-height .25s linear; }      #nav_menu_b a { display:block; padding:0px 20=
+px; text-decoration:none; font-family:  Helvetica, Arial; font-size:14px; f=
+ont-weight: bold; }      #nav_checkbox_b { display:none !important; }      =
+#nav_checkbox_b:checked + table #nav_handle_b { background:url("https://sta=
+tic.cdn.responsys.net/i2/responsysimages/content/united/tmplt_sprite_trans.=
+png") 0 -50px no-repeat; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }  =
+    #nav_checkbox_b:checked + table ~ #nav_menu_b { display:block !importan=
+t; max-height: 580px !important; }      .mobile_header_logo_b { position: a=
+bsolute;top: 0px;}      /*B02*/      #nav_menu2 { background-color: #2a333b=
+; max-height: 0; overflow: hidden; transition: max-height .25s linear; }   =
+   #nav_handle2 { background:url("https://static.cdn.responsys.net/i2/respo=
+nsysimages/content/united/tmplt_sprite_trans.png") 0 0 no-repeat; backgroun=
+d-size:38px 104px !important; cursor: pointer; display: block !important; w=
+idth:38px !important; height:52px !important; -webkit-tap-highlight-color: =
+rgba(0, 0, 0, 0); }      #em_drop2:checked + div table #nav_handle2 { backg=
+round:url("https://static.cdn.responsys.net/i2/responsysimages/content/unit=
+ed/tmplt_sprite_trans.png") 0 -50px no-repeat; -webkit-tap-highlight-color:=
+ rgba(0, 0, 0, 0); }      #em_drop2:checked ~ #nav_menu2 { display:block !i=
+mportant; max-height: 250px !important; }      body[data-outlook-cycle] .de=
+fault {      display: none !important      }      body[data-outlook-cycle] =
+.just-outlook-app {      display:block !important;      font-size: 12px !im=
+portant;      max-height: none !important;      line-height: 1.5 !important=
+;      mso-hide: none ;      width: 100%;      overflow:visible !important;=
+      }      [id=3D"x_hide-outlook"] {      display:none !important;      }=
+      body[data-outlook-cycle] .oa {      display: block !important;}      =
+.em_fallback { display: none; }      #MessageViewBody .em_fallback, body.Ms=
+gBody .em_fallback { display: block !important; }      [class=3D"x_em_fallb=
+ack"] {      display: block !important;      }      [id=3D"x_hide-outlook-m=
+ess"] {display:block !important;}      [owa].oa {      display:block !impor=
+tant;      font-size: 12px !important;      max-height: none !important;   =
+   line-height: 1.5 !important;	}      u + .em_body .em_fallback { display:=
+ block !important; }      u + .em_body .gmail-hide { display: none !importa=
+nt; }      u + .em_body .gmail-show { display: block !important; }      /*B=
+02*/      }      @media screen and (max-width:374px) {      .em_aside15 { p=
+adding: 0px 15px !important; } /* update the N number as per width */      =
+.em_aside30 { padding: 0px 30px !important; }      .em_aside60 { padding: 0=
+px 60px !important; }      .em_menu { font-size: 14px !important; line-heig=
+ht: 60px !important; border-bottom: 2px solid #ffffff !important; }      .e=
+m_clear { clear: both !important; width: 100% !important; display: block !i=
+mportant; }      /*B01*/      .mobile_header_logo_b { position: absolute;to=
+p: 0px;}      /*B01*/      }    </style>    </head>    <body bgcolor=3D"#ff=
+ffff" class=3D"em_body" style=3D"margin:0px auto; padding:0px;" vlink=3D"#6=
+9b3e7">        <div class=3D"main-content module-group" style=3D"margin: 0p=
+x auto; max-width: 670px;">            <table bgcolor=3D"#ffffff" border=3D=
+"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"em_full_wrap" role=3D"pres=
+entation" width=3D"100%">                <tr>                    <td align=
+=3D"center" valign=3D"top">                        <table align=3D"center" =
+border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"em_wrapper" role=
+=3D"presentation" style=3D"width:670px;" width=3D"670">                    =
+        <tr>                                <td align=3D"center" valign=3D"=
+top"><img alt=3D"" border=3D"0" class=3D"em_full_img em_hide1" height=3D"6"=
+ src=3D"https://media.united.com/assets/m/74309af0ecccbaba/original/tmplt_h=
+eader_bar_desktop.png" style=3D"display:block;font-family:Arial, Helvetica,=
+ sans-serif; font-size:12px; line-height:15px; color:#FFFFFF;" width=3D"670=
+">                                    <div class=3D"em_full_img imghide" st=
+yle=3D"max-height: 0px; font-size: 0; display: none; overflow:hidden;">    =
+                                    <table border=3D"0" cellpadding=3D"0" c=
+ellspacing=3D"0" class=3D"em_full_img imghide heightAuto " height=3D"0" rol=
+e=3D"presentation" style=3D"max-height: 0px; font-size: 0; display: none; o=
+verflow:hidden;" width=3D"0">                                            <t=
+r>                                                <td class=3D"em_full_img =
+heightAuto center"><img alt=3D"" class=3D"imghide em_full_img heightAuto" h=
+eight=3D"0" src=3D"https://media.united.com/assets/m/2b86999c818c7ac2/origi=
+nal/tmplt_header_bar_mobile.png" width=3D"0"></td>                         =
+                   </tr>                                        </table>   =
+                                 </div>                                </td=
+>                            </tr>                        </table>         =
+           </td>                </tr>            </table>            <table=
+ bgcolor=3D"#ffffff" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=
+=3D"em_full_wrap" role=3D"presentation" width=3D"100%">                <tr>=
+                    <td align=3D"center" valign=3D"top">                   =
+     <table align=3D"center" bgcolor=3D"#FFFFFF" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" class=3D"em_wrapper" role=3D"presentation" style=
+=3D"width:670px;" width=3D"670">                            <tr>           =
+                     <td align=3D"center" class=3D"" valign=3D"top">       =
+                             <table align=3D"left" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" class=3D"em_wrapper" role=3D"presentation">       =
+                                 <tr>                                      =
+      <td align=3D"center" valign=3D"top">                                 =
+               <table align=3D"left" border=3D"0" cellpadding=3D"0" cellspa=
+cing=3D"0" class=3D"em_wrapper" role=3D"presentation" style=3D"width:290px;=
+" width=3D"100%">                                                    <tr>  =
+                                                      <td align=3D"center" =
+valign=3D"top">                                                            =
+<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" cl=
+ass=3D"em_wrapper" role=3D"presentation" style=3D"width:290px;" width=3D"29=
+0">                                                                <tr>    =
+                                                                <td align=
+=3D"center" valign=3D"top">                                                =
+                        <table align=3D"center" border=3D"0" cellpadding=3D=
+"0" cellspacing=3D"0" role=3D"presentation" width=3D"100%">                =
+                                                            <tr>           =
+                                                                     <td al=
+ign=3D"left" class=3D"em_defaultlink em_aside15" style=3D"font-family: Aria=
+l, Helvetica, sans-serif; font-size:18px; color:#002244; width:230px; paddi=
+ng-left: 20px;" valign=3D"top" width=3D"230"><a href=3D"#" style=3D"text-de=
+coration:none;"><img alt=3D"United Airlines" border=3D"0" class=3D"em_full_=
+img heightAuto" height=3D"70" src=3D"https://media.united.com/assets/m/556f=
+784c3921e7f6/original/tmplt_logo_United_V5.png" style=3D"display:block; max=
+-width:230px;font-family:Arial, Helvetica, sans-serif; font-size:12px; colo=
+r:#000000; text-align: left;" width=3D"230"></a></td><td style=3D"font-size=
+:0px; line-height:0px; width:30px;" width=3D"30">                          =
+              =EF=BF=BD                                      </td>         =
+                                                                   </tr>   =
+                                                                     </tabl=
+e>                                                                    </td>=
+                                                                </tr>      =
+                                                      </table>             =
+                                           </td>                           =
+                         </tr>                                             =
+   </table>                                                <table align=3D"=
+left" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"em_wrapper"=
+ role=3D"presentation" style=3D"width:30px;" width=3D"30">                 =
+                                   <tr>                                    =
+                    <td height=3D"5" style=3D"font-size:0px; line-height:0p=
+x; height:5px;"><img alt=3D"" border=3D"0" height=3D"1" src=3D"https://stat=
+ic.cdn.responsys.net/i2/responsysimages/content/united/sp.png" style=3D"dis=
+play:block;" width=3D"1"></td>                                             =
+       </tr>                                                </table>       =
+                                         <table align=3D"left" border=3D"0"=
+ cellpadding=3D"0" cellspacing=3D"0" class=3D"em_wrapper" role=3D"presentat=
+ion" style=3D"width:290px;" width=3D"290">                                 =
+                   <tr>                                                    =
+    <td align=3D"center" valign=3D"top">                                   =
+                         <table align=3D"center" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" class=3D"em_wrapper" role=3D"presentation" style=
+=3D"width:290px;" width=3D"290">                                           =
+                     <tr>                                                  =
+                  <td align=3D"center" class=3D"em_aside15" valign=3D"top">=
+</td>                                                                </tr> =
+                                                           </table>        =
+                                                </td>                      =
+                              </tr>                                        =
+        </table>                                            </td>          =
+                              </tr>                                    </ta=
+ble>                                </td>                            </tr> =
+                       </table>                    </td>                </t=
+r>            </table>            <table align=3D"center" bgcolor=3D"#ebebe=
+9" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"em_wrapper" ro=
+le=3D"presentation" style=3D"width: 670px" width=3D"670">                <t=
+r>                    <td height=3D"10" style=3D"font-size: 1px; line-heigh=
+t: 1px">=EF=BF=BD</td>                </tr>            </table>            =
+<table bgcolor=3D"#ffffff" border=3D"0" cellpadding=3D"0" cellspacing=3D"0"=
+ class=3D"em_full_wrap" role=3D"presentation" width=3D"100%">              =
+  <tr>                    <td align=3D"center" valign=3D"top">             =
+           <table align=3D"center" border=3D"0" cellpadding=3D"0" cellspaci=
+ng=3D"0" class=3D"em_wrapper" role=3D"presentation" style=3D"width:670px;" =
+width=3D"670">                            <tr>                             =
+   <td align=3D"center" class=3D"em_aside15" style=3D"padding:0px 15px;" va=
+lign=3D"top">                                    <table align=3D"center" bo=
+rder=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" width=
+=3D"100%">                                        <tr>                     =
+                       <td height=3D"30" style=3D"font-size:1px; line-heigh=
+t:1px;">=EF=BF=BD</td>                                        </tr>        =
+                                <tr>                                       =
+     <td align=3D"left" class=3D"em_defaultlink" style=3D"font-family: 'Ope=
+n Sans', Arial, Helvetica, sans-serif; font-size:24px; line-height:35px; co=
+lor:#000000; font-weight: normal;" valign=3D"top">Your flight cancellation =
+is complete</td>                                        </tr>              =
+                          <tr>                                            <=
+td height=3D"15" style=3D"font-size:1px; line-height:1px;">=EF=BF=BD</td>  =
+                                      </tr>                                =
+        <tr>                                            <td align=3D"left" =
+class=3D"x_em_defaultlink raven-card-body" style=3D"font-family:Arial,Helve=
+tica,sans-serif; font-size:16px; line-height:22px; color:#000000; overflow-=
+wrap:anywhere; word-break: break-word" valign=3D"top">                     =
+                           <p>                                             =
+       <table cellspacing=3D"0" cellpadding=3D"0" class=3D"table" style=3D"=
+width:100%;background-color: #fff; margin: 0 10px; padding: 0 10px; border-=
+right: 1px solid #999; border-left: 1px solid #999; font-family: Arial, Hel=
+vetica, sans-serif;"><tbody><tr><td colspan=3D"5" style=3D"padding: 20px;" =
+class=3D"cell"><h1 style=3D"font-size: 26px; margin: 0; color: #000; font-w=
+eight: 400; padding: 0;">Thank you for choosing United</h1></td></tr></tbod=
+y></table><table role=3D"presentation" cellspacing=3D"0" cellpadding=3D"0" =
+class=3D"table" style=3D"width:100%;background-color: #fff; margin: 0 10px;=
+ padding: 0 10px; border-right: 1px solid #999; border-left: 1px solid #999=
+; font-family: Arial, Helvetica, sans-serif;"><tbody><tr><td colspan=3D"5" =
+class=3D"cell" style=3D"padding: 0 5px 0 5px;border-bottom: solid 1px #ccc;=
+ vertical-align: top"><table cellspacing=3D"0" cellpadding=3D"0" class=3D"t=
+able" style=3D"font-family: Arial, Helvetica, sans-serif; width: 100%; padd=
+ing-bottom: 20px;"><tbody><tr><td class=3D"cell" style=3D"width: 50px; vert=
+ical-align: top"><img border=3D"0" src=3D"http://www.united.com/ual/Format/=
+img/email/icons/info-check.png" alt=3D"information" class=3D"image-fix" sty=
+le=3D"display: inline-block;" /></td></tbody></table></td><td class=3D"cell=
+" style=3D"border-bottom: solid 1px #ccc; padding-bottom: 20px"><span style=
+=3D"font-size: 16px; line-height: 16px; color: #000;"><h2 style=3D"margin: =
+0 0 10px 10px; padding: 0; font-size: 16px; line-height: 16px; color: #000;=
+">We've received your request for a refund</h2></span><p style=3D"margin: 0=
+ 0 10px 10px; padding: 0;font-size: 12px;  line-height: 16px; color: #000;"=
+>Your reservation, <b>EFGH12</b>, was canceled. We have received your reque=
+st for refund and redeposited your miles back in to your MileagePlus accoun=
+t. The credited miles will display in the month the ticket was originally r=
+edeemed.</p><p style=3D"margin: 0 0 10px 10px; padding: 0;font-size: 12px; =
+ line-height: 16px; color: #000;">If you are requesting a credit card refun=
+d, please allow seven business days for processing. If your credit card ref=
+und is not posted within one billing cycle, please contact your credit card=
+ company.</p></td></tr></tbody></table><table cellspacing=3D"0" cellpadding=
+=3D"0" class=3D"table" style=3D"width: 100%; background-color: #fff; margin=
+: 0 10px; padding: 0 10px; border-right: 1px solid #999; border-left: 1px s=
+olid #999; font-family: Arial, Helvetica, sans-serif;max-width: 600px"><tbo=
+dy><tr><td colspan=3D"5" style=3D"background-color: #fff; padding: 0 20px 3=
+0px 20px; vertical-align: top; font-size: 0;" class=3D"cell"><div class=3D"=
+div-container" style=3D"float: left"><table align=3D"left" width=3D"100%" s=
+tyle=3D"font-family: Arial, Helvetica, sans-serif; font-size: 12px; line-he=
+ight: 16px; color: #000;"><tr><td><h2 style=3D"font-size: 14px; font-weight=
+: normal"><p style=3D"padding: 20px 0 0 0; margin: 0;">Confirmation number:=
+</p><p style=3D"font-size: 50px; line-height: 1; padding: 20px 0 0 0; margi=
+n: 0;">EFGH12</p></h2></td></tr></table></div></td></tr></tbody></table>   =
+                                             </p>                          =
+                  </td>                                        </tr>       =
+                             </table>                                </td> =
+                           </tr>                        </table>           =
+         </td>                </tr>            </table>            <div cla=
+ss=3D"lhfix " style=3D"line-height:30px;">=EF=BF=BD</div>            <table=
+ bgcolor=3D"#ffffff" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=
+=3D"em_full_wrap" role=3D"presentation" width=3D"100%">                <tr>=
+                    <td align=3D"center" valign=3D"top">                   =
+     <table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"=
+0" class=3D"em_wrapper" role=3D"presentation" style=3D"width:670px;" width=
+=3D"670">                            <tr>                                <t=
+d align=3D"center" class=3D"em_full_img" valign=3D"top"><img alt=3D"fly the=
+ friendly skies" border=3D"0" class=3D"em_full_img em_hide1" height=3D"6" s=
+rc=3D"https://media.united.com/assets/m/3d9e6cf7990cda30/original/tmplt_foo=
+ter_bar_desktop.png" style=3D"display:block;font-family:Arial, Helvetica, s=
+ans-serif; font-size:12px; line-height:15px; color:#000000; max-width:670px=
+;" width=3D"670">                                    <div class=3D"em_full_=
+img imghide" style=3D"max-height: 0px; font-size: 0; display: none; overflo=
+w:hidden;">                                        <table border=3D"0" cell=
+padding=3D"0" cellspacing=3D"0" class=3D"em_full_img imghide heightAuto " h=
+eight=3D"0" role=3D"presentation" style=3D"max-height: 0px; font-size: 0; d=
+isplay: none; overflow:hidden;" width=3D"0">                               =
+             <tr>                                                <td class=
+=3D"em_full_img heightAuto center"><img alt=3D"fly the friendly skies" clas=
+s=3D"imghide em_full_img heightAuto" height=3D"0" src=3D"https://media.unit=
+ed.com/assets/m/7a639f532dd390b3/original/tmplt_footer_bar_mobile.png" widt=
+h=3D"0"></td>                                            </tr>             =
+                           </table>                                    </di=
+v>                                </td>                            </tr>   =
+                     </table>                    </td>                </tr>=
+            </table>            <table bgcolor=3D"#ffffff" border=3D"0" cel=
+lpadding=3D"0" cellspacing=3D"0" class=3D"em_full_wrap" role=3D"presentatio=
+n" width=3D"100%">                <tr>                    <td align=3D"cent=
+er" valign=3D"top">                        <table align=3D"center" bgcolor=
+=3D"#e6e6e6" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"em_w=
+rapper" role=3D"presentation" style=3D"width:670px; background-color:#e6e6e=
+6;" width=3D"670">                            <tr>                         =
+       <td align=3D"center" class=3D"em_asidenone" style=3D"padding:0px 30p=
+x;" valign=3D"top">                                    <table align=3D"cent=
+er" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" =
+width=3D"100%">                                        <tr>                =
+                            <td class=3D"em_hide" height=3D"30" style=3D"fo=
+nt-size:1px; line-height:1px;">                      =EF=BF=BD             =
+       </td>                                        </tr>                  =
+                      <tr>                                            <td a=
+lign=3D"center" valign=3D"top">                                            =
+    <table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0=
+" class=3D"em_wrapper" role=3D"presentation">                              =
+                      <tr>                                                 =
+       <th align=3D"center" class=3D"em_defaultlink em_menu em_clear" style=
+=3D"font-family: Arial, Helvetica, sans-serif; font-size:14px; line-height:=
+20px; color:#002244; font-weight:bold;" valign=3D"top"><a href=3D"#" style=
+=3D"text-decoration:none;color:#1414d2;" target=3D"_blank">                =
+              Reservations                            </a></th><th class=3D=
+"em_hide" style=3D"width:40px;" width=3D"40">                            =
+=EF=BF=BD                          </th><th align=3D"center" class=3D"em_de=
+faultlink em_menu em_clear" style=3D"font-family: Arial, Helvetica, sans-se=
+rif; font-size:14px; line-height:20px; color:#002244; font-weight:bold;" va=
+lign=3D"top"><a href=3D"#" style=3D"text-decoration:none;color:#1414d2;" ta=
+rget=3D"_blank">                              Deals & offers               =
+             </a></th><th class=3D"em_hide" style=3D"width:40px;" width=3D"=
+40">                            =EF=BF=BD                          </th><th=
+ align=3D"center" class=3D"em_defaultlink em_menu em_clear" style=3D"font-f=
+amily: Arial, Helvetica, sans-serif; font-size:14px; line-height:20px; colo=
+r:#002244; font-weight:bold;" valign=3D"top"><a href=3D"#" style=3D"text-de=
+coration:none;color:#1414d2;" target=3D"_blank">                           =
+   MileagePlus=EF=BF=BD                            </a></th><th class=3D"em=
+_hide" style=3D"width:40px;" width=3D"40">                            =EF=
+=BF=BD                          </th><th align=3D"center" class=3D"em_defau=
+ltlink em_menu em_clear" style=3D"font-family: Arial, Helvetica, sans-serif=
+; font-size:14px; line-height:20px; color:#002244; font-weight:bold;" valig=
+n=3D"top"><a href=3D"#" style=3D"text-decoration:none;color:#1414d2;" targe=
+t=3D"_blank">                              My account                      =
+      </a></th>                                                    </tr>   =
+                                             </table>                      =
+                      </td>                                        </tr>   =
+                                     <tr>                                  =
+          <td height=3D"25" style=3D"font-size:1px; line-height:1px;">     =
+                 =EF=BF=BD                    </td>                        =
+                </tr>                                    </table>          =
+                      </td>                            </tr>               =
+         </table>                    </td>                </tr>            =
+</table>            <table bgcolor=3D"#ffffff" border=3D"0" cellpadding=3D"=
+0" cellspacing=3D"0" class=3D"em_full_wrap" role=3D"presentation" width=3D"=
+100%">                <tr>                    <td align=3D"center" valign=
+=3D"top">                        <table align=3D"center" bgcolor=3D"#e6e6e6=
+" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"em_wrapper" rol=
+e=3D"presentation" style=3D"width:670px; background-color:#e6e6e6;" width=
+=3D"670">                            <tr>                                <t=
+d align=3D"center" class=3D"em_asidenone" style=3D"padding:0px 30px;" valig=
+n=3D"top">                                    <table align=3D"center" borde=
+r=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D"=
+100%">                                        <tr>                         =
+                   <td align=3D"center" valign=3D"top">                    =
+                            <table align=3D"center" border=3D"0" cellpaddin=
+g=3D"0" cellspacing=3D"0" role=3D"presentation">                           =
+                         <tr>                                              =
+          <td align=3D"center" valign=3D"top"><a href=3D"#" style=3D"text-d=
+ecoration:none;" target=3D"_blank"><img alt=3D"Follow us on Facebook" borde=
+r=3D"0" height=3D"55" src=3D"https://static.cdn.responsys.net/i2/responsysi=
+mages/content/united/tmplt_facebook_v5.png" style=3D"display:block;font-fam=
+ily:Arial, Helvetica, sans-serif; font-size:12px; line-height:15px; color:#=
+000000; max-width:45x; max-height:45px;" width=3D"55"></a></td><td style=3D=
+"width:40px;" width=3D"40">                            =EF=BF=BD           =
+               </td><td align=3D"center" valign=3D"top"><a href=3D"#" style=
+=3D"text-decoration:none;" target=3D"_blank"><img alt=3D"Follow us on Twitt=
+er" border=3D"0" height=3D"55" src=3D"https://media.united.com/assets/m/5e4=
+cf5236ad204f8/original/tmplt_twitter_V6.png" style=3D"display:block;font-fa=
+mily:Arial, Helvetica, sans-serif; font-size:12px; line-height:15px; color:=
+#000000; max-width:45x; max-height:45px;" width=3D"55"></a></td><td style=
+=3D"width:40px;" width=3D"40">                            =EF=BF=BD        =
+                  </td><td align=3D"center" valign=3D"top"><a href=3D"#" st=
+yle=3D"text-decoration:none;" target=3D"_blank"><img alt=3D"Follow us on Yo=
+uTube" border=3D"0" height=3D"55" src=3D"https://static.cdn.responsys.net/i=
+2/responsysimages/content/united/tmplt_youtube_v5.png" style=3D"display:blo=
+ck;font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:15=
+px; color:#000000; max-width:45x; max-height:45px;" width=3D"55"></a></td><=
+td style=3D"width:40px;" width=3D"40">                            =EF=BF=BD=
+                          </td><td align=3D"center" valign=3D"top"><a href=
+=3D"#" style=3D"text-decoration:none;" target=3D"_blank"><img alt=3D"Follow=
+ us on Instagram" border=3D"0" height=3D"55" src=3D"https://media.united.co=
+m/assets/m/239ce7be10c880d7/original/tmplt_instagram_v5.png" style=3D"displ=
+ay:block;font-family:Arial, Helvetica, sans-serif; font-size:12px; line-hei=
+ght:15px; color:#000000; max-width:45x; max-height:45px;" width=3D"55"></a>=
+</td>                                                    </tr>             =
+                                   </table>                                =
+            </td>                                        </tr>             =
+                           <tr>                                            =
+<td height=3D"5" style=3D"font-size:1px; line-height:1px;">                =
+      =EF=BF=BD                    </td>                                   =
+     </tr>                                    </table>                     =
+           </td>                            </tr>                        </=
+table>                    </td>                </tr>            </table>   =
+         <table bgcolor=3D"#ffffff" border=3D"0" cellpadding=3D"0" cellspac=
+ing=3D"0" class=3D"em_full_wrap" role=3D"presentation" width=3D"100%">     =
+           <tr>                    <td align=3D"center" valign=3D"top">    =
+                    <table align=3D"center" bgcolor=3D"#e6e6e6" border=3D"0=
+" cellpadding=3D"0" cellspacing=3D"0" class=3D"em_wrapper" role=3D"presenta=
+tion" style=3D"width:670px; background-color:#e6e6e6;" width=3D"670">      =
+                      <tr>                                <td align=3D"cent=
+er" class=3D"em_asidenone" style=3D"padding:0px 30px;" valign=3D"top">     =
+                               <table align=3D"center" border=3D"0" cellpad=
+ding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D"100%">         =
+                               <tr>                                        =
+    <td align=3D"left" class=3D"em_defaultlink em_aside15" style=3D"font-fa=
+mily: Arial, Helvetica, sans-serif; font-size:10px; line-height:14px; color=
+:#002244;" valign=3D"top">                                                <=
+div class=3D"em_defaultlink em_aside15" style=3D"font-family: Arial, Helvet=
+ica, sans-serif; font-size:10px; line-height:14px; color:#002244; font-weig=
+ht:normal;">                        =EF=BF=BD                      </div>  =
+                                          </td>                            =
+            </tr>                                        <tr>              =
+                              <td height=3D"14" style=3D"font-size:1px; lin=
+e-height:1px; height:14px;">                      =EF=BF=BD                =
+    </td>                                        </tr>                     =
+                   <tr>                                            <td alig=
+n=3D"center" class=3D"em_defaultlink em_aside15" style=3D"font-family: Aria=
+l, Helvetica, sans-serif; font-size:10px; line-height:14px; color:#002244;"=
+ valign=3D"top">                      This email was sent to               =
+                             <a href=3D"#" style=3D"text-decoration:underli=
+ne;color:#002244;">TESTUSER@EXAMPLE.COM</a>                                =
+            by United=EF=BF=BDAirlines.                                    =
+            <br>                                                Please do n=
+ot reply to this email. We cannot accept electronic replies to this email=
+=EF=BF=BDaddress.                                                <br>      =
+                                          <br>                             =
+                   =EF=BF=BD 2024 United=EF=BF=BDAirlines. All rights reser=
+ved. United=EF=BF=BDAirlines, Inc. 233 S. Wacker Drive Chicago,=EF=BF=BDIL=
+=EF=BF=BD60606                                                <br>         =
+                                       <br>                                =
+                <a href=3D"#" style=3D"text-decoration:none;color:#002244; =
+font-weight:bold;" target=3D"_blank">                        Contact us    =
+                  </a> =EF=BF=BD=EF=BF=BD | =EF=BF=BD=EF=BF=BD             =
+         <a href=3D"#" style=3D"text-decoration:none;color:#002244; font-we=
+ight:bold;white-space:nowrap;" target=3D"_blank">                        Em=
+ail preferences                      </a> =EF=BF=BD=EF=BF=BD | =EF=BF=BD=EF=
+=BF=BD                      <a href=3D"#" style=3D"text-decoration:none;col=
+or:#002244; font-weight:bold; white-space:nowrap;" target=3D"_blank">      =
+                  Privacy policy                      </a>                 =
+                               <br>                                        =
+    </td>                                        </tr>                     =
+                   <tr>                                            <td heig=
+ht=3D"18" style=3D"font-size:1px; line-height:1px; height:18px;">          =
+            =EF=BF=BD                    </td>                             =
+           </tr>                                    </table>               =
+                 </td>                            </tr>                    =
+    </table>                    </td>                </tr>            </tab=
+le>            <table bgcolor=3D"#ffffff" border=3D"0" cellpadding=3D"0" ce=
+llspacing=3D"0" class=3D"em_full_wrap" role=3D"presentation" width=3D"100%"=
+>                <tr>                    <td align=3D"center" valign=3D"top=
+">                        <table align=3D"center" bgcolor=3D"#e6e6e6" borde=
+r=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"em_wrapper" role=3D"pr=
+esentation" style=3D"width:670px; background-color:#e6e6e6;" width=3D"670">=
+                            <tr>                                <td align=
+=3D"center" class=3D"em_asidenone" style=3D"padding:0px 30px;" valign=3D"to=
+p">                                    <table align=3D"center" border=3D"0"=
+ cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D"100%"> =
+                                       <tr>                                =
+            <td align=3D"center" valign=3D"top"><a href=3D"#" target=3D"_bl=
+ank"><img alt=3D"A STAR ALLIANCE MEMBER" border=3D"0" height=3D"27" src=3D"=
+https://media.united.com/assets/m/3274314d40e3155b/original/star_alliance_1=
+48x22_2x.jpg" style=3D"display:block;" width=3D"185"></a></td>             =
+                           </tr>                                        <tr=
+>                                            <td height=3D"25" style=3D"fon=
+t-size:1px; line-height:1px; height:25px;">                      =EF=BF=BD =
+                   </td>                                        </tr>      =
+                              </table>                                </td>=
+                            </tr>                        </table>          =
+          </td>                </tr>            </table>            <table =
+bgcolor=3D"#ffffff" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=
+=3D"em_full_wrap" role=3D"presentation" width=3D"100%">                <tr>=
+                    <td align=3D"center" valign=3D"top">                   =
+     <table align=3D"center" bgcolor=3D"#e6e6e6" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" class=3D"em_wrapper" role=3D"presentation" style=
+=3D"width:670px; background-color:#e6e6e6;" width=3D"670">                 =
+           <tr>                                <td align=3D"center" class=
+=3D"em_asidenone" style=3D"padding:0px 30px;" valign=3D"top">              =
+                      <table align=3D"center" border=3D"0" cellpadding=3D"0=
+" cellspacing=3D"0" role=3D"presentation" width=3D"100%">                  =
+                      <tr>                                            <td a=
+lign=3D"center" valign=3D"top">                                            =
+    <div class=3D"imghide" style=3D"max-height: 0px; font-size: 0; display:=
+ none; overflow:hidden;">                                                  =
+  <div style=3D"font-family: Arial, Helvetica, sans-serif; font-size:20px;c=
+olor:#002244;">                                                        <a h=
+ref=3D"#" style=3D"text-decoration: none; color: #002244;" target=3D"_blank=
+">                            Download the latest United app               =
+           </a>                                                    </div>  =
+                                                  <table cellpadding=3D"0" =
+cellspacing=3D"0" role=3D"presentation">                                   =
+                     <tr>                                                  =
+          <td height=3D"20" style=3D"line-height:1px;"><img border=3D"0" he=
+ight=3D"1" src=3D"https://static.cdn.responsys.net/i2/responsysimages/conte=
+nt/united/sp.png" style=3D"display:block;" width=3D"1"></td>               =
+                                         </tr>                             =
+                       </table>                                            =
+        <a href=3D"#" style=3D"text-decoration:none;"><img alt=3D"Available=
+ on the App Store" border=3D"0" height=3D"50" src=3D"https://media.united.c=
+om/assets/m/6c7c217558d3207b/original/tmplt_United_App_Apple_v2.png" style=
+=3D"display:block; max-width:169px;font-family:Arial, Helvetica, sans-serif=
+; font-size:12px; color:#000000;" width=3D"169"></a>                       =
+                             <table cellpadding=3D"0" cellspacing=3D"0" rol=
+e=3D"presentation">                                                        =
+<tr>                                                            <td height=
+=3D"20" style=3D"line-height:1px;"><img border=3D"0" height=3D"1" src=3D"ht=
+tps://static.cdn.responsys.net/i2/responsysimages/content/united/sp.png" st=
+yle=3D"display:block;" width=3D"1"></td>                                   =
+                     </tr>                                                 =
+   </table>                                                    <a href=3D"#=
+" style=3D"text-decoration:none;"><img alt=3D"Available on the App Store" b=
+order=3D"0" height=3D"50" src=3D"https://media.united.com/assets/m/585b0e07=
+fb1749c7/original/tmplt_United_App_Google_v2.png" style=3D"display:block; m=
+ax-width:169px;font-family:Arial, Helvetica, sans-serif; font-size:12px; co=
+lor:#000000;" width=3D"169"></a>                                           =
+         <table cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation"> =
+                                                       <tr>                =
+                                            <td height=3D"25" style=3D"line=
+-height:1px;"><img border=3D"0" height=3D"1" src=3D"https://static.cdn.resp=
+onsys.net/i2/responsysimages/content/united/sp.png" style=3D"display:block;=
+" width=3D"1"></td>                                                        =
+</tr>                                                    </table>          =
+                                      </div>                               =
+             </td>                                        </tr>            =
+                        </table>                                </td>      =
+                      </tr>                        </table>                =
+    </td>                </tr>            </table>        </div>    <img sr=
+c=3D"http://notification.united.com/wf/open?REDACTED" alt=3D"" width=3D"1" =
+height=3D"1" border=3D"0" style=3D"height:1px !important;width:1px !importa=
+nt;border-width:0 !important;margin-top:0 !important;margin-bottom:0 !impor=
+tant;margin-right:0 !important;margin-left:0 !important;padding-top:0 !impo=
+rtant;padding-bottom:0 !important;padding-right:0 !important;padding-left:0=
+ !important;"/></body></html>

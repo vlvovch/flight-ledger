@@ -1,0 +1,538 @@
+@import "tailwindcss";
+
+/*
+ * FLIGHT DECK LEDGER — design tokens
+ * Dark navy instrument panel; series palette validated for CVD safety
+ * against surface #111B2E (see docs/design notes).
+ */
+@theme {
+  --color-deck: #0a1120; /* page plane */
+  --color-panel: #111b2e; /* chart / card surface */
+  --color-panel2: #172440; /* raised surface (modals, hover) */
+  --color-well: #0d1626; /* recessed surface (inputs, table header) */
+  --color-line: #1e2c45; /* hairline */
+  --color-line2: #2e4064; /* stronger border / focus */
+
+  --color-ink: #e9eff8; /* primary text */
+  --color-ink2: #a9b8ce; /* secondary text */
+  --color-mute: #6b7e99; /* muted text, axis labels */
+
+  /* series colors — entity-fixed, validated (CVD + contrast) */
+  --color-s-miles: #2b9ec7; /* distance & lifetime miles  */
+  --color-s-gross: #c68326; /* gross cost / gross CPM     */
+  --color-s-personal: #d06090; /* personal cost / CPM        */
+  --color-s-pqp: #8f7be8; /* PQP                        */
+  --color-s-award: #43a860; /* award miles                */
+
+  /* status palette — reserved, never used for series */
+  --color-good: #0ca30c;
+  --color-warning: #fab219;
+  --color-serious: #ec835a;
+  --color-critical: #d03b3b;
+}
+
+/* Font tokens reference next/font runtime variables, so they must live in
+   plain CSS (Tailwind @theme drops var() chains unless inlined). */
+:root {
+  --font-disp: var(--font-barlow-condensed), "Arial Narrow", sans-serif;
+  --font-body: var(--font-barlow), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+/*
+ * THEMES
+ *
+ * Three sets of the same tokens, chosen with `data-theme` on <html>. The
+ * series palettes are validated per surface, not guessed: Dark and United
+ * share one (identical hexes keep a series meaning the same thing whichever
+ * theme you are in), and Light gets a darker set because the dark one has no
+ * contrast on white.
+ *
+ * Everything below is expressed as a token so a theme never has to be
+ * chased through components. The tint/status pairs exist because a 5%-alpha
+ * accent that reads as a highlight on navy is invisible on white.
+ */
+html {
+  color-scheme: dark;
+
+  --tint-accent-faint: rgba(43, 158, 199, 0.05);
+  --tint-accent-weak: rgba(43, 158, 199, 0.08);
+  --tint-accent: rgba(43, 158, 199, 0.13);
+  --tint-accent-strong: rgba(43, 158, 199, 0.18);
+  --tint-warning: rgba(250, 178, 25, 0.07);
+  --tint-critical: rgba(208, 59, 59, 0.15);
+  --tint-good: rgba(12, 163, 12, 0.1);
+  --band: rgba(255, 255, 255, 0.022);
+  --shadow-pop: rgba(0, 0, 0, 0.45);
+  /* How opaque a series' translucent sibling is. Over a dark surface 45%
+     reads as "the same colour, quieter"; over white the same 45% washes out
+     to near-nothing, so light carries its own. */
+  --soft-mix: 45%;
+
+  /* readable status text, as opposed to the saturated status marks */
+  --ink-good: #7bd87b;
+  --ink-warning: #e8c87a;
+  --ink-critical: #e88a8a;
+  /* text that sits ON a filled accent */
+  --on-accent: #0e1725;
+
+  /* atmosphere behind the page */
+  --glow-a: rgba(43, 158, 199, 0.09);
+  --glow-b: rgba(143, 123, 232, 0.05);
+  --grid-line: rgba(43, 158, 199, 0.025);
+}
+
+html[data-theme="united"] {
+  color-scheme: dark;
+  --color-deck: #041a3d;
+  --color-panel: #0a2a5e;
+  --color-panel2: #10396f;
+  --color-well: #072248;
+  --color-line: #17427f;
+  --color-line2: #2a5ba0;
+
+  --color-ink: #eef3fc;
+  --color-ink2: #b3c8e6;
+  --color-mute: #7d99c4;
+
+  --tint-accent-faint: rgba(107, 174, 232, 0.06);
+  --tint-accent-weak: rgba(107, 174, 232, 0.1);
+  --tint-accent: rgba(107, 174, 232, 0.16);
+  --tint-accent-strong: rgba(107, 174, 232, 0.22);
+  --band: rgba(255, 255, 255, 0.03);
+  --shadow-pop: rgba(0, 12, 32, 0.55);
+
+  --glow-a: rgba(107, 174, 232, 0.12);
+  --glow-b: rgba(0, 51, 160, 0.22);
+  --grid-line: rgba(107, 174, 232, 0.035);
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  /* Off-white, not white. A pure #fff card on a near-white page is a glare
+     panel with no depth, and every hairline has to fight it. Panels sit just
+     above the page, the page sits below both, and the raised surface is the
+     only thing that goes to white — so lifting something still reads as
+     lifting. Revalidated: the light series palette passes on this surface. */
+  --color-deck: #e7ecf4;
+  --color-panel: #f7f9fc;
+  --color-panel2: #ffffff;
+  --color-well: #eef2f8;
+  --color-line: #d5dfec;
+  --color-line2: #b2c2d6;
+
+  --color-ink: #0f1b2d;
+  --color-ink2: #3d4d66;
+  --color-mute: #6a7c95;
+
+  /* revalidated against #ffffff — the dark series have no contrast on white */
+  --color-s-miles: #0d8eb7;
+  --color-s-award: #319851;
+  --color-s-gross: #b6740a;
+  --color-s-pqp: #8c65d7;
+  --color-s-personal: #bf5181;
+
+  --tint-accent-faint: rgba(13, 142, 183, 0.05);
+  --tint-accent-weak: rgba(13, 142, 183, 0.09);
+  --tint-accent: rgba(13, 142, 183, 0.14);
+  --tint-accent-strong: rgba(13, 142, 183, 0.2);
+  --tint-warning: rgba(182, 116, 10, 0.1);
+  --tint-critical: rgba(192, 42, 42, 0.12);
+  --tint-good: rgba(23, 122, 23, 0.12);
+  --band: rgba(15, 27, 45, 0.028);
+  --shadow-pop: rgba(20, 35, 60, 0.16);
+  --soft-mix: 68%;
+
+  --color-good: #177a17;
+  --color-warning: #9a6b00;
+  --color-serious: #b4542c;
+  --color-critical: #c02a2a;
+  --ink-good: #14691a;
+  --ink-warning: #8a5f00;
+  --ink-critical: #a62727;
+  --on-accent: #ffffff;
+
+  --glow-a: rgba(13, 142, 183, 0.07);
+  --glow-b: rgba(140, 101, 215, 0.05);
+  --grid-line: rgba(15, 27, 45, 0.03);
+}
+
+/*
+ * One knob for overall UI size. Type, spacing and rules across this app are
+ * set in px — 248 of them — so scaling the type alone would grow the words
+ * inside padding that stayed put. `zoom` scales the whole layout the way the
+ * browser's own zoom does, which is the thing that was actually being judged
+ * when 125% looked right and 100% looked small.
+ *
+ * Caveat worth knowing: unlike browser zoom, this does NOT shrink the viewport
+ * that media queries see, so a breakpoint still fires at the window's real
+ * width. Every layout here is either fixed-column or max-width capped, so that
+ * costs nothing today — but a new responsive grid should be checked at this
+ * scale, not just at 1.
+ */
+:root {
+  --ui-scale: 1.25;
+  /* Viewport height as the scaled layout experiences it. `zoom` multiplies
+     lengths but not the viewport, so a raw 100vh element renders 1/scale
+     TALLER than the screen. Anything full-height must divide it back out. */
+  --vh-scaled: calc(100vh / var(--ui-scale));
+}
+
+body {
+  zoom: var(--ui-scale);
+}
+
+body {
+  background-color: var(--color-deck);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  /* blueprint grid + soft radar glow atmosphere */
+  background-image:
+    radial-gradient(
+      1200px 600px at 18% -10%,
+      var(--glow-a),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 500px at 95% 8%,
+      var(--glow-b),
+      transparent 55%
+    ),
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size:
+    auto,
+    auto,
+    48px 48px,
+    48px 48px;
+  background-attachment: fixed;
+}
+
+/* ------------------------------- type ------------------------------- */
+
+.t-label {
+  font-family: var(--font-disp);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+
+.t-display {
+  font-family: var(--font-disp);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.t-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------ panels ------------------------------ */
+
+.panel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 42px),
+    var(--color-panel);
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  position: relative;
+}
+
+.panel-accent {
+  /* thin instrument accent along the top edge */
+  background: linear-gradient(
+    90deg,
+    var(--accent, var(--color-s-miles)) 0 28%,
+    transparent 28%
+  );
+  height: 2px;
+  border-radius: 8px 8px 0 0;
+  position: absolute;
+  inset: -1px -1px auto -1px;
+  opacity: 0.85;
+}
+
+/* ------------------------------ tables ------------------------------ */
+
+.ledger {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.ledger thead th {
+  font-family: var(--font-disp);
+  font-weight: 600;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+  background: var(--color-well);
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-line);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+/* In the report overlay the sticky header pins to the pop-up's scroll
+   viewport and floats mid-table — a document's header belongs to its table,
+   not to whatever happens to scroll around it. */
+.report-page .ledger th {
+  position: static;
+}
+.ledger td {
+  padding: 9px 10px;
+  border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent);
+  white-space: nowrap;
+}
+.ledger tbody tr {
+  transition: background 120ms ease;
+}
+.ledger tbody tr:hover {
+  background: rgba(43, 158, 199, 0.06);
+}
+.ledger .num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.ledger tfoot td {
+  border-top: 1px solid var(--color-line2);
+  border-bottom: none;
+  background: var(--color-well);
+  font-weight: 600;
+}
+
+/* ------------------------------ inputs ------------------------------ */
+
+.field {
+  background: var(--color-well);
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  color: var(--color-ink);
+  font-size: 13.5px;
+  padding: 7px 10px;
+  width: 100%;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+.field:focus {
+  outline: none;
+  border-color: var(--color-line2);
+  box-shadow: 0 0 0 3px rgba(43, 158, 199, 0.15);
+}
+.field::placeholder {
+  color: var(--color-mute);
+  opacity: 0.7;
+}
+select.field {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236B7E99' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+}
+input[type="date"].field::-webkit-calendar-picker-indicator {
+  filter: invert(0.6);
+}
+
+/* ------------------------------ buttons ----------------------------- */
+
+.btn {
+  font-family: var(--font-disp);
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 6px;
+  padding: 8px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    background 130ms ease,
+    border-color 130ms ease,
+    transform 80ms ease,
+    box-shadow 130ms ease;
+  white-space: nowrap;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn-primary {
+  background: linear-gradient(180deg, #2fabd6, #2490b6);
+  color: #06121c;
+  box-shadow:
+    0 0 0 1px rgba(43, 158, 199, 0.55),
+    0 4px 14px rgba(43, 158, 199, 0.22);
+}
+.btn-primary:hover {
+  background: linear-gradient(180deg, #3ebae5, #2a9fc7);
+}
+.btn-ghost {
+  background: transparent;
+  border-color: var(--color-line2);
+  color: var(--color-ink2);
+}
+.btn-ghost:hover {
+  border-color: var(--color-s-miles);
+  color: var(--color-ink);
+  background: rgba(43, 158, 199, 0.07);
+}
+.btn-danger {
+  background: transparent;
+  border-color: color-mix(in oklab, var(--color-critical) 55%, transparent);
+  color: #e88a8a;
+}
+.btn-danger:hover {
+  background: rgba(208, 59, 59, 0.12);
+}
+
+/* ------------------------------ chips ------------------------------- */
+
+.chip {
+  font-family: var(--font-disp);
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2.5px 8px;
+  border-radius: 999px;
+  border: 1px solid;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.chip .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+/* ----------------------------- animation ---------------------------- */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.reveal {
+  animation: fadeUp 380ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+.stagger > * {
+  animation: fadeUp 380ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+.stagger > *:nth-child(1) { animation-delay: 0ms; }
+.stagger > *:nth-child(2) { animation-delay: 40ms; }
+.stagger > *:nth-child(3) { animation-delay: 80ms; }
+.stagger > *:nth-child(4) { animation-delay: 120ms; }
+.stagger > *:nth-child(5) { animation-delay: 160ms; }
+.stagger > *:nth-child(6) { animation-delay: 200ms; }
+.stagger > *:nth-child(7) { animation-delay: 240ms; }
+.stagger > *:nth-child(8) { animation-delay: 280ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .stagger > * {
+    animation: none;
+  }
+}
+
+/* ---------------------------- scrollbars ---------------------------- */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line2) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-line2);
+  border-radius: 8px;
+  border: 2px solid var(--color-deck);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/*
+ * Print — the annual report (§20). The report is an overlay, portalled to
+ * <body>, and while it is open it IS the document: the app underneath is
+ * dropped entirely. The report component switches the theme to light for the
+ * duration of the dialog, so ink-on-paper comes from the theme; these rules
+ * only remove chrome and let the sheet flow across pages.
+ */
+@media print {
+  body {
+    overflow: visible !important;
+  }
+  aside,
+  .no-print {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+  }
+  body:has(.report-overlay) main {
+    display: none !important;
+  }
+  .report-overlay {
+    position: static !important;
+    padding: 0 !important;
+    background: none !important;
+    backdrop-filter: none !important;
+    overflow: visible !important;
+  }
+  .report-sheet {
+    margin: 0 !important;
+    max-width: none !important;
+    border: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  .report-page section,
+  .report-page table {
+    break-inside: avoid;
+  }
+  @page {
+    margin: 14mm;
+  }
+}
+
+/* Small screens: wide tables scroll sideways inside their own box instead of
+   blowing the page out. Desktop layout untouched — the media query is the
+   whole switch. */
+@media (max-width: 1023px) {
+  table.ledger {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+}

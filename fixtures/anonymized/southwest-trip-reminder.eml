@@ -1,0 +1,1085 @@
+From: "Southwest Airlines" <SouthwestAirlines@iluv.southwest.com>
+Subject: Your 11/01 trip to Orange County, CA is all set.
+Date: Mon, 02 Oct 2023 14:33:33 -0500
+To: <testuser@example.com>
+Reply-To: "Southwest Airlines" <no-reply@iluv.southwest.com>
+MIME-Version: 1.0
+Message-ID: <REDACTED@example.com>
+Content-Type: text/html;
+	charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.=
+w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html style=3D"text-size-adjust: 100%; opacity: 1; width: 100% !important; =
+height: 100% !important; margin: 0px !important; padding: 0px !important; b=
+ackground-color: rgb(255, 255, 255) !important;" xmlns=3D"https://www.w3.or=
+g/1999/xhtml">
+<head>
+<meta content=3D"text/html; charset=3DUTF-8" http-equiv=3D"Content-Type" />
+<meta content=3D"IE=3Dedge" http-equiv=3D"X-UA-Compatible" />
+<meta content=3D"width=3Ddevice-width, initial-scale=3D1.0" name=3D"viewpor=
+t" />
+<title>Southwest Airlines</title>
+<!--[if gte mso 15]><style type=3D"text/css">table {font-size: 1px; line-he=
+ight: 0; mso-margin-top-alt: 1px; mso-line-height-rule: exactly;} * {mso-li=
+ne-height-rule: exactly;}</style><![endif]-->
+<style type=3D"text/css">
+/* Resets */
+p {
+    line-height: normal;
+}
+table td {
+    border-collapse: collapse;
+}
+#outlook a {
+    padding: 0;
+}
+.ExternalClass {
+    width: 100%;
+}
+.ExternalClass * {
+    line-height: 100%;
+}
+.yshortcuts a {
+    border-bottom: none !important;
+}
+div[style*=3D'margin: 16px 0'] {
+    margin: 0 !important;
+}
+table {
+    border-spacing: 0 !important;
+    border-collapse: collapse !important;
+    mso-table-lspace: 0pt !important;
+    mso-table-rspace: 0pt !important;
+}
+a[x-apple-data-detectors] {
+    color: inherit !important;
+    text-decoration: none !important;
+    font-size: inherit !important;
+    font-family: inherit !important;
+    font-weight: normal !important;
+    line-height: inherit !important
+}
+
+/* Media Queries */
+@media screen and (max-width: 600px) {
+/* Utility Classes */
+.full       {width: 100% !important;}
+.hide       {display: none !important;}
+.sides       {padding-left: 10px !important; padding-right: 10px !important=
+;}
+.auto-height   {height: auto !important;}
+
+.image-center img              {display: inline !important;}
+.text-left, .text-left p           {text-align: left !important;}
+.text-right, .text-right p           {text-align: right !important;}
+.image-center, .text-center, .text-center p  {text-align: center !important=
+;}
+
+/* Grid */
+#main-container         {width: 100% !important;}
+#main-wrapper > tbody > tr > td {padding: 0 10px !important;}
+
+td        {height: auto !important;}
+th.split     {width: 100% !important; display: block !important;}
+img.mobile     {font-size: 12px; line-height: normal !important; width: 100=
+% !important; height: auto !important; max-height: inherit !important;}
+table.column   {width: 100% !important; height: auto !important;}
+
+/* Buttons */
+.btn-wrap > table,
+.btn-wrap-mobile > table  {width: 100% !important;}
+.btn-wrap-mobile       {line-height: normal !important; border-radius: 2px =
+!important; -ms-border-radius: 2px !important; -webkit-border-radius: 2px !=
+important;}
+
+.btn, .btn-mobile       {width: 100% !important; height:50px!important}
+.btn a, .btn-mobile a     {width: 100% !important; display: block;}
+.btn-mobile p         {font-size: 14px !important; font-weight: bold !impor=
+tant; text-align: center !important; line-height: nomral !important;}
+
+.btn-wrap-mobile.blue > table {border: 1px solid #304CB2;}
+.btn-wrap-mobile.dark-blue > table {border: 1px solid #111B40;}
+.btn-wrap-mobile.white > table {border: 1px solid #FFFFFF;}
+.btn-wrap-mobile.black > table {border: 1px solid #000001;}
+
+.app-badge {width: 110px !important;}
+
+/* Template */
+#top-nav th     {height: auto !important;}
+#top-nav .left td  {padding-bottom: 10px !important;}
+
+#travelSummary .row-3 .btn-wrap {padding-right: 0 !important}
+
+.promo.container .pr.left .promo {padding-bottom: 10px !important}
+.promo.container .logo {padding-bottom: 15px !important;}
+.promo.container .lockup .column.left img {padding: 15px 0 !important;}
+
+.banner .image-center {padding-bottom: 0 !important; padding-left: 0 !impor=
+tant;}
+
+.mobile.container   {padding-bottom: 10px !important;}
+    .mobile img   {
+      font-size: 12px !important;=20
+      line-height: normal !important;
+      width: 100% !important;
+      height: auto !important;
+      max-height: inherit !important;
+    }
+
+#itinerary .SEG td {width: auto !important}
+
+#bot-nav > table   {width: 100% !important;}
+#bot-nav th     {padding: 10px 0 !important; border-bottom: 1px solid #CCCC=
+CC !important;}
+#bot-nav .label   {Margin: 0 0 5px 0 !important; font-size: 16px !important=
+;}
+#bot-nav .c2 img   {width: 24px !important;}
+#bot-nav .convert   {color: #616161 !important;}
+#bot-nav .c4 img {padding-bottom: 10px !important;} #travelSummary .backgro=
+und-image {vertical-align: bottom !important;}
+#travelSummary .background-image .right .btn-wrap {padding-top: 15px !impor=
+tant;}       /* HI Media */
+#HI_UM .image {
+padding-bottom: 15px;
+}
+}
+</style>
+</head>
+<body style=3D"text-size-adjust: 100%; background-color: #FFFFFF; width: 10=
+0%; height: 100% !important; margin: 0px !important; padding: 0px !importan=
+t;">
+
+
+
+<table id=3D"main-wrapper" width=3D"100%" border=3D"0" cellpadding=3D"0" ce=
+llspacing=3D"0" style=3D"margin: 0; padding: 0; width: 100% !important; hei=
+ght: 100% !important; line-height: 100% !important; background-color: #E6E8=
+E9;">
+  <tbody>
+    <tr>
+      <td align=3D"center" valign=3D"top"><table id=3D"main-container" widt=
+h=3D"600" border=3D"0" cellpadding=3D"0" cellspacing=3D"0">
+          <tbody>
+           =20
+            <!-- =3D=3D=3D=3D=3D start: header region =3D=3D=3D=3D=3D -->
+            <tr>
+              <td id=3D"header" class=3D"region" valign=3D"top" style=3D"pa=
+dding: 10px 0;"><table width=3D"100%" border=3D"0" cellpadding=3D"0" cellsp=
+acing=3D"0">
+                  <tbody>
+                   =20
+                    <!-- preheader -->
+                    <tr>
+                      <td id=3D"preheader" valign=3D"top" style=3D"padding-=
+bottom: 15px; border-bottom: 1px solid #CCCCCC;"><table align=3D"left" bord=
+er=3D"0" cellpadding=3D"0" cellspacing=3D"0">
+                          <tbody>
+                            <tr>
+                              <td class=3D"copy" valign=3D"top"><p style=3D=
+"color: #616161; font-size: 10px; font-family: Arial, Helvetica, sans-serif=
+; text-align: left; Margin: 0;"> Don't forget, two bags fly free* with us! =
+</p></td>
+                            </tr>
+                            <tr>
+                              <td valign=3D"top" style=3D"padding-bottom: 0=
+;"><p style=3D"color: #616161; font-size: 10px; font-family: Arial, Helveti=
+ca, sans-serif; text-align: left; Margin: 0;"> <a _label=3D"Header_MobileSi=
+te" href=3D"https://t.iluv.southwest.com/r/?REDACTED" style=3D"color: #304C=
+B2; text-decoration: none;">View our mobile site </a> | <a _label=3D"Header=
+_ViewInBrower" href=3D"https://t.iluv.southwest.com/r/?REDACTED" style=3D"c=
+olor: #304CB2; text-decoration: none;">View in Browser</a> </p></td>
+                            </tr>
+                          </tbody>
+                        </table></td>
+                    </tr>
+                   =20
+                    <!-- header -->
+                    <tr>
+ <td id=3D"top-nav" style=3D"padding-top: 10px;" valign=3D"middle">
+ <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%">
+    <tbody>
+       <tr>
+ =20
+  <!-- logo -->
+  <th class=3D"split" height=3D"26" style=3D"padding: 0;" valign=3D"top">
+    <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"column=
+ left" width=3D"100%" style=3D"border-collapse: collapse;">
+      <tbody>
+        <tr>
+          <td valign=3D"top">
+            <a _label=3D"Header_Logo" href=3D"https://t.iluv.southwest.com/=
+r/?REDACTED" style=3D"color: #304CB2; text-decoration: underline;"><img ali=
+gn=3D"left" alt=3D"Southwest" border=3D"0" src=3D"http://res.iluv.southwest=
+.com/res/southwe_mkt_prod1/logo_Southwest_Dark.png" style=3D"display: block=
+; color: #304CB2; font-size: 16px; font-weight: bold; font-family: Arial, H=
+elvetica, sans-serif;" title=3D"Southwest Airlines" width=3D"171" />
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </th>
+ =20
+  <!-- Top-Nav -->
+  <th class=3D"split" height=3D"26" style=3D"padding: 0; font-weight: norma=
+l;" valign=3D"middle">
+    <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"column=
+ right" width=3D"100%" style=3D"border-spacing: 0;">
+      <tbody>
+        <tr>
+          <td class=3D"text-left" valign=3D"top">
+            <p style=3D"color: #616161; font-size: 14px; font-family: Arial=
+, Helvetica, sans-serif; text-align: right; Margin: 0;">
+              <a _label=3D"Header_ManageFlight" href=3D"https://t.iluv.sout=
+hwest.com/r/?REDACTED" style=3D"color: #304CB2; text-decoration: none;"><st=
+rong>Manage Flight</strong>
+              </a> |
+              <a _label=3D"Header_FlightStatus" href=3D"https://t.iluv.sout=
+hwest.com/r/?REDACTED" style=3D"color: #304CB2; text-decoration: none;"><st=
+rong>Flight Status</strong>
+              </a> |
+              <a _label=3D"Header_MyAccount" href=3D"https://t.iluv.southwe=
+st.com/r/?REDACTED" style=3D"color: #304CB2; text-decoration: none;"><stron=
+g>My&nbsp;Account</strong>
+              </a>
+            </p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </th>
+ =20
+</tr>
+    </tbody>
+ </table>
+ </td>
+</tr>
+                  </tbody>
+                </table></td>
+            </tr>
+            <!-- =3D=3D=3D=3D=3D end: header region =3D=3D=3D=3D=3D -->=20
+           =20
+            <!-- START NEW TA MOD NS -->
+           =20
+            <!-- END NEW TA MOD NS -->=20
+           =20
+            <!-- =3D=3D=3D=3D=3D start: overall travel advisory region =3D=
+=3D=3D=3D=3D -->
+           =20
+            <!-- =3D=3D=3D=3D=3D end: overall travel advisory region =3D=3D=
+=3D=3D=3D -->=20
+           =20
+            <!-- =3D=3D=3D=3D=3D start: MI COVID region REMOVED May 9 2023 =
+=3D=3D=3D=3D=3D -->
+            <!-- =3D=3D=3D=3D=3D end: MI COVID region =3D=3D=3D=3D=3D -->=20
+           =20
+            <!-- =3D=3D=3D=3D=3D start: flight region =3D=3D=3D=3D=3D -->
+            <tr>
+              <td id=3D"flight" class=3D"region" valign=3D"top"><table widt=
+h=3D"100%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0">
+                  <tbody>
+                   =20
+                    <!-- start: travel summary -->
+                   =20
+
+<tr>
+  <td id=3D"travelSummary" class=3D"container" valign=3D"top" style=3D"padd=
+ing-bottom: 10px;">
+    <table class=3D"background" width=3D"100%" border=3D"0" cellpadding=3D"=
+0" cellspacing=3D"0" style=3D"background-color: #FFFFFF;">
+      <tbody>
+        <tr>
+          <td class=3D"wrap" valign=3D"bottom">
+            <table width=3D"100%" border=3D"0" cellpadding=3D"0" cellspacin=
+g=3D"0">
+              <tbody>
+                <tr>
+                  <td class=3D"row-1 background-image" height=3D"350" valig=
+n=3D"bottom" background=3D"https://www.southwest.com/assets/images/email/pr=
+etrip/m_SNA_1_600x350.jpg" bgcolor=3D"#FFFFFF" style=3D"border-bottom: 1px =
+solid #CCCCCC; background-size: cover; background-position: center center;"=
+>=20
+                    <!--[if gte mso 9]>
+                      <v:rect xmlns:v=3D"urn:schemas-microsoft-com:vml" fil=
+l=3D"true" stroke=3D"false" style=3D"width:600px; height:350px;">
+                        <v:fill type=3D"tile" src=3D"https://www.southwest.=
+com/assets/images/email/pretrip/m_SNA_1_600x350.jpg" color=3D"#FFFFFF" />
+                      <v:textbox inset=3D"0,0,0,0">
+                    <![endif]-->
+                    <div>
+                      <table width=3D"100%" border=3D"0" cellpadding=3D"0" =
+cellspacing=3D"0">
+                        <tbody>
+                          <tr>
+                            <td height=3D"350" valign=3D"bottom">
+                              <table width=3D"100%" border=3D"0" cellpaddin=
+g=3D"0" cellspacing=3D"0">
+                                <tbody>
+                                  <tr>
+                                    <td height=3D"80" valign=3D"bottom" bgc=
+olor=3D"#FFFFFF" style=3D"padding: 15px; background-color: rgba(255, 255, 2=
+55, 0.8); mso-padding-left-alt: 0">
+                                      <table width=3D"100%" border=3D"0" ce=
+llpadding=3D"0" cellspacing=3D"0">
+                                        <tbody>
+                                          <tr>
+                                            <th class=3D"split" valign=3D"t=
+op" style=3D"padding: 0; font-weight: normal;">
+                                              <table class=3D"column left" =
+width=3D"435" border=3D"0" cellpadding=3D"0" cellspacing=3D"0">
+                                                <tbody>
+                                                  <tr>
+                                                    <td valign=3D"top" styl=
+e=3D"padding-bottom: 5px;">
+                                                      <p style=3D"color: #6=
+46464; font-size: 13px; font-weight: bold; font-family: Arial, Helvetica, s=
+ans-serif; text-align: left; Margin: 0;"> November 01
+                                                       =20
+                                                      </p>
+                                                    </td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td class=3D"origDest" =
+valign=3D"top" style=3D"padding-bottom: 5px;">
+                                                      <table align=3D"left"=
+ border=3D"0" cellpadding=3D"0" cellspacing=3D"0">
+                                                        <tbody>
+                                                          <tr>
+                                                            <td valign=3D"t=
+op">
+                                                              <p style=3D"c=
+olor: #111B40; font-size: 34px; font-family: Arial, Helvetica, sans-serif; =
+text-align: left; Margin: 0;"> SJC </p>
+                                                            </td>
+                                                            <td valign=3D"m=
+iddle" style=3D"padding: 0 10px;"> <img src=3D"https://res.iluv.southwest.c=
+om/res/southwe_mkt_prod1/ico-plane.png" alt=3D"" width=3D"27" border=3D"0" =
+style=3D"display: block;"/> </td>
+                                                            <td valign=3D"t=
+op">
+                                                              <p style=3D"c=
+olor: #111B40; font-size: 34px; font-family: Arial, Helvetica, sans-serif; =
+text-align: left; Margin: 0;"> SNA </p>
+                                                            </td>
+                                                          </tr>
+                                                        </tbody>
+                                                      </table>
+                                                    </td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td valign=3D"top">
+                                                      <p style=3D"font-size=
+: 13px; font-family: Arial, Helvetica, sans-serif; text-align: left; Margin=
+: 0;"><span style=3D"color:#636363;">San Jose, CA to Orange County, CA</spa=
+n>=20
+                                                        <!-- START OVERNIGH=
+T -->
+                                                       =20
+                                                       =20
+                                                       =20
+                                                        <!-- END OVERNIGHT =
+-->=20
+                                                       =20
+                                                      </p>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </th>
+                                            <th class=3D"split" valign=3D"t=
+op" style=3D"padding: 0; font-weight: normal;">
+                                              <table class=3D"column right"=
+ width=3D"101" border=3D"0" cellpadding=3D"0" cellspacing=3D"0">
+                                                <tbody>
+                                                  <tr>
+                                                    <td class=3D"btn-wrap" =
+valign=3D"top">
+                                                      <table width=3D"120" =
+border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"border: 1px solid=
+ #CCCCCC; border-radius: 2px; -webkit-border-radius: 2px; -ms-border-radius=
+: 2px;">
+                                                        <tbody>
+                                                          <tr>
+                                                            <td class=3D"bt=
+n" height=3D"33" valign=3D"middle">
+                                                              <p style=3D"c=
+olor: #304CB2; font-size: 14px; font-weight: bold; font-family: Arial, Helv=
+etica, sans-serif; text-align: center; Margin: 0;"> <a _label=3D"TravelSumm=
+ary_Itinerary" href=3D"https://t.iluv.southwest.com/r/?REDACTED" style=3D"c=
+olor: #304CB2; text-decoration: none;"> Full itinerary </a> </p>
+                                                            </td>
+                                                          </tr>
+                                                        </tbody>
+                                                      </table>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </th>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <!--[if gte mso 9]>
+                      </v:textbox>
+                      </v:rect>
+                    <![endif]-->=20
+                  </td>
+                </tr>
+                <tr>
+                  <td valign=3D"top" style=3D"padding: 15px 15px 0 15px;">
+                    <table width=3D"100%" border=3D"0" cellpadding=3D"0" ce=
+llspacing=3D"0">
+                      <tbody>
+                       =20
+                        <tr>
+                          <td class=3D"row-2" valign=3D"top" style=3D"paddi=
+ng: 10px 0;">
+                           =20
+                            <p style=3D"color: #111B40; font-size: 13px; fo=
+nt-family: Arial, Helvetica, sans-serif; text-align: left; Margin: 0 0 5px =
+0;"> Confirmation # <span style=3D"color: #008522; font-size: 32px;"><stron=
+g>2CEPA9</strong></span> </p>
+                            <p style=3D"color: #636363; font-size: 13px; fo=
+nt-weight: bold; font-family: Arial, Helvetica, sans-serif; text-align: lef=
+t; Margin: 0 0 5px 0;"> PASSENGER </p>
+                           =20
+                            <p style=3D"color: #111B40; font-size: 13px; fo=
+nt-weight: bold; font-family: Arial, Helvetica, sans-serif; text-align: lef=
+t; Margin: 0 0 3px 0;"> Test User </p>
+                           =20
+                           =20
+                          </td>
+                        </tr>
+                       =20
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </td>
+</tr>
+                    <!-- end: travel summary -->
+                   =20
+                  </tbody>
+                </table></td>
+            </tr>
+            <!-- =3D=3D=3D=3D=3D end: flight region =3D=3D=3D=3D=3D -->=20
+           =20
+            <!-- =3D=3D=3D=3D=3D start: promotions region =3D=3D=3D=3D=3D -=
+->
+            <tr>
+              <td id=3D"promotions" class=3D"region" valign=3D"top"><table =
+width=3D"100%" border=3D"0" cellpadding=3D"0" cellspcaing=3D"0">
+                  <tbody>
+                   =20
+                    <tr>
+                      <td class=3D"container" valign=3D"top" style=3D"paddi=
+ng-bottom: 10px;"><p style=3D"color: #111B40; font-size: 24px; font-weight:=
+ bold; font-family: Arial, Helvetica, 'sans-serif'; text-align: left; Margi=
+n: 0;"> Complete your trip </p></td>
+                    </tr>
+                   =20
+                   =20
+                    <!-- start: icon slivers -->
+                   =20
+                    <tr>
+                      <td class=3D"row-1 banners" valign=3D"top" style=3D"p=
+adding-bottom: 10px;"><table width=3D"100%" border=3D"0" cellpadding=3D"0" =
+cellspacing=3D"0">
+                          <tbody>
+                           =20
+<tr>
+  <td class=3D"container" style=3D"padding-top:5px; padding-bottom: 10px;" =
+valign=3D"top">
+    <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"backgr=
+ound" dir=3D"ltr" role=3D"presentation" style=3D"background-color: #2C44B8;=
+ border-collapse: collapse;" width=3D"100%">
+      <tbody>
+        <tr>=20
+          <!-- start: col -->
+          <th class=3D"split" dir=3D"ltr" style=3D"padding: 0; font-weight:=
+ normal;" valign=3D"top">
+            <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=
+=3D"column left" role=3D"presentation" width=3D"80" >
+              <tbody>
+                <tr>
+                  <td style=3D"padding: 15px 0 0 0;" valign=3D"top" align=
+=3D"center"> <img src=3D"http://res.iluv.southwest.com/res/southwe_mkt_prod=
+1/e287601844df02c82d9b30ac2e5ace45.png" width=3D"40" alt=3D"" /> </td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <!-- end: col -->=20
+          <!-- start: col -->
+          <th aria-hidden=3D"true" class=3D"split" dir=3D"ltr" style=3D"pad=
+ding: 0;" valign=3D"top">
+            <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=
+=3D"column right" role=3D"presentation" width=3D"520">
+              <tbody>
+                <tr>
+                  <td class=3D"text-center sides" style=3D"padding: 10px 20=
+px 20px 8px;" valign=3D"top">
+                      <p style=3D"font-size: 15px; font-weight: 400; line-h=
+eight: 20px; padding: 0; color:#FFFFFF; font-family: Arial, Helvetica, sans=
+-serif; text-align: left; Margin: 0 10px 0 0"> Download our app on <a _labe=
+l=3D"App_AppStore" href=3D"https://t.iluv.southwest.com/r/?REDACTED" style=
+=3D"color: #FFFFFF;">an iPhone</a> or  <a _label=3D"App_GooglePlay" href=3D=
+"https://t.iluv.southwest.com/r/?REDACTED" style=3D"color: #FFFFFF;">an And=
+roid</a> to make changes to your trip, get a boarding pass, &#38; more.</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <!-- end: col -->=20
+        </tr>
+      </tbody>
+    </table>
+  </td>
+</tr>
+
+                           =20
+                           =20
+                            <td class=3D"banner container" valign=3D"top" s=
+tyle=3D"padding-bottom: 10px;"><table class=3D"background" width=3D"100%" b=
+order=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"background-color: =
+#FFBF27;">
+    <tbody>
+      <tr>
+        <th class=3D"split" valign=3D"middle" style=3D"padding: 0; font-wei=
+ght: normal;"> <table class=3D"column left" align=3D"left" border=3D"0" cel=
+lpadding=3D"0" cellspacing=3D"0">
+            <tbody>
+              <tr>
+                <td class=3D"image image-center" valign=3D"middle" style=3D=
+"padding: 15px 0 15px 15px;"><img src=3D"http://res.iluv.southwest.com/res/=
+southwe_mkt_prod1/ico-card_blue.png" width=3D"52" alt=3D"Chase Credit Card"=
+ border=3D"0" style=3D"display: block;" /></td>
+              </tr>
+            </tbody>
+          </table>
+        </th>
+        <th class=3D"split" valign=3D"top" style=3D"padding: 0; font-weight=
+: normal;"> <table width=3D"100%" class=3D"column right" align=3D"left" bor=
+der=3D"0" cellpadding=3D"0" cellspacing=3D"0">
+            <tbody>
+              <tr>
+                <td class=3D"copy text-center" valign=3D"top" style=3D"padd=
+ing: 15px 15px 0 15px;"><p style=3D"color: #111B40; font-size: 11px; font-f=
+amily: Arial, Helvetica, sans-serif; text-align: left; Margin: 0 0 0px 0;">=
+Wanna rake in a trip this fall?</p>
+                    <p style=3D"color: #111B40; font-size: 13px; font-famil=
+y: Arial, Helvetica, sans-serif; text-align: left; Margin: 0 0 20px 0;"><st=
+rong>Earn 50,000 points</strong> with the <a _label=3D"Banner_Chase_NonMemb=
+er" href=3D"https://t.iluv.southwest.com/r/?REDACTED" style=3D"color: #111B=
+40; text-decoration: underline;">Rapid Rewards<sup>&reg;</sup> Credit Card<=
+/a>.</p>
+                    </td>
+              </tr>
+            </tbody>
+          </table>
+        </th>
+      </tr>
+    </tbody>
+  </table></td>
+                           =20
+                           =20
+                            <tr>
+  <td class=3D"container" style=3D"padding-top:5px; padding-bottom: 10px;" =
+valign=3D"top">
+    <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"backgr=
+ound" dir=3D"ltr" role=3D"presentation" style=3D"background-color: #e6eff6;=
+ border-collapse: collapse;" width=3D"100%">
+      <tbody>
+        <tr>=20
+          <!-- start: col -->
+          <th class=3D"split" dir=3D"ltr" style=3D"padding: 0; font-weight:=
+ normal;" valign=3D"top">
+            <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=
+=3D"column left" role=3D"presentation" width=3D"80" >
+              <tbody>
+                <tr>
+                  <td style=3D"padding: 25px 0 0 0;" valign=3D"top" align=
+=3D"center"> <img src=3D"https://res.iluv.southwest.com/res/southwe_mkt_pro=
+d1/a361fa1a9f758d2faa855a13357d60bf.png" width=3D"45" alt=3D"" /> </td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <!-- end: col -->=20
+          <!-- start: col -->
+          <th aria-hidden=3D"true" class=3D"split" dir=3D"ltr" style=3D"pad=
+ding: 0;" valign=3D"top">
+            <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=
+=3D"column right" role=3D"presentation" width=3D"520">
+              <tbody>
+                <tr>
+                  <td class=3D"text-center sides" style=3D"padding: 10px 20=
+px 20px 8px;" valign=3D"top">
+                      <p style=3D"font-size: 15px; font-weight: 400; line-h=
+eight: 20px; padding: 0; color:#304CB2; font-family: Arial, Helvetica, sans=
+-serif; text-align: left; Margin: 0 10px 0 0">Upgrade to our newest fare, <=
+a _label=3D"Banner_WannaGetAwayPlusUpgrade" href=3D"https://t.iluv.southwes=
+t.com/r/?REDACTED" style=3D"color: #304CB2;">Wanna Get Away Plus&reg;</a>. =
+You can gift your=EF=BF=BDfare as a Transferable Flight Credit&trade;, chan=
+ge your=EF=BF=BDflight on your day of travel for an earlier or later one,=
+=EF=BF=BDand earn more points!
+</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <!-- end: col -->=20
+        </tr>
+      </tbody>
+    </table>
+  </td>
+</tr>
+                           =20
+                           =20
+                            <tr>
+  <td class=3D"container" style=3D"padding-top:5px; padding-bottom: 10px;" =
+valign=3D"top">
+    <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"backgr=
+ound" dir=3D"ltr" role=3D"presentation" style=3D"background-color: #FF7A2F;=
+ border-collapse: collapse;" width=3D"100%">
+      <tbody>
+        <tr>=20
+          <!-- start: col -->
+          <th class=3D"split" dir=3D"ltr" style=3D"padding: 0; font-weight:=
+ normal;" valign=3D"top">
+            <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=
+=3D"column left" role=3D"presentation" width=3D"80" >
+              <tbody>
+                <tr>
+                  <td style=3D"padding: 15px 0 0 0;" valign=3D"top" align=
+=3D"center"> <img src=3D"http://res.iluv.southwest.com/res/southwe_mkt_prod=
+1/ico-earlybird_white.png" width=3D"45" alt=3D"" /> </td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <!-- end: col -->=20
+          <!-- start: col -->
+          <th aria-hidden=3D"true" class=3D"split" dir=3D"ltr" style=3D"pad=
+ding: 0;" valign=3D"top">
+            <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=
+=3D"column right" role=3D"presentation" width=3D"520">
+              <tbody>
+                <tr>
+                  <td class=3D"text-center sides" style=3D"padding: 10px 20=
+px 20px 8px;" valign=3D"top">
+                      <p style=3D"font-size: 15px; font-weight: 400; line-h=
+eight: 20px; padding: 0; color:#FFFFFF; font-family: Arial, Helvetica, sans=
+-serif; text-align: left; Margin: 0 10px 0 0">When available, <a _label=3D"=
+Banner_EarlyBird" href=3D"https://t.iluv.southwest.com/r/?REDACTED" style=
+=3D"color: #FFFFFF;">get EarlyBird Check-In<sup>&reg;</sup></a> and be auto=
+matically checked in 36 hours before your flight for an even better boardin=
+g position.</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <!-- end: col -->=20
+        </tr>
+      </tbody>
+    </table>
+  </td>
+</tr>
+                           =20
+                           =20
+                           =20
+<tr>
+  <td class=3D"container" style=3D"padding-top:5px; padding-bottom: 10px;" =
+valign=3D"top">
+    <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"backgr=
+ound" dir=3D"ltr" role=3D"presentation" style=3D"background-color: #1a2c80;=
+ border-collapse: collapse;" width=3D"100%">
+      <tbody>
+        <tr>=20
+          <!-- start: col -->
+          <th class=3D"split" dir=3D"ltr" style=3D"padding: 0; font-weight:=
+ normal;" valign=3D"top">
+            <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=
+=3D"column left" role=3D"presentation" width=3D"80" >
+              <tbody>
+                <tr>
+                  <td style=3D"padding: 25px 0 0 5px;" valign=3D"top" align=
+=3D"center"> <img src=3D"http://res.iluv.southwest.com/res/southwe_mkt_prod=
+1/01a7e62a14584248254fb81249bb747e.png" width=3D"70" alt=3D"" /> </td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <!-- end: col -->=20
+          <!-- start: col -->
+          <th aria-hidden=3D"true" class=3D"split" dir=3D"ltr" style=3D"pad=
+ding: 0;" valign=3D"top">
+            <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=
+=3D"column right" role=3D"presentation" width=3D"520">
+              <tbody>
+                <tr>
+                  <td class=3D"text-center sides" style=3D"padding: 10px 5p=
+x 20px 8px;" valign=3D"top">
+                      <p style=3D"font-size: 15px; font-weight: 400; line-h=
+eight: 20px; padding: 0; color:#FFFFFF; font-family: Arial, Helvetica, sans=
+-serif; text-align: left; Margin: 0">Earn up to 1800, Rapid Rewards<sup>&re=
+g;</sup> points plus save up to 30% off base rates <a _label=3D"Banner_Budg=
+et" href=3D"https://t.iluv.southwest.com/r/?REDACTED" style=3D"color: #FFFF=
+FF;"> with Budget<sup>&reg;</sup></a>.</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <!-- end: col -->=20
+        </tr>
+      </tbody>
+    </table>
+  </td>
+</tr>
+
+                           =20
+                            <tr>
+  <td class=3D"container" style=3D"padding-top:5px; padding-bottom: 10px;" =
+valign=3D"top">
+    <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"backgr=
+ound" dir=3D"ltr" role=3D"presentation" style=3D"background-color: #FFFFFF;=
+ border-collapse: collapse;" width=3D"100%">
+      <tbody>
+        <tr>=20
+          <!-- start: col -->
+          <th class=3D"split" dir=3D"ltr" style=3D"padding: 0; font-weight:=
+ normal;" valign=3D"top">
+            <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=
+=3D"column left" role=3D"presentation" width=3D"80" >
+              <tbody>
+                <tr>
+                  <td style=3D"padding: 15px 0 0 0;" valign=3D"top" align=
+=3D"center"> <img src=3D"http://res.iluv.southwest.com/res/southwe_mkt_prod=
+1/logo-lyft_b.png" width=3D"35" alt=3D"" /> </td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <!-- end: col -->=20
+          <!-- start: col -->
+          <th aria-hidden=3D"true" class=3D"split" dir=3D"ltr" style=3D"pad=
+ding: 0;" valign=3D"top">
+            <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=
+=3D"column right" role=3D"presentation" width=3D"520">
+              <tbody>
+                <tr>
+                  <td class=3D"text-center sides" style=3D"padding: 10px 20=
+px 20px 8px;" valign=3D"top">
+                      <p style=3D"font-size: 15px; font-weight: 400; line-h=
+eight: 20px; padding: 0; color:#000001; font-family: Arial, Helvetica, sans=
+-serif; text-align: left; Margin: 0 10px 0 0">Wanna <a _label=3D"Banner_Lyf=
+t" href=3D"https://t.iluv.southwest.com/r/?REDACTED" style=3D"color: #00000=
+1;">get $15 off your first 3 rides with</a> with Lyft?</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <!-- end: col -->=20
+        </tr>
+      </tbody>
+    </table>
+  </td>
+</tr>
+                           =20
+                          </tbody>
+                        </table></td>
+                    </tr>
+                    <!-- end: icon slivers -->
+                   =20
+                  </tbody>
+                </table></td>
+            </tr>
+            <!-- =3D=3D=3D=3D=3D end: promotions region =3D=3D=3D=3D=3D -->
+           =20
+           =20
+           =20
+            <!-- =3D=3D=3D=3D=3D start: footer region =3D=3D=3D=3D=3D -->
+            <tr>
+              <td id=3D"footer" class=3D"region" valign=3D"top" style=3D"pa=
+dding-bottom: 20px;"><table width=3D"100%" border=3D"0" cellpadding=3D"0" c=
+ellspacing=3D"0">
+                  <tbody>
+                    <!-- bottom navigation -->
+                    <tr>
+                      <td id=3D"bot-nav" valign=3D"top" style=3D"padding-bo=
+ttom: 10px;">
+                        <table width=3D"100%" border=3D"0" cellpadding=3D"0=
+" cellspacing=3D"0">
+                          <tbody>
+                            <tr>
+                             =20
+                              <th class=3D"split" valign=3D"top" style=3D"p=
+adding: 0; font-weight: normal;">
+                                <table class=3D"column c1" width=3D"170" bo=
+rder=3D"0" cellpadding=3D"0" cellspacing=3D"0">
+                                  <tbody>
+                                    <tr>
+                                      <td valign=3D"top" style=3D"padding-r=
+ight: 20px;">
+                                        <p style=3D"color: #646464; font-si=
+ze: 14px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; tex=
+t-align: left; Margin: 0 0 3px 0;">
+                                          Need help?
+                                        </p>
+                                        <p style=3D"color: #304CB2; font-si=
+ze: 14px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; tex=
+t-align: left; Margin: 0 0 3px 0;">
+                                          <a _label=3D"Footer_ContactUs" hr=
+ef=3D"https://t.iluv.southwest.com/r/?REDACTED" style=3D"color: #304CB2; te=
+xt-decoration: none;">                                          Contact us
+                                          </a>
+                                        </p>
+                                        <p style=3D"color: #646464; font-si=
+ze: 13px; font-family: Arial, Helvetica, sans-serif; text-align: left; Marg=
+in: 0;">
+                                          <a _label=3D"Footer_CustomerServi=
+ce" href=3D"https://t.iluv.southwest.com/r/?REDACTED" style=3D"color: #304C=
+B2; text-decoration: none;">Customer service</a> |
+                                          <a _label=3D"Footer_FAQ" href=3D"=
+https://t.iluv.southwest.com/r/?REDACTED" style=3D"color: #304CB2; text-dec=
+oration: none;">FAQs</a>
+                                        </p>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </th>
+                             =20
+                              <th class=3D"split" valign=3D"top" style=3D"p=
+adding: 0; font-weight: normal;">
+                                <table class=3D"column c2" width=3D"180" bo=
+rder=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"border-collapse: co=
+llapse;">
+                                  <tbody>
+                                    <tr>
+                                      <td valign=3D"top" style=3D"padding-r=
+ight: 20px;">
+                                        <p style=3D"color: #646464; font-si=
+ze: 14px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; tex=
+t-align: left; Margin: 0 0 5px 0;">
+                                          Connect with us
+                                        </p>
+                                        <p style=3D"color: #E6E8E9; font-si=
+ze: 14px; font-family: Arial, Helvetica, sans-serif; text-align: left; Marg=
+in: 0;">
+                                          <a _label=3D"Footer_Twitter" href=
+=3D"https://t.iluv.southwest.com/r/?REDACTED" style=3D"color: #304CB2; text=
+-decoration: none;"><img src=3D"https://res.iluv.southwest.com/res/southwe_=
+mkt_prod1/ico-twitter.png" alt=3D"Twitter" width=3D"18" border=3D"0" style=
+=3D"display: inline; font-size: 10px; line-height: normal;"/>
+                                          </a> |
+                                          <a _label=3D"Footer_Facebook" hre=
+f=3D"https://t.iluv.southwest.com/r/?REDACTED" style=3D"color: #304CB2; tex=
+t-decoration: none;"><img src=3D"https://res.iluv.southwest.com/res/southwe=
+_mkt_prod1/ico-facebook.png" alt=3D"Facebook" width=3D"18" border=3D"0" sty=
+le=3D"display: inline; font-size: 10px; line-height: normal;"/>
+                                          </a> |
+                                          <a _label=3D"Footer_Instagram" hr=
+ef=3D"https://t.iluv.southwest.com/r/?REDACTED" style=3D"color: #304CB2; te=
+xt-decoration: none;"><img src=3D"https://res.iluv.southwest.com/res/southw=
+e_mkt_prod1/ico-instagram.png" alt=3D"Instagram" width=3D"18" border=3D"0" =
+style=3D"display: inline; font-size: 10px; line-height: normal;"/>
+                                          </a> |
+                                          <a _label=3D"Footer_YouTube" href=
+=3D"https://t.iluv.southwest.com/r/?REDACTED" style=3D"color: #304CB2; text=
+-decoration: none;"><img src=3D"https://res.iluv.southwest.com/res/southwe_=
+mkt_prod1/ico-youtube.png" alt=3D"YouTube" width=3D"18" border=3D"0" style=
+=3D"display: inline; font-size: 10px; line-height: normal;"/>
+                                          </a> |
+                                          <a _label=3D"Footer_Community" hr=
+ef=3D"https://t.iluv.southwest.com/r/?REDACTED" style=3D"color: #304CB2; te=
+xt-decoration: none;"><img src=3D"https://res.iluv.southwest.com/res/southw=
+e_mkt_prod1/ico-community.png" alt=3D"Southwest Community" width=3D"18" bor=
+der=3D"0" style=3D"display: inline; font-size: 10px; line-height: normal;"/>
+                                          </a>
+                                        </p>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </th>
+                             =20
+                              <th class=3D"split" valign=3D"top" style=3D"p=
+adding: 0; font-weight: normal;">
+                                <table class=3D"column c3" width=3D"210" bo=
+rder=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"border-collapse: co=
+llapse;">
+                                  <tbody>
+                                    <tr>
+                                      <td valign=3D"top" style=3D"font-size=
+: 0; line-height: 0;">
+                                        <p style=3D"color: #E6E8E9; font-si=
+ze: 14px; font-family: Arial, Helvetica, sans-serif; text-align: left; Marg=
+in: 0;">
+                                          <a _label=3D"Footer_App" href=3D"=
+https://t.iluv.southwest.com/r/?REDACTED" style=3D"color: #304CB2; text-dec=
+oration: none;"><img src=3D"https://res.iluv.southwest.com/res/southwe_mkt_=
+prod1/ico-app.png" alt=3D"App" width=3D"15" border=3D"0" style=3D"display: =
+inline; font-size: 10px; line-height: normal;"/>
+                                          </a>
+                                        </p>
+                                        <p style=3D"color: #646464; font-si=
+ze: 13px; font-family: Arial, Helvetica, sans-serif; text-align: left; Marg=
+in: 0 0 5px 0;">
+                                          <a _label=3D"Footer_App" href=3D"=
+https://t.iluv.southwest.com/r/?REDACTED" style=3D"color: #304CB2; text-dec=
+oration: none;">                                            Get the mobile =
+app
+                                          </a>
+                                        </p>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </th>
+                             =20
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>=20
+                    </tr>
+                   =20
+                    <!-- terms and conditions -->
+                    <tr>
+                      <td id=3D"terms" valign=3D"top"><table width=3D"100%"=
+ border=3D"0" cellpadding=3D"0" cellspacing=3D"0">
+                          <tbody>
+                            <tr>
+                              <td valign=3D"top">=20
+                                <p style=3D"color: #646464; font-size: 10px=
+; font-family: Arial, Helvetica, sans-serif; text-align: left; Margin: 0 0 =
+10px 0;"> *First and second checked bags. Weight and size limits apply.</p>=20
+                                <!-- REMOVED include swaPBTermsBusinessSele=
+ctUpgrade block for ANY and ANYRED non-EB and non-Group Fares on 081023 -->=20
+                                <!-- REMOVED include swaPBTermsWannaGetAway=
+Plus block for WGA and WGARED Fares on 081023 -->=20
+                              </td>
+                            </tr>
+                            <tr>
+                              <td data-content-region-name=3D"15-Terms-4" v=
+align=3D"top"><p style=3D"color: #646464; font-size: 10px; font-family: Ari=
+al, Helvetica, sans-serif; text-align: left; Margin: 0 0 10px 0;">If you pr=
+efer not to receive these trip-related messages, you can <a _label=3D"Foote=
+r_Unsubscribe" _type=3D"optout" href=3D"https://t.iluv.southwest.com/r/?RED=
+ACTED" style=3D"color: #304CB2; text-decoration: underline;">opt out</a>. P=
+lease note that this does not include your initial confirmation/itinerary e=
+mails or any messages related to a change to, or cancelation of, your booke=
+d itinerary as those messages are required confirmations of your transactio=
+ns.
+</p></td>
+                            </tr>
+                          </tbody>
+                        </table></td>
+                    </tr>
+                    <!-- legal copy -->
+<tr>
+  <td id=3D"legal" valign=3D"top">
+    <p style=3D"color: #646464; font-size: 10px; font-family: Arial, Helvet=
+ica, sans-serif; text-align: left; Margin: 0 0 8px 0;">
+      <a _label=3D"Footer_Privacy" href=3D"https://t.iluv.southwest.com/r/?=
+REDACTED" style=3D"color: #304CB2; text-decoration: none;">Your Rights</a>.
+    </p>
+    <p style=3D"color: #646464; font-size: 10px; font-family: Arial, Helvet=
+ica, sans-serif; text-align: left; Margin: 0 0 8px 0;">
+      This is a post-only mailing from Southwest Airlines=EF=BF=BD. Please =
+do not attempt to respond to this message. Your privacy is important to us.=
+ Please read our <a _label=3D"Footer_Privacy" href=3D"https://t.iluv.southw=
+est.com/r/?REDACTED" style=3D"color: #304CB2; text-decoration: none;">priva=
+cy policy</a>.
+    </p>
+    <p style=3D"color: #646464; font-size: 10px; font-family: Arial, Helvet=
+ica, sans-serif; text-align: left; Margin: 0 0 8px 0;">
+      See <a _label=3D"Footer_NoticeOfIncorp" href=3D"https://t.iluv.southw=
+est.com/r/?REDACTED" style=3D"color: #304CB2; text-decoration: none;">South=
+west Airlines Co. Notice of Incorporation</a>
+    </p>
+    <p style=3D"color: #646464; font-size: 10px; font-family: Arial, Helvet=
+ica, sans-serif; text-align: left; Margin: 0 0 8px 0;">
+      Cualquier informaci=EF=BF=BDn publicitaria, promocional o de mercadot=
+ecnia contenida en este correo electr=EF=BF=BDnico s=EF=BF=BDlo ser=EF=BF=
+=BD efectiva y =EF=BF=BDnicamente ser=EF=BF=BD aplicable en los Estados Uni=
+dos de Am=EF=BF=BDrica.
+    </p>
+    <p style=3D"color: #646464; font-size: 10px; font-family: Arial, Helvet=
+ica, sans-serif; text-align: left; Margin: 0 0 8px 0;">
+      Southwest Airlines <br/>
+      <a style=3D"color: #646464; text-decoration: none;">
+        2702 Love Field Drive <br/>
+        Dallas, TX 75235 <br/>
+      </a>
+      <a href=3D"tel:18004359792" style=3D"color: #646464; text-decoration:=
+ none;">1-800-I-FLY-SWA (1-800-435-9792)</a>
+    </p>
+    <p style=3D"color: #646464; font-size: 10px; font-family: Arial, Helvet=
+ica, sans-serif; text-align: left; Margin: 0;">
+      &copy; Copyright <a style=3D"color: #646464; text-decoration: none;">=
+2023</a> Southwest Airlines Co. All Rights Reserved.
+    </p>
+  </td>
+</tr>
+                  </tbody>
+                </table></td>
+            </tr>
+            <!-- =3D=3D=3D=3D=3D end: footer region =3D=3D=3D=3D=3D -->
+           =20
+          </tbody>
+        </table>
+       <tr>
+                <td valing=3D"top">
+
+                    <style>
+                        @media print {
+                            #_two50 {
+                                background-image:url('https://southwest.eve=
+restengagement.com/ea/abNr6Wz0M8/?REDACTED Batch&series=3DPretrip');
+                            }
+                        }
+                       =20
+                        blockquote #_two50, #mailContainerBody #_two50, div=
+.OutlookMessageHeader, table.moz-email-headers-table {
+                            background-image:url('https://southwest.everest=
+engagement.com/ea/abNr6Wz0M8/?REDACTED Batch&series=3DPretrip');
+                        }
+                    </style>
+                    <div id=3D'_two50'></div>
+                    <img id=3D'_two50_img' src=3D'https://southwest.everest=
+engagement.com/ea/abNr6Wz0M8/?REDACTED Batch&series=3DPretrip' width=3D'1' =
+height=3D'1' style=3D'margin:0 !important; padding:0 !important; border:0 !=
+important; height:1px !important; width:1px !important;' />
+                </td>
+              </tr>     =20
+       </td>
+    </tr>
+  </tbody>
+</table>
+<img height=3D'0' width=3D'0' alt=3D'' src=3D'https://t.iluv.southwest.com/=
+r/?id=3Dhee3d567c,80037410,1'/></body>
+</html>
+

@@ -1,0 +1,32 @@
+Subject: eTicket Itinerary and Receipt for Confirmation ABC123
+From: United Airlines <Receipts@united.com>
+Date: Thu, 18 May 2023 18:13:03 -0400
+MIME-Version: 1.0
+content-type: text/html; charset=utf-8
+
+<html><body>
+<p>Confirmation Number:</p>
+<p>ABC123</p>
+<table>
+<tr><td>Flight 1 of 1 UA2034</td><td></td><td>Class: United Economy (XN)</td></tr>
+<tr><td>Sat, Jun 03, 2023</td><td></td><td>Sat, Jun 03, 2023</td></tr>
+<tr><td>04:22 PM</td><td></td><td>06:23 PM</td></tr>
+<tr><td>Houston, TX, US  (IAH)</td><td></td><td>San Francisco, CA, US  (SFO)</td></tr>
+</table>
+<table>
+<tr><td colspan="2">Traveler Details</td></tr>
+<tr><td colspan="2">DOE/JANE</td></tr>
+<tr><td>eTicket number: <b>0167900000018</b></td><td>Seats:  <b>IAH-SFO 22A</b></td></tr>
+<tr><td>Frequent Flyer:  <b>UA-XXXXX999 Premier Silver</b></td><td></td></tr>
+</table>
+<table>
+<tr><td colspan="2">Purchase Summary</td></tr>
+<tr><td>Method of payment:</td><td><b>Mileage Plus XXXXX999</b></td></tr>
+<tr><td></td><td><b>Visa ending in 4004</b></td></tr>
+<tr><td>Date of purchase:</td><td><b>Thu, May 18, 2023</b></td></tr>
+<tr><td>September 11th Security Fee:</td><td><b>5.60 </b></td></tr>
+<tr><td>Original price:</td><td><b><s>21300.0 miles</s></b></td></tr>
+<tr><td>Special member price:</td><td><b>15000.0 miles</b></td></tr>
+<tr><td>Total:</td><td>15000.00 miles + 5.60 USD</td></tr>
+</table>
+</body></html>

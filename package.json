@@ -1,0 +1,54 @@
+{
+  "name": "flight-ledger",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "description": "Personal United flight, PQP, lifetime miles & CPM tracker — local web dashboard",
+  "scripts": {
+    "dev": "next dev -H 127.0.0.1",
+    "dev:preview": "NEXT_DIST_DIR=.next-preview next dev -H 127.0.0.1",
+    "build": "NEXT_DIST_DIR=.next-build next build",
+    "start": "NEXT_DIST_DIR=.next-build next start -H 127.0.0.1",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "selftest": "tsx scripts/selftest.ts",
+    "seed:demo": "tsx scripts/seed-demo.ts",
+    "airports:build": "tsx scripts/build-airports.ts",
+    "map:build": "tsx scripts/build-world.ts",
+    "wasm:assets": "mkdir -p public && cp node_modules/@sqlite.org/sqlite-wasm/dist/sqlite3.wasm public/sqlite3.wasm",
+    "build:browser": "node scripts/build-browser.mjs",
+    "bis:build": "tsx scripts/build-bis.ts",
+    "fleet:build": "tsx scripts/build-fleet.ts",
+    "bts:tails": "tsx scripts/fetch-bts-tails.ts",
+    "fixtures:scan": "python3 scripts/sanitize-fixtures.py --scan"
+  },
+  "dependencies": {
+    "@sqlite.org/sqlite-wasm": "^3.53.0-build1",
+    "d3-geo": "^3.1.1",
+    "lucide-react": "^1.28.0",
+    "next": "^15.5.22",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "recharts": "^3.10.1",
+    "swetrix": "^4.5.0"
+  },
+  "overrides": {
+    "eslint-visitor-keys": "4.2.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.6",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/d3-geo": "^3.1.1",
+    "@types/node": "^26.1.2",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^15.5.23",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.1",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,2979 @@
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=utf-8
+Date: Sat, 13 Jan 2024 03:29:35 +0000 (UTC)
+From: American Airlines <no-reply@info.email.aa.com>
+Mime-Version: 1.0
+Message-ID: <REDACTED@example.com>
+Subject: Your trip confirmation (SFO - SHV)
+To: testuser@example.com
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>American Airlines</title>
+    <meta http-equiv=3D"X-UA-Compatible" content=3D"IE=3D11">
+    <meta charset=3D"UTF-8" />
+    <link href=3D"http://fonts.googleapis.com/css?family=3DRoboto,Arial" re=
+l=3D"stylesheet" type=3D"text/css">
+    <meta name=3D"color-scheme" content=3D"light dark">
+    <meta name=3D"supported-color-schemes" content=3D"light dark">
+    <style type=3D"text/css">
+    u+#body a {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        a[x-apple-data-detectors] {
+            color: inherit ! important;
+            font-family: inherit ! important;
+            font-size: inherit ! important;
+            font-weight: inherit ! important;
+            line-height: inherit ! important;
+            text-decoration: none ! important;
+        }
+
+        .common_footer {
+            color: #50657C;
+            font-family: Roboto, Arial;
+            font-size: 12px;
+            line-height: 16px;
+            text-decoration: none;
+            font-weight: normal;
+        }
+        .padding {
+            padding-left: 32px;
+            padding-right: 32px;
+        }
+        .padding-left {
+            padding-left: 32px;
+        }
+        .padding-right {
+            padding-right: 32px;
+        }
+        .footer-link-padding {
+            padding-bottom: 16px;
+        }
+        .footer-table {
+            width: 248px;
+            float: right;
+        }
+        .footer-table-main {
+                padding-left: 32px;
+                padding-right: 32px;
+        }
+        .space {
+            height: 0px;
+        }
+@media screen and (min-width:320px) and (max-width:500px) {
+    #body {
+        padding: 0px;
+        }
+    .padding {
+            padding-left: 24px;
+            padding-right: 24px;
+        }
+        .padding-left {
+                padding-left: 24px;
+            }
+        .padding-right {
+            padding-right: 24px;
+        }  =20
+        .footer-link-padding {
+            padding-bottom: 8px;
+        }
+        .footer-link-width {
+            width:33%;
+        }
+        .footer-table-main {
+            padding-left: 24px;
+            padding-right: 24px;
+        }
+        .footer-table {
+            width: 100%;
+        }
+        .space {
+                height: 16px;
+            }
+}
+</style>
+    <style type=3D"text/css">
+    u+#body a {
+        color: inherit !important;
+        text-decoration: none !important;
+        font-size: inherit !important;
+        font-family: inherit !important;
+        font-weight: inherit !important;
+        line-height: inherit !important;
+    }
+
+    a[x-apple-data-detectors] {
+        color: inherit ! important;
+        font-family: inherit ! important;
+        font-size: inherit ! important;
+        font-weight: inherit ! important;
+        line-height: inherit ! important;
+        text-decoration: none ! important;
+    }
+
+    .app-banner {
+        font-family: Roboto, Arial;
+        font-size: 14px;
+    }
+
+    #app-banner-text {
+        padding-right: 125px;
+    }
+
+    .basic {
+        color: #181E25;
+        font-family: Roboto, Arial;
+        font-size: 14px;
+    }
+
+    .blueBannerPadding {
+        padding-left: 52px;
+        padding-right: 52px;
+    }
+
+    #body {
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .bookingLinksMain {
+        width: 50%;
+    }
+
+    .checkedbag-table {
+        width: 240px;
+    }
+
+    .checkedbag-header {
+        color: #181E25;
+        background-color: #ffffff;
+        font-family: Roboto, Arial;
+        font-size: 18px;
+        font-weight: normal;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .checkedbag-standard {
+        color: #181E25;
+        font-family: Roboto, Arial;
+        font-size: 14px;
+        font-weight: normal;
+        padding: 10px;
+    }
+
+    #citiads1 {
+        color: #0078D2;
+        font-family: Roboto, Arial;
+        font-size: 30px;
+        line-height: 36px;
+        padding-bottom: 10px;
+    }
+
+    #citiads2 {
+        color: #36495A;
+        font-family: Roboto, Arial;
+        font-size: 18px;
+        line-height: 20px;
+        padding-bottom: 10px;
+    }
+
+    #citiads3 {
+        color: #0078D2;
+        font-family: Roboto, Arial;
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .citiads_image {
+        height: 95px;
+        text-align: right;
+        vertical-align: text-top;
+        width: 140px;
+    }
+
+    .divider {
+        border-bottom: #D0DAE0 1px solid;
+        line-height: 12px;
+    }
+
+    .footer-styles {
+        color: #36495A;
+        font-family: Roboto, Arial;
+        font-size: 12px;
+        padding-bottom: 20px;
+    }
+
+    .itinerary-data-spacing {
+        padding-bottom: 4px
+    }
+
+    .itinerary-header {
+        font-size: 18px;
+    }
+
+    .itinerary-iata {
+        font-size: 24px;
+    }
+
+    .itinerary-image-padding {
+        padding-top: 7px;
+    }
+
+    .itinerary-seat-info-padding {
+        padding-right: 80px;
+    }
+
+    .itinerary-small-text {
+        font-size: 12px;
+        line-height: 18px;
+    }
+
+    .itinerary-spacing {
+        height: 18px;
+    }
+
+    .itinerary-text {
+        font-size: 14px;
+    }
+
+    .main {
+        width: 260px;
+    }
+
+    .main1 {
+        width: 270px;
+    }
+
+    .overlap {
+        width: 52px;
+    }
+
+    .padding-generic {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    .removeBagSpace {
+        display: table-row !important;
+    }
+
+    .removeLineDesktop {
+        display: none !important;
+    }
+
+    .title {
+        color: #ffffff;
+        font-family: Roboto, Arial;
+        font-size: 36px;
+        font-weight: bold;
+    }
+
+    .total-heading-text {
+        color: #181E25;
+        font-family: Roboto, Arial;
+        font-size: 17px;
+        font-weight: bold;
+        padding-bottom: 12px;
+    }
+
+    .manage-trip-button {
+            color: #0860C4;
+            border: 1px solid #0860C4 !important;
+    }
+
+    @media screen and (max-width:595px) {
+        #app-banner-text {
+            padding-right: 20px;
+        }
+
+        .bookingLinksMain {
+            width: 100%;
+        }
+
+        .checkedbag-table {
+            width: 100%;
+        }
+
+        .main {
+            width: 100%;
+            padding-bottom: 25px;
+        }
+
+        .main1 {
+            width: 100%;
+        }
+
+        .seatsTable {
+            padding-top: 10px;
+        }
+
+    }
+
+    @media screen and (max-width:425px) {
+        .blueBannerPadding {
+            padding-right: 24px;
+            padding-left: 24px;
+        }
+
+        #citiads1 {
+            color: #0078D2;
+            font-family: Roboto, Arial;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 20px;
+            padding-bottom: 10px;
+        }
+
+        #citiads2 {
+            color: #36495A;
+            font-family: Roboto, Arial;
+            font-size: 12px;
+            line-height: 18px;
+            padding-bottom: 10px;
+        }
+
+        #citiads3 {
+            color: #0078D2;
+            font-family: Roboto, Arial;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 18px;
+        }
+
+        .citiads_image {
+            height: 62px;
+            text-align: right;
+            vertical-align: text-top;
+            width: 91px;
+        }
+
+        .itinerary-data-spacing {
+            padding-bottom: 2px;
+        }
+
+        .itinerary-header {
+            font-size: 14px;
+        }
+
+        .itinerary-iata {
+            font-size: 20px;
+        }
+
+        .itinerary-image-padding {
+            padding-top: 7px;
+        }
+
+        .itinerary-seat-info-padding {
+            padding-right: 65px;
+        }
+
+        .itinerary-small-text {
+            font-size: 8px;
+            line-height: 12px;
+        }
+
+        .itinerary-spacing {
+            height: 30px;
+        }
+
+        .itinerary-text {
+            font-size: 10px;
+        }
+
+        .overlap {
+            width: 24px;
+        }
+    }
+
+    @media screen and (min-width:320px) and (max-width:480px) {
+        .app-banner {
+            font-family: Roboto, Arial;
+            font-size: 11.6px;
+        }
+
+        #app-banner-text {
+            padding-right: 15px;
+        }
+
+        .blueBannerPadding {
+            padding-right: 24px;
+            padding-left: 24px;
+        }
+
+        .padding-generic {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .ShowMobile {
+            line-height: 16px;
+        }
+
+        .title {
+            font-size: 24px;
+        }
+
+        .total-heading-text {
+            color: #181E25;
+            font-family: Roboto, Arial;
+            font-size: 15px;
+            font-weight: bold;
+            padding-bottom: 12px;
+        }
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .darkmode-altbackground {
+            background-color: #2B2B2B !important;
+        }
+
+        .darkmode-altblacktext {
+            color: #101419 !important;
+        }
+
+        .darkmode-altblue {
+            color: #3b93f7 !important;
+        }
+
+        .darkmode-altbluebackground {
+            background-color: #3b93f7 !important;
+        }
+
+        .darkmode-altgreytext {
+            color: #8398af !important;
+        }
+
+        .darkmode-background {
+            background-color: #1E1E1E !important;
+        }
+
+        .darkmode-border {
+            border-color: #637E9C !important;
+            box-shadow: 0 8px 16px 0 rgb(99, 126, 156, 0.16) !important;
+        }
+
+        .darkmode-footer tr td {
+            background-color: #1E1E1E !important;
+            color: #8398af !important;
+        }
+
+        .darkmode-footer a {
+            color: #8398af !important;
+        }
+
+        .darkmode-footer a span {
+            color: #8398af !important;
+        }
+
+        .darkmode-header table tbody tr td {
+            background-color: #1E1E1E !important;
+            color: #8398af !important;
+        }
+
+        .darkmode-pnrbackground {
+            background-color: #2A353C !important;
+        }
+
+        .whiteTextApple {
+            color: #F9FAFB !important;
+        }
+
+        .manage-trip-button {
+            color: #3b93f7;
+            border: 1px solid #3b93f7 !important;
+        }
+    }
+</style>
+    <!--[if (gte mso 9)|(IE)]>
+        <style>
+            .outlookBorders {
+                border: 1px solid #EBEDEF;
+            }
+        </style>
+    <![endif]-->
+</head>
+
+<body id=3D"body">
+    <table bgcolor=3D"#F5F7F7" border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0" width=3D"100%">
+        <tbody>
+            <tr>
+                <td>
+                    <!--[if (gte mso 9)|(IE)]>
+                <table width=3D"600" align=3D"center" cellpadding=3D"0" cel=
+lspacing=3D"0" border=3D"0">
+                    <tr>
+                        <td> <![endif]-->
+                    <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0"=
+ style=3D"color:#FFF; display:none; " width=3D"100%">
+    <tbody>
+        <tr>
+            <td style=3D"color:#FFF; display:none;">
+                <span>Here's your itinerary</span>
+            </td>
+        </tr>
+    </tbody>
+</table>
+                    <table style=3D"max-width:600px; " align=3D"center" bgc=
+olor=3D"#ffffff" border=3D"0" cellpadding=3D"0"
+                        cellspacing=3D"0" width=3D"100%">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <table border=3D"0" cellpadding=3D"0" c=
+ellspacing=3D"0" width=3D"100%">
+                                        <tbody>
+                                            <tr>
+                                                <td class=3D"darkmode-heade=
+r">
+                                                    <table width=3D"100%" c=
+ellspacing=3D"0" cellpadding=3D"0" border=3D"0"
+	style=3D"font-family:Roboto, Arial; max-width:650px;">
+	<tbody>
+		<tr>
+			<td align=3D"left">
+				<a href=3D"http://link.info.email.aa.com/ls/click?REDACTED" style=3D"di=
+splay: flex;">
+				=09
+				=09
+				=09
+				=09
+				=09
+				=09
+					<img alt=3D"American Airlines home" src=3D"https://www.aa.com/content/=
+images/email/cne/no-status.png"
+						width=3D"266" height=3D"64" style=3D"height:64px; width:266px;">
+				</a>
+			</td>
+			<td class=3D"padding-right" align=3D"right"=20
+			style=3D"text-align: right;">
+				<table align=3D"right" border=3D"0" cellpadding=3D"0" cellspacing=3D"0"=
+ height=3D"64" width=3D"100%">
+					<tbody>
+						<tr>
+						=09
+						=09
+						=09
+						=09
+						=09
+						=09
+							<td style=3D"color: #181E25;font-family: Roboto, Arial; font-size: 1=
+2px; font-weight: normal; text-align: right;">
+								<span style=3D"vertical-align: middle; line-height: 16px;"></span>
+								<br>
+								<span style=3D"font-weight: bold; vertical-align: middle; white-spa=
+ce: nowrap;line-height: 16px; "></span>
+								<br>
+								<span style=3D"line-height: 16px;"></span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=3D"2" style=3D"background-color: #F3F5F7;height: 2px;" heigh=
+t=3D"2"></td>
+		</tr>
+	</tbody>
+</table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+    <td class=3D"darkmode-altbluebackground" style=3D"background-color:#086=
+0C4; padding-top:18px; ">
+        <table class=3D"blueBannerPadding" width=3D"100%" align=3D"center" =
+cellpadding=3D"0" cellspacing=3D"0" border=3D"0">
+            <tbody>
+                <tr>
+                    <td class=3D"darkmode-altblacktext" style=3D"color:#fff=
+fff; font-family:Roboto,Arial; font-size:14px; padding-bottom:28px; padding=
+-top:12px; " align=3D"right">
+                        <span>Issued: </span>
+                        <span>January 13, 2024</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class=3D"title darkmode-altblacktext" style=3D"padd=
+ing-bottom:24px; ">
+                       =20
+                       =20
+                        <span>Your trip confirmation and receipt</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class=3D"darkmode-altblacktext" style=3D"color:#fff=
+fff; font-family:Roboto,Arial; font-size:14px; ">
+                        <span>We charged $128.81</span
+                        ><span> to your card ending in 1234</span
+                    ><span> for your ticket purchase.</span>
+                    </td>
+                   =20
+                </tr>
+				<tr>
+				<td style=3D"height:23px; ">&nbsp;</td>
+                </tr>
+				               =20
+			=09
+               =20
+                <tr>
+                    <td class=3D"darkmode-altblacktext" style=3D"color:#fff=
+fff; font-family:Roboto,Arial; font-size:14px; word-break:normal; ">
+                        <span>You can check in via the American app 24 hour=
+s before your flight and get your mobile boarding pass.</span>
+                    </td>
+                   =20
+                </tr>
+                <tr>
+                    <td style=3D"height:23px; ">&nbsp;</td>
+                </tr>
+            </tbody>
+        </table>
+       =20
+    </td>
+</tr>
+                                            <tr>
+                                                <td>
+                                                    <table width=3D"100%" c=
+ellspacing=3D"0" cellpadding=3D"0" border=3D"0"
+                                                        bgcolor=3D"#ffffff"=
+ style=3D"border-collapse: collapse;">
+                                                        <tr>
+
+                                                            <!-- white sect=
+ion left of card, below header background -->
+                                                            <td class=3D"ov=
+erlap darkmode-background" valign=3D"top"
+                                                                bgcolor=3D"=
+#ffffff" align=3D"center">
+                                                                <table cell=
+spacing=3D"0" cellpadding=3D"0" border=3D"0"
+                                                                    width=
+=3D"100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                           =
+ <!-- header background section left of card -->
+                                                                           =
+ <td class=3D"darkmode-altbluebackground"
+                                                                           =
+     height=3D"150px" bgcolor=3D"#0860C4"
+                                                                           =
+     align=3D"center"
+                                                                           =
+     style=3D"height: 150px; background-color: #0860C4;">
+                                                                           =
+ </td>
+                                                                        </t=
+r>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                            <!-- end of sec=
+tion left of card, below header background -->
+                                                            <td class=3D"da=
+rkmode-altbluebackground" valign=3D"top"
+                                                                align=3D"ce=
+nter" style=3D"display: flex;" max-width=3D"486px">
+                                                                <table widt=
+h=3D"100%" cellspacing=3D"0" cellpadding=3D"0"
+                                                                    border=
+=3D"0">
+                                                                    <tr>
+                                                                        <td=
+ valign=3D"top" class=3D"outlookBorders darkmode-background" align=3D"cente=
+r">
+    <table class=3D"darkmode-border" width=3D"100%" cellspacing=3D"0" cellp=
+adding=3D"0" border=3D"0"
+        style=3D"border: 1px solid #EBEDEF;box-shadow: 0 8px 16px 0 rgba(0,=
+ 0, 0, 0.16); max-width: 496px;">
+        <!-- record locator -->
+        <thead>
+            <tr>
+        <td class=3D"darkmode-pnrbackground" style=3D"padding:5px 20px 5px =
+20px" align=3D"left" bgcolor=3D"#ECF4FA">
+            <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"0" borde=
+r=3D"0">
+                <tbody>
+                   =20
+                       =20
+                        <tr>
+                            <td style=3D"text-align:left;font-family:Roboto=
+,Arial;padding:0px 0px 0px;line-height: 24px" class=3D"itinerary-text"
+                                valign=3D"top" align=3D"left">
+                                <span class=3D"whiteTextApple basic" style=
+=3D"font-weight:bold">Record Locator:  </span><span class=3D"whiteTextApple=
+ basic"
+                                    style=3D"font-weight:bold;">EIKCON</spa=
+n>
+                            </td>
+                        </tr>
+                       =20
+                   =20
+                   =20
+                   =20
+                   =20
+                </tbody>
+            </table>
+        </td>
+    </tr>
+           =20
+           =20
+           =20
+        </thead>
+        <tbody>
+            <!-- date -->
+           =20
+            <tr>
+                <td class=3D"whiteTextApple darkmode-background" style=3D"p=
+adding:16px 20px 0px 20px" align=3D"left;"
+                    bgcolor=3D"#ffffff">
+                    <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"=
+0" border=3D"0">
+                        <tbody>
+                            <tr>
+                                <td style=3D"font-family:Roboto,Arial;color=
+:#181E25;padding:0px 0px 0px 0px;line-height:26px;"
+                                    class=3D"itinerary-header whiteTextAppl=
+e darkmode-background" align=3D"left"
+                                    bgcolor=3D"#ffffff">
+                                    <span
+                                        style=3D"color:#0860C4;font-weight:=
+bold;text-decoration:none;"
+                                        class=3D"itinerary-header darkmode-=
+altblue">Saturday, February 10, 2024</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class=3D"whiteTextApple darkmode-background" style=3D"p=
+adding:0px 20px 0px 20px; color:#181E25" align=3D"left"
+                    bgcolor=3D"#ffffff">
+                    <table width=3D"100%">
+                        <tr>
+                            <!-- image -->
+                            <td style=3D"vertical-align: top;Margin-top:8px=
+;" class=3D"itinerary-image-padding">
+                                <img style=3D"height:110px; width:14px;" bo=
+rder=3D"0" height=3D"100%" hspace=3D"-1" vspace=3D"0"
+                                    src=3D"https://www.aa.com/content/image=
+s/email/cne/depart-return-indicator.png"
+                                    alt=3D"">
+                            </td>
+                            <!-- departure + arrival -->
+                            <td>
+                                <table width=3D"100%">
+                                    <tr>
+                                        <td style=3D"vertical-align:top;">
+                                            <!-- departure -->
+                                            <table cellspacing=3D"0" cellpa=
+dding=3D"0" border=3D"0">
+                                                <tbody style=3D"min-width: =
+150px;">
+                                                    <tr>
+                                                        <td style=3D"font-f=
+amily:Roboto,Arial;font-weight:bold;"
+                                                            class=3D"itiner=
+ary-iata itinerary-data-spacing">SFO</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style=3D"font-f=
+amily:Roboto,Arial;white-space:nowrap;min-width: 150px;"
+                                                            class=3D"itiner=
+ary-small-text itinerary-data-spacing">San Francisco</td>
+                                                    </tr>
+                                                    <tr>
+
+                                                        <td style=3D"font-f=
+amily:Roboto,Arial;font-weight:bold;text-decoration:none;white-space:nowrap=
+;Margin-bottom:7px;min-width: 150px;"
+                                                            class=3D"itiner=
+ary-text itinerary-data-spacing">7:40 AM</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td width=3D"10%"></td>
+                                        <td style=3D"vertical-align:top;" a=
+lign=3D"left" width=3D"40%">
+                                            <table width=3D"100%">
+                                                <!-- flight number  -->
+                                                <tr>
+                                                    <td style=3D"white-spac=
+e:nowrap;">
+                                                        <table width=3D"100=
+%">
+                                                            <tr>
+                                                               =20
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <span
+                                                                        sty=
+le=3D"font-weight:bold;font-family:Roboto,Arial;width: 60px;vertical-align:=
+ top;"
+                                                                        cla=
+ss=3D"itinerary-small-text">AA 2904=C2=A0=C2=A0</span>&nbsp;<img
+                                                                        sty=
+le=3D"vertical-align: top;" border=3D"0"
+                                                                        hei=
+ght=3D"16" vspace=3D"0" width=3D"20"
+                                                                        src=
+=3D"https://www.aa.com/content/images/email/cne/aa-logo.png"
+                                                                        alt=
+=3D"">
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=3D"whiteTextA=
+pple"
+                                                        style=3D"color:#181=
+E25; font-family:Roboto,Arial;width:130px;">
+                                                       =20
+                                                       =20
+                                                       =20
+													=09
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- TODO make dynamic if disclosure pr=
+esent -->
+                                    <tr class=3D"itinerary-spacing">
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style=3D"vertical-align:top;">
+                                            <!-- arrival -->
+                                            <table cellspacing=3D"0" cellpa=
+dding=3D"0" border=3D"0">
+                                                <tbody style=3D"min-width: =
+150px;">
+                                                    <tr>
+                                                        <td style=3D"font-f=
+amily:Roboto,Arial;font-weight:bold;"
+                                                            class=3D"itiner=
+ary-iata itinerary-data-spacing">DFW</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style=3D"font-f=
+amily:Roboto,Arial;white-space:nowrap;min-width: 150px;padding-bottom:4px;p=
+adding-top:0px;"
+                                                            class=3D"itiner=
+ary-small-text">Dallas/Fort Worth</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style=3D"font-f=
+amily:Roboto,Arial;font-weight:bold;text-decoration:none;white-space:nowrap=
+;min-width: 150px;"
+                                                            class=3D"itiner=
+ary-text itinerary-data-spacing">1:10 PM</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td width=3D"20%"></td>
+
+                                        <td style=3D"color:#181E25; font-fa=
+mily:Roboto,Arial;"
+                                            class=3D"itinerary-small-text">
+                                            <table border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style=3D"color:=
+#181E25; font-family:Roboto,Arial;"
+                                                            class=3D"itiner=
+ary-small-text">
+                                                            <table border=
+=3D"0" cellpadding=3D"2px" cellspacing=3D"0">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>
+                                                                           =
+ <span
+                                                                           =
+     class=3D"itinerary-small-text whiteTextApple"
+                                                                           =
+     style=3D"color:#181E25; ">Seat:</span>
+                                                                        </t=
+d>
+                                                                        <td>
+                                                                           =20
+                                                                           =
+     <span
+                                                                           =
+         class=3D"itinerary-small-text whiteTextApple"
+                                                                           =
+         style=3D"color:#181E25;font-weight:bold;">
+                                                                           =
+         <span class=3D"itinerary-small-text">27C</span>
+                                                                           =
+     </span>
+                                                                           =20
+                                                                        </t=
+d>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td=
+ style=3D"color:#181E25; font-family:Roboto,Arial;"
+                                                                           =
+ class=3D"itinerary-small-text whiteTextApple">
+                                                                           =
+ <table border=3D"0" cellpadding=3D"0"
+                                                                           =
+     cellspacing=3D"0">
+                                                                           =
+     <tbody>
+                                                                           =
+         <tr>
+                                                                           =
+             <td>
+                                                                           =
+                 <span
+                                                                           =
+                     class=3D"itinerary-small-text">Class:</span>
+                                                                           =
+             </td>
+                                                                           =
+         </tr>
+                                                                           =
+     </tbody>
+                                                                           =
+ </table>
+                                                                        </t=
+d>
+                                                                        <td=
+ class=3D"whiteTextApple"
+                                                                           =
+ style=3D"color:#181E25;font-weight:bold;">
+                                                                           =20
+                                                                           =20
+                                                                           =20
+                                                                           =
+ <span class=3D"itinerary-small-text">Economy</span>
+                                                                           =20
+                                                                           =20
+                                                                           =20
+                                                                           =
+ <span
+                                                                           =
+     class=3D"itinerary-small-text"> (B)</span>
+                                                                        </t=
+d>
+
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td=
+ style=3D"color:#181E25;">
+                                                                           =
+ <table border=3D"0" cellpadding=3D"0"
+                                                                           =
+     cellspacing=3D"0">
+                                                                           =
+     <tbody>
+                                                                           =
+         <tr>
+                                                                           =
+             <td>
+                                                                           =
+                 <span
+                                                                           =
+                     class=3D"itinerary-small-text whiteTextApple"
+                                                                           =
+                     style=3D"color:#181E25; ">Meals:</span>
+                                                                           =
+             </td>
+                                                                           =
+         </tr>
+                                                                           =
+     </tbody>
+                                                                           =
+ </table>
+                                                                        </t=
+d>
+                                                                        <td=
+ class=3D"whiteTextApple"
+                                                                           =
+ style=3D"color:#181E25;font-weight:bold;">
+                                                                           =20
+                                                                           =
+     <span class=3D"itinerary-small-text">
+                                                                           =
+         <span class=3D"itinerary-small-text">Food for purchase</span>
+                                                                           =
+     </span>
+                                                                           =20
+                                                                        </t=
+d>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <!-- arrive next day -->
+           =20
+        </tbody>
+        <tbody>
+            <!-- date -->
+            <tr>
+                <td class=3D"basic whiteTextApple darkmode-background">
+                    <table width=3D"90%" align=3D"center">
+                        <tr>
+                            <td style=3D"height:10px;"></td>
+                        </tr>
+                        <tr>
+                            <td style=3D"border-top:#E4E9EC 1px solid; heig=
+ht:10px;"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+           =20
+            <tr>
+                <td class=3D"whiteTextApple darkmode-background" style=3D"p=
+adding:0px 20px 0px 20px; color:#181E25" align=3D"left"
+                    bgcolor=3D"#ffffff">
+                    <table width=3D"100%">
+                        <tr>
+                            <!-- image -->
+                            <td style=3D"vertical-align: top;Margin-top:8px=
+;" class=3D"itinerary-image-padding">
+                                <img style=3D"height:110px; width:14px;" bo=
+rder=3D"0" height=3D"100%" hspace=3D"-1" vspace=3D"0"
+                                    src=3D"https://www.aa.com/content/image=
+s/email/cne/depart-return-indicator.png"
+                                    alt=3D"">
+                            </td>
+                            <!-- departure + arrival -->
+                            <td>
+                                <table width=3D"100%">
+                                    <tr>
+                                        <td style=3D"vertical-align:top;">
+                                            <!-- departure -->
+                                            <table cellspacing=3D"0" cellpa=
+dding=3D"0" border=3D"0">
+                                                <tbody style=3D"min-width: =
+150px;">
+                                                    <tr>
+                                                        <td style=3D"font-f=
+amily:Roboto,Arial;font-weight:bold;"
+                                                            class=3D"itiner=
+ary-iata itinerary-data-spacing">DFW</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style=3D"font-f=
+amily:Roboto,Arial;white-space:nowrap;min-width: 150px;"
+                                                            class=3D"itiner=
+ary-small-text itinerary-data-spacing">Dallas/Fort Worth</td>
+                                                    </tr>
+                                                    <tr>
+
+                                                        <td style=3D"font-f=
+amily:Roboto,Arial;font-weight:bold;text-decoration:none;white-space:nowrap=
+;Margin-bottom:7px;min-width: 150px;"
+                                                            class=3D"itiner=
+ary-text itinerary-data-spacing">3:21 PM</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td width=3D"10%"></td>
+                                        <td style=3D"vertical-align:top;" a=
+lign=3D"left" width=3D"40%">
+                                            <table width=3D"100%">
+                                                <!-- flight number  -->
+                                                <tr>
+                                                    <td style=3D"white-spac=
+e:nowrap;">
+                                                        <table width=3D"100=
+%">
+                                                            <tr>
+                                                               =20
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <span
+                                                                        sty=
+le=3D"font-weight:bold;font-family:Roboto,Arial;width: 60px;vertical-align:=
+ top;"
+                                                                        cla=
+ss=3D"itinerary-small-text">AA 4021=C2=A0=C2=A0</span>&nbsp;
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=3D"whiteTextA=
+pple"
+                                                        style=3D"color:#181=
+E25; font-family:Roboto,Arial;width:130px;">
+                                                        <span class=3D"itin=
+erary-small-text"
+                                                            style=3D"text-d=
+ecoration:none;vertical-align: top; display: inline-block;">Operated by Env=
+oy Air</span>
+                                                       =20
+                                                        <span class=3D"itin=
+erary-small-text"
+                                                            style=3D"text-d=
+ecoration:none;vertical-align: top; display: inline-block;">as American Eag=
+le</span>
+													=09
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- TODO make dynamic if disclosure pr=
+esent -->
+                                    <tr class=3D"itinerary-spacing">
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style=3D"vertical-align:top;">
+                                            <!-- arrival -->
+                                            <table cellspacing=3D"0" cellpa=
+dding=3D"0" border=3D"0">
+                                                <tbody style=3D"min-width: =
+150px;">
+                                                    <tr>
+                                                        <td style=3D"font-f=
+amily:Roboto,Arial;font-weight:bold;"
+                                                            class=3D"itiner=
+ary-iata itinerary-data-spacing">SHV</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style=3D"font-f=
+amily:Roboto,Arial;white-space:nowrap;min-width: 150px;padding-bottom:4px;p=
+adding-top:0px;"
+                                                            class=3D"itiner=
+ary-small-text">Shreveport</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style=3D"font-f=
+amily:Roboto,Arial;font-weight:bold;text-decoration:none;white-space:nowrap=
+;min-width: 150px;"
+                                                            class=3D"itiner=
+ary-text itinerary-data-spacing">4:23 PM</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td width=3D"20%"></td>
+
+                                        <td style=3D"color:#181E25; font-fa=
+mily:Roboto,Arial;"
+                                            class=3D"itinerary-small-text">
+                                            <table border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style=3D"color:=
+#181E25; font-family:Roboto,Arial;"
+                                                            class=3D"itiner=
+ary-small-text">
+                                                            <table border=
+=3D"0" cellpadding=3D"2px" cellspacing=3D"0">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>
+                                                                           =
+ <span
+                                                                           =
+     class=3D"itinerary-small-text whiteTextApple"
+                                                                           =
+     style=3D"color:#181E25; ">Seat:</span>
+                                                                        </t=
+d>
+                                                                        <td>
+                                                                           =20
+                                                                           =
+    =20
+                                                                           =20
+                                                                        </t=
+d>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td=
+ style=3D"color:#181E25; font-family:Roboto,Arial;"
+                                                                           =
+ class=3D"itinerary-small-text whiteTextApple">
+                                                                           =
+ <table border=3D"0" cellpadding=3D"0"
+                                                                           =
+     cellspacing=3D"0">
+                                                                           =
+     <tbody>
+                                                                           =
+         <tr>
+                                                                           =
+             <td>
+                                                                           =
+                 <span
+                                                                           =
+                     class=3D"itinerary-small-text">Class:</span>
+                                                                           =
+             </td>
+                                                                           =
+         </tr>
+                                                                           =
+     </tbody>
+                                                                           =
+ </table>
+                                                                        </t=
+d>
+                                                                        <td=
+ class=3D"whiteTextApple"
+                                                                           =
+ style=3D"color:#181E25;font-weight:bold;">
+                                                                           =20
+                                                                           =20
+                                                                           =20
+                                                                           =
+ <span class=3D"itinerary-small-text">Economy</span>
+                                                                           =20
+                                                                           =20
+                                                                           =20
+                                                                           =
+ <span
+                                                                           =
+     class=3D"itinerary-small-text"> (B)</span>
+                                                                        </t=
+d>
+
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td=
+ style=3D"color:#181E25;">
+                                                                           =
+ <table border=3D"0" cellpadding=3D"0"
+                                                                           =
+     cellspacing=3D"0">
+                                                                           =
+     <tbody>
+                                                                           =
+         <tr>
+                                                                           =
+             <td>
+                                                                           =
+                 <span
+                                                                           =
+                     class=3D"itinerary-small-text whiteTextApple"
+                                                                           =
+                     style=3D"color:#181E25; ">Meals:</span>
+                                                                           =
+             </td>
+                                                                           =
+         </tr>
+                                                                           =
+     </tbody>
+                                                                           =
+ </table>
+                                                                        </t=
+d>
+                                                                        <td=
+ class=3D"whiteTextApple"
+                                                                           =
+ style=3D"color:#181E25;font-weight:bold;">
+                                                                           =20
+                                                                        </t=
+d>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <!-- arrive next day -->
+           =20
+        </tbody>
+
+        <!-- manage your trip -->
+        <tfoot>
+            <tr>
+                <td style=3D"padding-top:40px;padding-left:30px; padding-ri=
+ght:30px;padding-bottom: 20px;" align=3D"right">
+                    <table style=3D"border:2px; font-family:Roboto,Arial; "=
+ class=3D"itinerary-text" border=3D"0"
+                        cellpadding=3D"0" cellspacing=3D"0" color=3D"#fffff=
+f">
+                        <tbody>
+                            <tr>
+                                <td style=3D"padding-bottom:8px; padding-le=
+ft:30px;color: #0860C4; border: 1px solid #0860C4; padding-right:30px; padd=
+ing-top:8px; text-align:center; text-decoration:none;"
+                                    class=3D"itinerary-text manage-trip-but=
+ton">
+                                    <a style=3D"text-decoration:none; "
+                                        href=3D"http://link.info.email.aa.c=
+om/ls/click?REDACTED">
+                                        <span class=3D"darkmode-altblue"
+                                            style=3D"font-weight: 700;text-=
+decoration:none; color: #0860C4;">Manage your trip</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+           =20
+        </tfoot>
+    </table>
+</td>
+                                                                    </tr>
+                                                                   =20
+                                                                    <!--End=
+ of stuff inside the overlap-->
+                                                                </table>
+                                                            </td>
+                                                            <!-- white sect=
+ion right of card, below header background -->
+                                                            <td class=3D"ov=
+erlap darkmode-background" valign=3D"top"
+                                                                bgcolor=3D"=
+#ffffff" align=3D"center">
+                                                                <table cell=
+spacing=3D"0" cellpadding=3D"0" border=3D"0"
+                                                                    width=
+=3D"100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                           =
+ <!-- header background section right of card -->
+                                                                           =
+ <td class=3D"darkmode-altbluebackground"
+                                                                           =
+     height=3D"150px" bgcolor=3D"#0860C4"
+                                                                           =
+     align=3D"center"
+                                                                           =
+     style=3D"height: 150px; background-color: #0860C4;">
+                                                                           =
+ </td>
+                                                                        </t=
+r>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                            <!-- end of sec=
+tion right of card, below header background -->
+                                                        </tr>
+                                                    </table>
+                                                    <!--End of the overlap =
+table-->
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class=3D"padding-generi=
+c darkmode-background" style=3D"padding-bottom:20px; padding-top:20px;" val=
+ign=3D"top" align=3D"center">
+    <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%">
+        <tr>
+            <td style=3D"width:70%; ">
+                <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" wid=
+th=3D"90%">
+                    <tr>
+                        <td id=3D"citiads1">
+                           =20
+                            <span>Earn 50,000 bonus miles</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=3D"darkmode-altblue" id=3D"citiads2">
+                           =20
+                            <span>Plus great travel benefits. Terms Apply.<=
+/span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id=3D"citiads3">
+                           =20
+                            <a href=3D"http://link.info.email.aa.com/ls/cli=
+ck?REDACTED" style=3D"color:rgb(0, 120, 210); text-decoration:none; "><span=
+>Learn more</span></a>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+           =20
+            <td class=3D"citiads_image" style=3D"width: 30%;">
+                <img height=3D"95" width=3D"140" src=3D"https://www.aa.com/=
+content/images/email/cne/citi-platinum-icon.jpg" alt=3D"">
+                <img src=3D"https://www.aa.com/content/images/common/wa.gif=
+?REDACTED" alt=3D"">
+            </td>
+        </tr>
+       =20
+    </table>
+</td>
+                                            </tr>
+                                           =20
+                                            <tr>
+                                                <td>
+                                                    <table width=3D"100%" c=
+ellspacing=3D"0" cellpadding=3D"0" border=3D"0"
+                                                        bgcolor=3D"#ffffff"=
+ style=3D"border-collapse: collapse;">
+                                                        <tr>
+                                                            <td valign=3D"t=
+op" align=3D"center" style=3D"display: flex;"
+                                                                max-width=
+=3D"486px">
+                                                                <table widt=
+h=3D"100%" cellspacing=3D"0" cellpadding=3D"0"
+                                                                    border=
+=3D"0">
+                                                                    <tr>
+                                                                        <td=
+ class=3D"darkmode-background"
+    style=3D"background-color: #ffffff; margin-left:20px; margin-right:20px=
+;">
+    <table class=3D"darkmode-border" align=3D"center" width=3D"100%" cellsp=
+acing=3D"0" cellpadding=3D"0" border=3D"0"
+        style=3D"border: 1px solid #f5f7f7; box-shadow: 0 8px 16px 0 rgba(0=
+, 0, 0, 0.16); max-width: 496px;">
+       =20
+        <tbody>
+           =20
+                <tr>
+    <td style=3D"padding-bottom:5px; padding-top:12px; color:#0860C4; font-=
+weight:bold; font-family:Roboto,Arial; font-size:22px; "
+        class=3D"padding-generic darkmode-altbackground darkmode-altblue">Y=
+our purchase</td>
+</tr>
+           =20
+
+            <tr>
+    <td class=3D"padding-generic basic darkmode-altbackground whiteTextAppl=
+e">
+        <table style=3D"padding-bottom:0px; " border=3D"0" cellpadding=3D"0=
+" cellspacing=3D"0" width=3D"100%">
+            <tbody style=3D"padding-bottom:0px; ">
+                <tr style=3D"padding-bottom:0px; ">
+                    <td style=3D"font-weight:bold; height:12px; line-height=
+:25px; padding-bottom:0px; padding-top:12px; "
+                        class=3D"basic whiteTextApple">
+                        <span>Bob</span>
+                        <span>Test</span>
+                        <span>- AAdvantage<sup>=C2=AE</sup> #: 7B8****</spa=
+n>
+                    </td>
+                </tr>
+               =20
+            </tbody>
+        </table>
+        <table class=3D"itinerary" border=3D"0" cellpadding=3D"0" cellspaci=
+ng=3D"0" width=3D"100%">
+            <tbody class=3D"itinerary">
+                <tr>
+                    <td style=3D"font-weight:normal; line-height:21px; padd=
+ing-top:5px; width:65%; "
+                        class=3D"basic whiteTextApple">
+                        <span class=3D"receipt">New ticket (0012107179603)<=
+/span>
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                    </td>
+                    <td style=3D"font-weight:normal; line-height:21px; padd=
+ing-top:5px; vertical-align: top; "
+                        align=3D"right" class=3D"basic whiteTextApple">
+                        <span>$118.60</span>
+                       =20
+                       =20
+                       =20
+                    </td>
+                    <!-- <td style=3D"font-weight:normal; line-height:21px;=
+ padding-top:5px; vertical-align: top; "
+                        align=3D"right" class=3D"basic whiteTextApple"
+                        th:if=3D"${lineItems.purchasePriceDetails.taxAndFee=
+ =3D=3D null || lineItems.purchasePriceDetails.taxAndFee =3D=3D '0.0' || li=
+neItems.purchasePriceDetails.taxAndFeeCurrencyCode =3D=3D null || lineItems=
+.purchasePriceDetails.baseFareCurrencyCode =3D=3D lineItems.purchasePriceDe=
+tails.taxAndFeeCurrencyCode}">
+                        <span th:if=3D"${lineItems.purchasePriceDetails.bas=
+eFare !=3D null && lineItems.purchasePriceDetails.baseFare !=3D '0.0' && li=
+neItems.purchasePriceDetails.taxAndFee !=3D null && lineItems.purchasePrice=
+Details.taxAndFee !=3D '0.0'}" th:utext=3D"${lineItems.lineItemTotal}">base=
+Fare + taxNfee [w/ baseFareCurrencyCode]</span>
+                        <span th:if=3D"${lineItems.purchasePriceDetails.bas=
+eFare !=3D null && lineItems.purchasePriceDetails.baseFare !=3D '0.0' && !(=
+lineItems.purchasePriceDetails.taxAndFee !=3D null && lineItems.purchasePri=
+ceDetails.taxAndFee !=3D '0.0')}" th:utext=3D"${lineItems.purchasePriceDeta=
+ils.baseFare}">baseFare [w/ baseFareCurrencyCode]</span>
+                        <span th:if=3D"${lineItems.purchasePriceDetails.mil=
+es !=3D null && (lineItems.purchasePriceDetails.baseFare !=3D null || lineI=
+tems.purchasePriceDetails.baseFare !=3D '0.0' || lineItems.purchasePriceDet=
+ails.taxAndFee =3D=3D null || lineItems.purchasePriceDetails.taxAndFee =3D=
+=3D '0.0')}" th:utext=3D"${lineItems.purchasePriceDetails.miles}">miles [w/=
+ "miles"]</span>
+                        <span th:if=3D"${lineItems.purchasePriceDetails.mil=
+es !=3D null && (lineItems.purchasePriceDetails.baseFare !=3D null || lineI=
+tems.purchasePriceDetails.baseFare !=3D '0.0' || lineItems.purchasePriceDet=
+ails.taxAndFee =3D=3D null || lineItems.purchasePriceDetails.taxAndFee =3D=
+=3D '0.0')}" th:utext=3D"#{Miles1}">miles</span>
+                    </td> -->
+                </tr>
+                <tr class=3D"itinerary">
+                    <td class=3D"itinerary" style=3D"line-height:20px; widt=
+h:65%;">
+                       =20
+                    </td>
+                </tr>
+                <tr>
+                    <td class=3D"basic whiteTextApple" style=3D"line-height=
+:20px; ">
+                        <span>[</span><span>$87.44</span><span> </span><spa=
+n></span><span>+ Taxes & carrier-imposed fees $31.16</span><span>]</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class=3D"itinerary" border=3D"0" cellpadding=3D"0" cellspaci=
+ng=3D"0" width=3D"100%">
+            <tbody class=3D"itinerary">
+                <tr>
+                    <td style=3D"font-weight:normal; line-height:21px; padd=
+ing-top:5px; width:65%; "
+                        class=3D"basic whiteTextApple">
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                       =20
+                        <span class=3D"receipt">
+                            <span>Paid Seat (SFO-DFW)</span>
+                           =20
+                        </span>
+                    </td>
+                    <td style=3D"font-weight:normal; line-height:21px; padd=
+ing-top:5px; vertical-align: top; "
+                        align=3D"right" class=3D"basic whiteTextApple">
+                        <span>$10.21</span>
+                       =20
+                       =20
+                       =20
+                    </td>
+                    <!-- <td style=3D"font-weight:normal; line-height:21px;=
+ padding-top:5px; vertical-align: top; "
+                        align=3D"right" class=3D"basic whiteTextApple"
+                        th:if=3D"${lineItems.purchasePriceDetails.taxAndFee=
+ =3D=3D null || lineItems.purchasePriceDetails.taxAndFee =3D=3D '0.0' || li=
+neItems.purchasePriceDetails.taxAndFeeCurrencyCode =3D=3D null || lineItems=
+.purchasePriceDetails.baseFareCurrencyCode =3D=3D lineItems.purchasePriceDe=
+tails.taxAndFeeCurrencyCode}">
+                        <span th:if=3D"${lineItems.purchasePriceDetails.bas=
+eFare !=3D null && lineItems.purchasePriceDetails.baseFare !=3D '0.0' && li=
+neItems.purchasePriceDetails.taxAndFee !=3D null && lineItems.purchasePrice=
+Details.taxAndFee !=3D '0.0'}" th:utext=3D"${lineItems.lineItemTotal}">base=
+Fare + taxNfee [w/ baseFareCurrencyCode]</span>
+                        <span th:if=3D"${lineItems.purchasePriceDetails.bas=
+eFare !=3D null && lineItems.purchasePriceDetails.baseFare !=3D '0.0' && !(=
+lineItems.purchasePriceDetails.taxAndFee !=3D null && lineItems.purchasePri=
+ceDetails.taxAndFee !=3D '0.0')}" th:utext=3D"${lineItems.purchasePriceDeta=
+ils.baseFare}">baseFare [w/ baseFareCurrencyCode]</span>
+                        <span th:if=3D"${lineItems.purchasePriceDetails.mil=
+es !=3D null && (lineItems.purchasePriceDetails.baseFare !=3D null || lineI=
+tems.purchasePriceDetails.baseFare !=3D '0.0' || lineItems.purchasePriceDet=
+ails.taxAndFee =3D=3D null || lineItems.purchasePriceDetails.taxAndFee =3D=
+=3D '0.0')}" th:utext=3D"${lineItems.purchasePriceDetails.miles}">miles [w/=
+ "miles"]</span>
+                        <span th:if=3D"${lineItems.purchasePriceDetails.mil=
+es !=3D null && (lineItems.purchasePriceDetails.baseFare !=3D null || lineI=
+tems.purchasePriceDetails.baseFare !=3D '0.0' || lineItems.purchasePriceDet=
+ails.taxAndFee =3D=3D null || lineItems.purchasePriceDetails.taxAndFee =3D=
+=3D '0.0')}" th:utext=3D"#{Miles1}">miles</span>
+                    </td> -->
+                </tr>
+                <tr class=3D"itinerary">
+                    <td class=3D"itinerary" style=3D"line-height:20px; widt=
+h:65%;">
+                        <span class=3D"basic whiteTextApple">Document #: (0=
+010642578625)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class=3D"basic whiteTextApple" style=3D"line-height=
+:20px; ">
+                        <span>[</span><span>$9.54</span><span> </span><span=
+></span><span>+ Taxes & carrier-imposed fees $0.67</span><span>]</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+       =20
+    </td>
+</tr>
+           =20
+           =20
+            <tr>
+    <td class=3D"padding-generic darkmode-altbackground">
+        <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"10=
+0%">
+            <tbody>
+               =20
+            </tbody>
+        </table>
+    </td>
+</tr>
+            <tr>
+                <td class=3D"darkmode-altbackground">
+                    <table width=3D"90%" align=3D"center">
+                        <tr>
+                            <td class=3D"divider">
+                                &nbsp;</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+    <td class=3D"padding-generic darkmode-altbackground">
+        <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"10=
+0%">
+            <tbody>
+                <tr>
+                    <td
+                        style=3D"font-family:Roboto,Arial; padding-bottom:1=
+2px; padding-top:12px; width:33%; font-weight:bold; ">
+                        <span class=3D"basic whiteTextApple" style=3D"font-=
+size:17px; ">Total cost </span>
+                       =20
+                    </td>
+                    <td=20
+                        style=3D"font-family:Roboto,Arial; font-size:17px; =
+font-weight:bold; width:33%; padding-bottom:12px; padding-top:12px; text-al=
+ign:right; ">
+                       =20
+                    </td>
+                    <td=20
+                        style=3D"font-family:Roboto,Arial; font-size:17px; =
+font-weight:bold; width:33%; padding-bottom:12px; padding-top:12px; text-al=
+ign:right; ">
+                        <span class=3D"basic whiteTextApple">$128.81</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+           =20
+                <tr>
+    <td style=3D"font-family:Roboto,Arial; font-size:22px; padding-bottom:1=
+0px; padding-top:25px; "
+        class=3D"padding-generic darkmode-altbackground">
+        <span class=3D"darkmode-altblue"
+            style=3D"color: #0860C4; font-weight:bold; font-family:Roboto,A=
+rial; font-size:22px; padding-bottom:25px; ">Your payment</span>
+    </td>
+</tr>
+                <tr>
+    <td class=3D"padding-generic darkmode-altbackground">
+        <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"it=
+inerary" width=3D"100%">
+            <tbody class=3D"itinerary">
+               =20
+                    <tr>
+                        <td style=3D"font-weight:normal; line-height:21px; =
+width:65%; " class=3D"basic whiteTextApple">
+                           =20
+                           =20
+                           =20
+                           =20
+                           =20
+                            <span>
+                                <span>
+                                   =20
+                                    <span>Visa</span>
+                                </span>
+                               =20
+                            </span>
+                           =20
+                           =20
+                           =20
+                           =20
+                           =20
+                           =20
+                           =20
+                           =20
+                           =20
+                           =20
+                           =20
+                            <span>(</span><span>ending 1890</span><span>)</=
+span>
+                        </td>
+                        <td style=3D"font-weight:normal; line-height:21px; =
+" align=3D"right"
+                            class=3D"basic whiteTextApple">$128.81</td>
+                    </tr>
+               =20
+            </tbody>
+        </table>
+    </td>
+</tr>
+                <tr>
+                    <td class=3D"darkmode-altbackground">
+                        <table width=3D"90%" align=3D"center">
+                            <tr>
+                                <td class=3D"divider">
+                                    &nbsp;</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+    <td class=3D"padding-generic whiteTextApple darkmode-altbackground">
+        <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"it=
+inerary" width=3D"100%">
+            <tbody class=3D"itinerary">
+                <tr>
+                    <td style=3D"font-size:17px; font-weight:bold; line-hei=
+ght:21px; padding-top:15px; width:33%; "
+                        class=3D"basic whiteTextApple">
+                       =20
+                       =20
+                    </td>
+                   =20
+                   =20
+                </tr>
+                <tr>
+                    <td class=3D"total-heading-text whiteTextApple" style=
+=3D"white-space: nowrap;">Total paid </td>
+
+                    <td class=3D"total-heading-text whiteTextApple" style=
+=3D"text-align:right;" width=3D"100%">
+                       =20
+                    </td>
+                    <td class=3D"total-heading-text whiteTextApple" style=
+=3D"text-align:right;" width=3D"100%">
+                        <span>$128.81</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+                <tr>
+    <td class=3D"padding-generic darkmode-altbackground" style=3D"padding-t=
+op:20px; padding-bottom: 16px;">
+        <table width=3D"100%" class=3D"itinerary" border=3D"0" cellspacing=
+=3D"0" cellpadding=3D"0">
+            <tbody class=3D"itinerary">
+               =20
+                <tr>
+                   =20
+                </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+               =20
+               =20
+           =20
+        </tbody>
+    </table>
+</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td=
+ class=3D"darkmode-background"
+                                                                           =
+ style=3D"height:20px; ">&nbsp;</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td=
+ class=3D"whiteTextApple darkmode-background">
+                                                                           =
+ <table style=3D"max-width: 496px; "
+                                                                           =
+     align=3D"center" border=3D"0"
+                                                                           =
+     cellpadding=3D"0" cellspacing=3D"0"
+                                                                           =
+     width=3D"100%">
+                                                                           =
+     <tbody>
+    <!--This is the baggageInformation fragment-->
+    <tr>
+        <td
+            class=3D"whiteTextApple" style=3D"color: #181E25; font-family:A=
+rial; font-size:18px; font-weight:normal; padding-bottom:24px; padding-top:=
+20px; ">
+            <span>Bag information</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=
+=3D"100%">
+                <tbody>
+                    <tr>
+                        <td align=3D"top">
+                            <!--Start of stuff to do with Checked Bag Cost =
+Stuff-->
+                           =20
+                                <!--[if (gte mso 9)|(IE)]>
+                                        <table width=3D"100%" cellpadding=
+=3D"0" cellspacing=3D"0" border=3D"0">
+                                            <tr><![endif]-->
+
+                               =20
+                                   =20
+                                        <!--[if (gte mso 9)|(IE)]>
+                                                    <td style=3D"width:100%=
+" width=3D"100%" valign=3D"top">
+                                                <![endif]-->
+                                        <table style=3D"float:left; height:=
+20px; " class=3D"checkedbag-table" border=3D"0"
+                                            cellpadding=3D"0" cellspacing=
+=3D"0">
+                                            <tr>
+                                                <td>
+    <!--This is the CheckedBagCostTable-->
+    <table style=3D"width:100%" width=3D"100%">
+        <thead>
+            <tr>
+                <th class=3D"checkedbag-header darkmode-altbackground white=
+TextApple">
+                    <span>Checked Bag </span>
+                   =20
+                    <span>(</span><span>Airport</span><span>)</span>
+                </th>
+            </tr>
+            <tr>
+                <th style=3D"padding:3px; "></th>
+            </tr>
+        </thead>
+        <tbody>
+   =20
+       =20
+           =20
+           =20
+            <!--Inner OnlineCostTable; this repeats for every slice-->
+           =20
+               =20
+           =20
+               =20
+                   =20
+                    <tr>
+                        <td class=3D"whiteTextApple" style=3D"color:#181E25=
+; font-family:Arial; font-size:14px; padding-left: 10px; ">
+                            <span>SFO</span> - <span>SHV</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style=3D"color:#181E25; font-size:14px; font-we=
+ight:normal; ">
+                            <table border=3D"0" cellpadding=3D"0" cellspaci=
+ng=3D"0" width=3D"100%">
+                                <tbody>
+                                    <tr>
+                                        <td class=3D"checkedbag-standard wh=
+iteTextApple" style=3D"margin-bottom: 0; ">
+                                            <span>1<sup>st</sup> bag</span>
+                                        </td>
+                                        <td class=3D"checkedbag-standard wh=
+iteTextApple" style=3D"margin-bottom: 0; ">
+                                           =20
+                                            <span>$30.00</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class=3D"checkedbag-standard wh=
+iteTextApple" style=3D"margin-bottom: 0; padding-bottom: 0;">
+                                            <span>2<sup>nd</sup> bag</span>
+                                        </td>
+                                        <td class=3D"checkedbag-standard wh=
+iteTextApple" style=3D"margin-bottom: 0;  padding-bottom: 0;">
+                                           =20
+                                            <span>$40.00</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+               =20
+           =20
+       =20
+   =20
+</tbody>
+    </table>
+</td>
+                                            </tr>
+                                        </table>
+                                        <!--[if (gte mso 9)|(IE)]>
+                                                    </td>
+                                                <![endif]-->
+                                   =20
+                                   =20
+                                       =20
+                                            <!--[if (gte mso 9)|(IE)]>
+                                                    <td style=3D"width:100%=
+" width=3D"100%" valign=3D"top">
+                                                <![endif]-->
+                                            <table style=3D"float:right; he=
+ight:20px; " class=3D"checkedbag-table"
+                                                border=3D"0" cellpadding=3D=
+"0" cellspacing=3D"0">
+                                                <tr>
+                                                    <td>
+    <!--This is the CheckedBagCostTable-->
+    <table style=3D"width:100%" width=3D"100%">
+        <thead>
+            <tr>
+                <th class=3D"checkedbag-header darkmode-altbackground white=
+TextApple">
+                    <span>Checked Bag </span>
+                   =20
+                    <span>(</span><span>Online*</span><span>)</span>
+                </th>
+            </tr>
+            <tr>
+                <th style=3D"padding:3px; "></th>
+            </tr>
+        </thead>
+        <tbody>
+   =20
+       =20
+           =20
+           =20
+            <!--Inner OnlineCostTable; this repeats for every slice-->
+           =20
+               =20
+                   =20
+                    <tr>
+                        <td class=3D"whiteTextApple" style=3D"color:#181E25=
+; font-family:Arial; font-size:14px; padding-left: 10px; ">
+                            <span>SFO</span> - <span>SHV</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style=3D"color:#181E25; font-size:14px; font-we=
+ight:normal; ">
+                            <table border=3D"0" cellpadding=3D"0" cellspaci=
+ng=3D"0" width=3D"100%">
+                                <tbody>
+                                    <tr>
+                                        <td class=3D"checkedbag-standard wh=
+iteTextApple" style=3D"margin-bottom: 0; ">
+                                            <span>1<sup>st</sup> bag</span>
+                                        </td>
+                                        <td class=3D"checkedbag-standard wh=
+iteTextApple" style=3D"margin-bottom: 0; ">
+                                           =20
+                                            <span>$30.00</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class=3D"checkedbag-standard wh=
+iteTextApple" style=3D"margin-bottom: 0; padding-bottom: 0;">
+                                            <span>2<sup>nd</sup> bag</span>
+                                        </td>
+                                        <td class=3D"checkedbag-standard wh=
+iteTextApple" style=3D"margin-bottom: 0;  padding-bottom: 0;">
+                                           =20
+                                            <span>$40.00</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+               =20
+           =20
+               =20
+           =20
+       =20
+   =20
+</tbody>
+    </table>
+</td>
+                                                </tr>
+                                            </table>
+                                            <!--[if (gte mso 9)|(IE)]>
+                                                    </td>
+                                                <![endif]-->
+                                       =20
+                                   =20
+                                    <!--[if (gte mso 9)|(IE)]>
+                                            </tr>
+                                        </table> <![endif]-->
+                               =20
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+    <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%"
+        style=3D"color:#181E25; font-family:Arial; font-size:14px; height:2=
+0px;">
+        <tr>
+            <th style=3D"padding:3px; "></th>
+        </tr>
+       =20
+            <!--Inner weightAndDimensions table; this repeats for every sli=
+ce-->
+           =20
+            <tr>
+                <td class=3D"whiteTextApple" style=3D"color:#181E25; font-f=
+amily:Arial; font-size:14px; padding-left: 10px; ">
+                    <span>SFO</span> - <span>SHV</span>
+                </td>
+            </tr>
+           =20
+           =20
+                <tr>
+                    <td class=3D"whiteTextApple" style=3D"width: 100%; padd=
+ing-left: 10px; padding-right: 10px; ">
+                        <span>Maximum dimensions:  </span>
+                        <span>
+                            <span>62 </span>
+                            <span>inches or</span>
+                           =20
+                        </span><span>
+                            <span>158 </span>
+                           =20
+                            <span>centimeters</span>
+                        </span>
+                        <span>calculated as (length + width + height)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class=3D"whiteTextApple" style=3D"width: 100%; padd=
+ing-left: 10px; padding-right: 10px; ">
+                        <span class=3D"receipt">Maximum weight:  </span>
+                        <span>
+                            <span>50 </span>
+                            <span>pounds or</span>
+                           =20
+                        </span><span>
+                            <span>23 </span>
+                           =20
+                            <span>kilograms</span>
+                        </span>
+                    </td>
+                </tr>
+           =20
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+       =20
+        <!--End of section that repeats for every slice-->
+    </table>
+</td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td
+            style=3D"width: 100%; font-family: Roboto,Arial; font-size: 14p=
+x; padding-left: 10px; padding-right: 10px; padding-bottom: 10px; ">
+            <span>For information regarding American Airlines checked bagga=
+ge policies, please visit: <a href=3D"http://link.info.email.aa.com/ls/clic=
+k?REDACTED" style=3D"color:#0078d2; text-decoration:none; ">Bag and optiona=
+l fees</a></span>
+        </td>
+    </tr>
+    <tr>
+        <td style=3D"width: 100%; font-family: Roboto,Arial; font-size: 14p=
+x; padding-left: 10px; padding-right: 10px; ">
+            <span>Bag fees apply at each Check-in location. Additional allo=
+wances and/or discounts may apply.</span>
+            <span style=3D"color:#0078d2; "><a href=3D"http://link.info.ema=
+il.aa.com/ls/click?REDACTED" style=3D"color:#0078D2; text-decoration:none; =
+">Bag and optional fees</a></span>
+        </td>
+    </tr>
+    <tr>
+        <td style=3D"width: 100%; font-family: Roboto,Arial; font-size: 14p=
+x; padding-left: 10px; padding-right: 10px; ">
+            <span>If your flight is operated by a partner airline, see the =
+<a href=3D"http://link.info.email.aa.com/ls/click?REDACTED" style=3D"color:=
+#0078D2; text-decoration:none; ">other airline=E2=80=99s</a> website for ca=
+rry-on and checked bag policies.</span>
+        </td>
+    </tr>
+    <tr>
+        <td
+            style=3D"width: 100%; font-family: Roboto,Arial; font-size: 14p=
+x; padding-left: 10px; padding-right: 10px; padding-top: 10px; ">
+            <span>*Online payment available beginning 24 hours (and up to 4=
+ hours) before departure.</span>
+        </td>
+    </tr>
+    <tr>
+        <td class=3D"darkmode-background" style=3D"height:20px;">&nbsp;</td>
+    </tr>
+    <tr>
+        <td>
+            <table style=3D"border-collapse: collapse;">
+                <tbody>
+                    <tr>
+                        <th class=3D"whiteTextApple darkmode-altbackground"=
+ style=3D"color:#181E25; background-color: #ffffff; font-family:Arial; font=
+-size:14px; font-weight:normal; padding:10px; text-align: left;"
+                            colspan=3D"2">
+                            <span style=3D"padding-left: 20px;">Carry-on ba=
+gs </span>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td class=3D"basic whiteTextApple"
+                            style=3D"color:#181E25; font-family:Arial; font=
+-size:14px; padding: 10px; padding-bottom:12px; margin-bottom: 0; border-bo=
+ttom: #D0DAE0 1px solid; white-space: nowrap;">
+                            <span><b>1<sup>st</sup> carry-on</b></span>
+                        </td>
+                        <td class=3D"whiteTextApple"
+                            style=3D"color:#181E25; font-family:Arial; font=
+-size:14px; padding: 10px; padding-bottom:12px; margin-bottom: 0; border-bo=
+ttom: #D0DAE0 1px solid;">
+                            <span>Includes purse, briefcase, laptop bag, or=
+ similar item that must fit under the seat in front of you.</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=3D"basic whiteTextApple"
+                            style=3D"color:#181E25; font-family:Arial; padd=
+ing: 10px; padding-top:12px; margin-top: 0; font-size:14px; white-space: no=
+wrap;">
+                            <span><b>2<sup>nd</sup> carry-on</b></span>
+                        </td>
+                        <td class=3D"whiteTextApple"
+                            style=3D"color:#181E25; font-family:Arial; padd=
+ing: 10px; padding-top:12px; margin-top: 0; font-size:14px;">
+                            <span>Maximum dimensions not to exceed:  22" lo=
+ng x 14" wide x 9" tall (56 x 35 x 23 cm).</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+</tbody>
+                                                                           =
+ </table>
+                                                                        </t=
+d>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td=
+ class=3D"darkmode-background"
+                                                                           =
+ style=3D"border-bottom:#D0DAE0 1px solid; ">
+                                                                           =
+ &nbsp;</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <!--Put stuff outside the overl=
+ap table below here-->
+                                            <tr>
+                                                <td style=3D"padding-bottom=
+:20px; padding-top:20px; width: 100%; margin-left: auto; margin-right: auto=
+;" class=3D"padding-generic darkmode-background">
+  <div style=3D"color:#0860C4; float:left; padding:0px;" class=3D"bookingLi=
+nksMain">
+    <!--[if (gte mso 9)|(IE)]>
+  <table width=3D"100%" cellpadding=3D"0" cellspacing=3D"0" border=3D"0">
+    <tr>
+      <td width=3D"50%"> <![endif]-->
+    <table style=3D"font-family:Roboto,Arial; padding: 0px; margin: 0px; ma=
+rgin-left: auto;" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D=
+"100%">
+      <tbody>
+        <tr style=3D"line-height: 10px;">
+          <!-- Hotel link for ancillary receipts -->
+         =20
+          <!-- Hotel link for reprint receipts -->
+         =20
+          <!-- Hotel link for booking receipts -->
+          <td class=3D"darkmode-background" style=3D"width: 50%; height: 10=
+0%; text-align:center; background-color: #ffffff; margin: 0px;" nowrap=3D"0=
+">
+            <div>
+              <img style=3D"border-bottom-width:0px; border-left-width:0px;=
+ border-right-width:0px; border-top-width:0px;"
+                hspace=3D"-1" vspace=3D"0" src=3D"https://www.aa.com/conten=
+t/images/email/cne/icon_hotel.png" alt=3D"">
+              <br>
+              <br>
+              <div style=3D"line-height:20px; text-align:center;  ">
+                  <a style=3D"text-decoration:none; "
+                  href=3D"https:/www.aadvantagehotels.com/?utm_source=3Dcne=
+-booking-receipts-email&utm_medium=3Demail&utm_campaign=3Dpartner-placement=
+&utm_term=3D&utm_content=3Dhotels-cta&label=3Daa-email-cn-flight-receipts">
+                  <span style=3D"color:#0860C4; font-size:11px; font-weight=
+:normal; white-space:normal;">Book a hotel =C2=BB</span>
+                </a>
+              </div>
+            </div>
+          </td>
+          <td class=3D"darkmode-background" style=3D"width: 50%; height: 10=
+0%; text-align:center; background-color: #ffffff; margin: 0px;" align=3D"ce=
+nter"
+            nowrap=3D"0">
+            <div>
+              <img style=3D"border-bottom-width:0px; border-left-width:0px;=
+ border-right-width:0px; border-top-width:0px;"
+                hspace=3D"-1" vspace=3D"0" src=3D"https://www.aa.com/conten=
+t/images/email/cne/icon_bookcar.png" alt=3D"">
+              <br>
+              <br>
+              <div style=3D"line-height:20px; text-align:center; ">
+                <a style=3D"text-decoration:none; " href=3D"http://link.inf=
+o.email.aa.com/ls/click?REDACTED">
+                  <span style=3D"color:#0860C4; font-size:11px; font-weight=
+:normal; white-space:normal;">Book a car =C2=BB</span>
+                </a>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!--[if (gte mso 9)|(IE)]>
+</td>
+<td width=3D"50%" style=3D"vertical-align:text-top; "> <![endif]-->
+  <div style=3D"color:#0061ab; float:left; padding:0px;" class=3D"bookingLi=
+nksMain">
+    <table style=3D"font-family:Roboto,Arial; padding-left: 0px; margin: 0p=
+x; margin-right: auto;" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" wi=
+dth=3D"100%">
+      <tbody>
+        <tr style=3D"line-height: 10px;">
+          <td class=3D"darkmode-background" style=3D"width: 50%; height: 10=
+0%; text-align:center; background-color: #ffffff; margin: 0px;" nowrap=3D"0=
+">
+            <div>
+              <img style=3D"border-bottom-width:0px; border-left-width:0px;=
+ border-right-width:0px; border-top-width:0px;"
+                hspace=3D"-1" vspace=3D"0" src=3D"https://www.aa.com/conten=
+t/images/email/cne/trip_insurance_icon2.png"
+                alt=3D"">
+              <br>
+              <br>
+              <div style=3D"line-height:20px; text-align:center;  ">
+                <a style=3D"text-decoration:none; " href=3D"http://link.inf=
+o.email.aa.com/ls/click?REDACTED">
+                  <span style=3D"color:#0860C4; font-size:11px; font-weight=
+:normal; white-space:normal;">Buy trip insurance =C2=BB</span>
+                </a>
+              </div>
+            </div>
+          </td>
+          <td class=3D"darkmode-background" style=3D"width: 50%; height: 10=
+0%; text-align:center; background-color: #ffffff;" align=3D"center"
+            nowrap=3D"0">
+            <div>
+              <img style=3D"border-bottom-width:0px; border-left-width:0px;=
+ border-right-width:0px; border-top-width:0px;"
+                hspace=3D"-1" vspace=3D"0" src=3D"https://www.aa.com/conten=
+t/images/email/cne/icon_camera.png" alt=3D"">
+              <br>
+              <br>
+              <div style=3D"line-height:20px; text-align:center;  ">
+                <a style=3D"text-decoration:none; " href=3D"http://link.inf=
+o.email.aa.com/ls/click?REDACTED">
+                  <span style=3D"color:#0860C4; font-size:11px; font-weight=
+:normal; white-space:normal;">AAVacations
+                    =C2=BB</span>
+                </a>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!--[if (gte mso 9)|(IE)]>
+  </td>
+  </tr>
+  </table> <![endif]-->
+  </div>
+</td>
+                                            </tr>
+                                            <tr>
+                                                <td class=3D"darkmode-backg=
+round" style=3D"padding:20px;" align=3D"center">
+  <!--This is the AdServer Fragment-->
+  <table>
+    <tr>
+      <td style=3D"color:#0061ab;" width=3D"50%">
+
+        <table style=3D"font-family:Roboto,Arial; " border=3D"0" cellpaddin=
+g=3D"0" cellspacing=3D"0" width=3D"100%">
+          <tbody>
+          <tr style=3D"line-height:10px; ">
+            <td style=3D"padding-left:0px; text-align:center; " nowrap=3D"0=
+">
+              <a href=3D"http://link.info.email.aa.com/ls/click?REDACTED">
+                <img width=3D"100%" src=3D"https://cdn.aa.com/confirmation-=
+email/00000000-0000-0000-0000-000000000000.jpeg" alt=3D"">
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </td>
+      <td style=3D"color:#0061ab;" width=3D"50%">
+        <table style=3D"font-family:Roboto,Arial; " border=3D"0" cellpaddin=
+g=3D"0" cellspacing=3D"0" width=3D"100%">
+          <tbody>
+          <tr style=3D"line-height:10px; ">
+            <td style=3D"text-align:center; " align=3D"center" nowrap=3D"0">
+              <a href=3D"http://link.info.email.aa.com/ls/click?REDACTED">
+                <img width=3D"100%" src=3D"https://cdn.aa.com/confirmation-=
+email/00000000-0000-0000-0000-000000000000.jpeg" alt=3D"">
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+
+    <tr>
+      <td style=3D"color:#0061ab;" width=3D"50%">
+        <table style=3D"font-family:Roboto,Arial;" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" width=3D"100%">
+          <tbody>
+          <tr style=3D"line-height:10px; ">
+            <td style=3D"padding-left:0px; text-align:center; " nowrap=3D"0=
+">
+              <a href=3D"http://link.info.email.aa.com/ls/click?REDACTED">
+                <img width=3D"100%" src=3D"https://cdn.aa.com/confirmation-=
+email/00000000-0000-0000-0000-000000000000.jpeg" alt=3D"">
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </td>
+      <td style=3D"color:#0061ab;" width=3D"50%">
+        <table style=3D"font-family:Roboto,Arial;" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" width=3D"100%">
+          <tbody>
+          <tr style=3D"line-height:10px; ">
+            <td style=3D"text-align:center; " align=3D"center" nowrap=3D"0">
+              <a href=3D"http://link.info.email.aa.com/ls/click?REDACTED">
+                <img width=3D"100%" src=3D"https://cdn.aa.com/confirmation-=
+email/00000000-0000-0000-0000-000000000000.jpeg" alt=3D"">
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </table>
+</td>
+                                            </tr>
+                                            <tr style=3D"background-color: =
+#F3F5F7;">
+  <td>
+    <img style=3D"width: 100%; height: auto;"
+      src=3D"https://i.loyalty.ms.aa.com/wpm/1021/ContentUploads/american_a=
+irlines/CTAs/Banner/YAWWF-CNE_600x160.png"
+      alt=3D"You are why we fly">
+  </td>
+</tr>
+                                            <tr>
+    <td style=3D"background-color: #F3F5F7;">
+        <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"10=
+0%">
+            <tbody>
+                <tr>
+                    <td style=3D"height: 24px" height=3D"24px">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class=3D"footer-table-main">
+                        <!--[if (gte mso 9)|(IE)]>
+                        <table width=3D"100%" cellpadding=3D"0" cellspacing=
+=3D"0" border=3D"0" >
+                        <tr>
+                            <td> <![endif]-->
+                        <table border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0" class=3D"footer-table" width=3D"100%"
+                            style=3D"float: left; padding-bottom: 16px;">
+                            <tbody>
+                                <tr>
+                                    <td class=3D"footer-link-width footer-l=
+ink-padding" align=3D"left">
+                                        <a style=3D"font-family:Roboto, Ari=
+al;color:#181E25 !important;font-size:12px;text-decoration:none"
+                                            href=3D"http://link.info.email.=
+aa.com/ls/click?REDACTED">Contact us</a>
+                                    </td>
+                                   =20
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a style=3D"color:#181E25 !importan=
+t;font-family:Roboto, Arial;font-size:12px;text-decoration:none"
+                                            href=3D"http://link.info.email.=
+aa.com/ls/click?REDACTED">Privacy policy</a>
+                                    </td>
+                                   =20
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!--[if (gte mso 9)|(IE)]>
+                            </td>
+                            <td width=3D"50%" style=3D"vertical-align: text=
+-top;"> <![endif]-->
+                        <table border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0" class=3D"footer-table" width=3D"100%">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <table border=3D"0" cellpadding=3D"=
+0" cellspacing=3D"0" width=3D"100%">
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan=3D"2" style=
+=3D"text-align: center;padding-bottom: 4px;">
+                                                        <span
+                                                            style=3D"color:=
+#0860C4;font-family: Roboto, Arial;font-size:14px; line-height:16px;font-we=
+ight:700; vertical-align: bottom;">Download the American app</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        style=3D"text-align=
+: right;font-family: Roboto, Arial;line-height:16px;vertical-align: bottom;=
+">
+                                                        <a href=3D"http://l=
+ink.info.email.aa.com/ls/click?REDACTED">
+                                                            <img style=3D"h=
+eight:32px; width:104px;" hspace=3D"-1" vspace=3D"0"
+                                                                src=3D"http=
+s://www.aa.com/content/images/email/cne/apple-img.png"
+                                                                width=3D"10=
+4" height=3D"32" alt=3D"Open American Airlines app in the App Store">
+                                                        </a>
+                                                    </td>
+                                                    <td
+                                                        style=3D"padding-le=
+ft: 4px;font-family: Roboto, Arial;line-height:16px;vertical-align: bottom;=
+">
+                                                        <a href=3D"http://l=
+ink.info.email.aa.com/ls/click?REDACTED">
+                                                            <img style=3D"h=
+eight:32px; width:104px;" hspace=3D"-1" vspace=3D"0"
+                                                                src=3D"http=
+s://www.aa.com/content/images/email/cne/google-img.png"
+                                                                width=3D"10=
+4" height=3D"32" alt=3D"Open American Airlines app in Google Play Store">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!--[if (gte mso 9)|(IE)]>
+                            </td>
+                            </tr>
+                            </table> <![endif]-->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+                                            <tr>
+    <td style=3D"background-color: #F3F5F7;">
+        <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"10=
+0%">
+            <tbody>
+                <tr>
+                    <td class=3D"space"></td>
+                    <td class=3D"space"></td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+                                            <tr>
+    <td style=3D"background-color: #F3F5F7;">
+        <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"10=
+0%">
+            <tbody>
+                <tr>
+                    <td>
+                        <table class=3D"padding-left" border=3D"0" cellpadd=
+ing=3D"0" cellspacing=3D"0" width=3D"100%">
+                            <tbody>
+                                <tr>
+                                    <td style=3D"border-top: 1px solid #E6E=
+AEF;padding-top: 16px;">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td>
+                        <table class=3D"padding-right" border=3D"0" cellpad=
+ding=3D"0" cellspacing=3D"0" width=3D"100%">
+                            <tbody>
+                                <tr>
+                                    <td style=3D"border-top: 1px solid #E6E=
+AEF;padding-top: 16px;">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class=3D"padding" align=3D"left"
+                        style=3D"font-family: Roboto, Arial;color:#181E25;f=
+ont-size:12px;font-weight:normal;padding-bottom:24px">
+                        <span>=C2=A9 American Airlines, Inc. All Rights Res=
+erved.</span>
+                    </td>
+                    <td class=3D"padding" style=3D"vertical-align:top;text-=
+align: right;">
+                        <a href=3D"http://link.info.email.aa.com/ls/click?R=
+EDACTED"
+                            target=3D"_blank">
+                            <img style=3D"float: right;" alt=3D"one world a=
+irline partners"
+                                src=3D"https://www.aa.com/content/images/em=
+ail/cne/Logo-oneworld.png" width=3D"20"
+                                vspace=3D"0" hspace=3D"-1" height=3D"20" bo=
+rder=3D"0">
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+                                        </tbody>
+                                        <tfoot class=3D"darkmode-footer">
+                                            <tr>
+                                                <td>
+                                                    <table border=3D"0" cel=
+lpadding=3D"0" cellspacing=3D"0" width=3D"100%">
+  <tbody>
+    <tr>
+      <td style=3D"height:30px; ">&nbsp;</td>
+    </tr>
+    <tr>
+      <td style=3D"color:#50657C; font-family:Roboto,Arial; font-size:12px;=
+ " class=3D"padding-generic darkmode-altgreytext">Additional Services are s=
+ubject to credit card approval at time of ticketing. Additional Services ma=
+y appear on multiple accompanied documents as a matter of reference.</td>
+    </tr>
+    <tr>
+      <td style=3D"height:20px; ">&nbsp;</td>
+    </tr>
+   =20
+      <tr>
+        <td style=3D"color:#50657C; font-family:Roboto,Arial; font-size:12p=
+x;"
+          class=3D"padding-generic darkmode-altgreytext">If you have purcha=
+sed a NON-REFUNDABLE fare, the itinerary must be canceled before the ticket=
+ed departure time of the first unused coupon or the ticket has NO VALUE. If=
+ the fare allows changes, a fee may be assessed for changes and restriction=
+s may apply.</td>
+      </tr>
+     =20
+      <tr>
+        <td style=3D"height:20px;">&nbsp;</td>
+      </tr>
+      <tr>
+        <td style=3D"color:#50657C; font-family:Roboto,Arial; font-size:12p=
+x;"
+          class=3D"padding-generic darkmode-altgreytext">You have up to 24 =
+hours from the time of ticket purchase to receive a full refund if you book=
+ed at least 2 days before departure. Once canceled, your refund will be pro=
+cessed automatically. <a href=3D"http://link.info.email.aa.com/ls/click?RED=
+ACTED" style=3D"text-decoration:none; color:#0078d2; ">Refunds</a>.</td>
+      </tr>
+     =20
+      <tr>
+        <td style=3D"height:20px;">&nbsp;</td>
+      </tr>
+   =20
+   =20
+   =20
+      <tr>
+        <td style=3D"color:#50657C; font-family:Roboto,Arial; font-size:12p=
+x; "
+          class=3D"padding-generic darkmode-altgreytext">Some American Airl=
+ines check-in counters do not accept cash as a form of payment. For more in=
+formation, visit our <a href=3D"http://link.info.email.aa.com/ls/click?REDA=
+CTED" style=3D"text-decoration:none; color:#0078d2; ">Airport Information</=
+a> page.</td>
+      </tr>
+      <tr>
+        <td style=3D"height:20px; ">&nbsp;</td>
+      </tr>
+      <tr>
+        <td style=3D"color:#50657C; font-family:Roboto,Arial; font-size:12p=
+x; "
+          class=3D"padding-generic darkmode-altgreytext">The policy for tra=
+veling with Emotional Support and Service animals has changed. Visit <a hre=
+f=3D"http://link.info.email.aa.com/ls/click?REDACTED" style=3D"text-decorat=
+ion:none; color:#0078d2; ">Traveling with Service Animals</a> for more info=
+rmation.</td>
+      </tr>
+      <tr>
+        <td style=3D"height:20px; ">&nbsp;</td>
+      </tr>
+      <tr>
+        <td style=3D"width:100%; word-break: ; " class=3D"padding-generic">
+          <img style=3D"width:50px; " src=3D"https://www.aa.com/content/ima=
+ges/email/cne/hazmat-icons-batteries.png" alt=3D"">
+          <img style=3D"width:50px; " src=3D"https://www.aa.com/content/ima=
+ges/email/cne/hazmat-icons-explosives.png"
+            alt=3D"">
+          <img style=3D"width:50px; " src=3D"https://www.aa.com/content/ima=
+ges/email/cne/hazmat-icons-aerosol.png" alt=3D"">
+          <img style=3D"width:50px; " src=3D"https://www.aa.com/content/ima=
+ges/email/cne/hazmat-icons-flammables.png"
+            alt=3D"">
+          <img style=3D"width:50px; " src=3D"https://www.aa.com/content/ima=
+ges/email/cne/hazmat-icons-oxidizers.png" alt=3D"">
+          <img style=3D"width:50px; " src=3D"https://www.aa.com/content/ima=
+ges/email/cne/hazmat-icons-toxins.png" alt=3D"">
+          <img style=3D"width:50px; " src=3D"https://www.aa.com/content/ima=
+ges/email/cne/hazmat-icons-radioactive.png"
+            alt=3D"">
+          <img style=3D"width:50px; " src=3D"https://www.aa.com/content/ima=
+ges/email/cne/hazmat-icons-corosives.png" alt=3D"">
+          <img style=3D"width:50px; " src=3D"https://www.aa.com/content/ima=
+ges/email/cne/hazmat-icons-ecigar.png" alt=3D"">
+        </td>
+      </tr>
+      <tr>
+        <td style=3D"height:20px; ">&nbsp;</td>
+      </tr>
+      <tr>
+        <td style=3D"color:#50657C; font-family:Roboto,Arial; font-size:12p=
+x; "
+          class=3D"padding-generic darkmode-altgreytext">Some everyday prod=
+ucts, like e-cigarettes and aerosol spray starch, can be dangerous when tra=
+nsported on the aircraft in carry-on and/or checked baggage.  Changes in te=
+mperature or pressure can cause some items to leak, generate toxic fumes or=
+ start a fire.  Carriage of prohibited items may result in fines or in cert=
+ain cases imprisonment.  Please ensure there are no forbidden hazardous mat=
+erials in your baggage like:</td>
+      </tr>
+      <tr>
+        <td style=3D"height:20px; ">&nbsp;</td>
+      </tr>
+      <tr>
+        <td style=3D"color:#50657C; font-family:Roboto,Arial; font-size:12p=
+x; "
+          class=3D"padding-generic darkmode-altgreytext">Some Lithium batte=
+ries (e.g. spares in checked baggage, batteries over a certain size), Explo=
+sives / Fireworks, Strike anywhere matches/ Lighter fluid,  Compressed gase=
+s / Aerosols Oxygen bottles/ Liquid oxygen, Flammable liquids, Pesticides/ =
+Poison, Corrosive material.</td>
+      </tr>
+      <tr>
+        <td style=3D"height:20px; ">&nbsp;</td>
+      </tr>
+      <tr>
+        <td style=3D"color:#50657C; font-family:Roboto,Arial; font-size:12p=
+x; "
+          class=3D"padding-generic darkmode-altgreytext">There are special =
+exceptions for small quantities (up to 70 ounces total) of medicinal and to=
+ilet articles carried in your luggage, spare lithium batteries for most con=
+sumer electronic devices in carry-on baggage, and certain smoking materials=
+ carried on your person.</td>
+      </tr>
+      <tr>
+        <td style=3D"height:20px; ">&nbsp;</td>
+      </tr>
+      <tr>
+        <td style=3D"color:#50657C; font-family:Roboto,Arial; font-size:12p=
+x; "
+          class=3D"padding-generic darkmode-altgreytext">Certain items are =
+required to be carried with you onboard the aircraft. For example, spare li=
+thium batteries for portable electronic devices, cigarette lighters and e-c=
+igarettes must be removed from checked or gate-checked baggage and carried =
+onboard the aircraft. However, e-cigarettes may not be used on-board the ai=
+rcraft.</td>
+      </tr>
+      <tr>
+        <td style=3D"height:20px; ">&nbsp;</td>
+      </tr>
+      <tr>
+        <td style=3D"color:#50657C; font-family:Roboto,Arial; font-size:12p=
+x; "
+          class=3D"padding-generic darkmode-altgreytext">Traveling with med=
+ical oxygen, liquid oxygen, mobility aids and other assistive devices may r=
+equire airline pre-approval or be restricted from carriage entirely. Passen=
+gers requiring these items should contact the airline operator for informat=
+ion on use of such devices.</td>
+      </tr>
+      <tr>
+        <td style=3D"height:20px; ">&nbsp;</td>
+      </tr>
+     =20
+     =20
+     =20
+     =20
+     =20
+     =20
+     =20
+     =20
+      <tr>
+        <td style=3D"color:#50657C; font-family:Roboto,Arial; font-size:12p=
+x; "
+          class=3D"padding-generic darkmode-altgreytext">NOTICE OF INCORPOR=
+ATED TERMS OF CONTRACT</td>
+      </tr>
+      <tr>
+        <td style=3D"height:20px; ">&nbsp;</td>
+      </tr>
+      <tr>
+        <td style=3D"color:#50657C; font-family:Roboto,Arial; font-size:12p=
+x; "
+          class=3D"padding-generic darkmode-altgreytext">Air Transportation=
+, whether it is domestic or international (including domestic portions of i=
+nternational journeys), is subject to the individual terms of the transport=
+ing air carriers, which are herein incorporated by reference and made part =
+of the contract of carriage.  Other carriers on which you may be ticketed m=
+ay have different conditions of carriage.  International air transportation=
+, including the carrier's liability, may also be governed by applicable tar=
+iffs on file with the U.S. and other governments and by the Warsaw Conventi=
+on, as amended, or by the Montreal Convention.  Incorporated terms may incl=
+ude, but are not restricted to: 1. Rules and limits on liability for person=
+al injury or death, 2. Rules and limits on liability for baggage, including=
+ fragile or perishable goods, and availability of excess valuation charges,=
+ 3. Claim restrictions, including time periods in which passengers must fil=
+e a claim or bring an action against the air carrier, 4. Rights on the air =
+carrier to change terms of the contract, 5. Rules on reconfirmation of rese=
+rvations, check-in times and refusal to carry, 6. Rights of the air carrier=
+ and limits on liability for delay or failure to perform service, including=
+ schedule changes, substitution of alternate air carriers or aircraft and r=
+erouting.</td>
+      </tr>
+      <tr>
+        <td style=3D"height:20px; ">&nbsp;</td>
+      </tr>
+      <tr>
+        <td style=3D"color:#50657C; font-family:Roboto,Arial; font-size:12p=
+x; "
+          class=3D"padding-generic darkmode-altgreytext">You can obtain add=
+itional information on items 1 through 6 above at any U.S. location where t=
+he transporting air carrier's tickets are sold.  You have the right to insp=
+ect the full text of each transporting air carrier's terms at its airport a=
+nd city ticket offices.  You also have the right, upon request, to receive =
+(free of charge) the full text of the applicable terms incorporated by refe=
+rence from each of the transporting air carriers.  Information on ordering =
+the full text of each air carrier's terms is available at any U.S. location=
+ where the air carrier's tickets are sold or you can click on the Condition=
+s of Carriage link below.</td>
+      </tr>
+      <tr>
+        <td style=3D"height:20px; ">&nbsp;</td>
+      </tr>
+      <tr>
+        <td style=3D"color:#50657C; font-family:Roboto,Arial; font-size:12p=
+x; "
+          class=3D"padding-generic darkmode-altgreytext">Air transportation=
+ on American Airlines and the American Eagle carriers=C2=AE is subject to A=
+merican's <a href=3D"http://link.info.email.aa.com/ls/click?REDACTED" style=
+=3D"text-decoration:none; color:#0078d2; ">conditions of carriage.</a></td>
+      </tr>
+      <tr>
+        <td style=3D"height:20px; ">&nbsp;</td>
+      </tr>
+      <tr>
+        <td style=3D"color:#50657C; font-family:Roboto,Arial; font-size:12p=
+x; "
+          class=3D"padding-generic darkmode-altgreytext">For more on Canada=
+ passenger protection regulations visit <a href=3D"http://link.info.email.a=
+a.com/ls/click?REDACTED" style=3D"text-decoration:none; color:#0078d2; ">aa=
+.com/CanadaPassengers.</a></td>
+      </tr>
+   =20
+  </tbody>
+</table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <tr>
+    <td align=3D"center" style=3D"background-color: #FFFFFF;color:#50657C">
+        <table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D=
+"0" class=3D"padding">
+            <tbody>
+                <tr>
+                    <td style=3D"height: 24px;" height=3D"24px">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class=3D"common_footer " align=3D"left">
+                        <span>Please do not reply to this email address as =
+it is not monitored. This email was sent to</span>
+                        <a style=3D"text-decoration:none;" href=3D"#">
+                            <span class=3D"common_footer" style=3D"text-dec=
+oration:none;">testuser@example.com.</span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style=3D"height: 20px" height=3D"20px">&nbsp;</td>
+                </tr>
+               =20
+               =20
+               =20
+               =20
+               =20
+               =20
+               =20
+                <tr>
+                    <td align=3D"left" class=3D"common_footer">NOTICE: This=
+ email and any information, files or attachments are for the exclusive and =
+confidential use of the intended recipient. This message contains confident=
+ial and proprietary information of American Airlines (such as customer and =
+business data) that may not be read, searched, distributed or otherwise use=
+d by anyone other than the intended recipient. If you are not an intended r=
+ecipient, do not read, distribute, or take action in reliance upon this mes=
+sage. Do you think you received this email by mistake? If so, please forwar=
+d this <a style=3D"text-decoration:none;color:#50657C;" href=3D"mailto:aadv=
+antage.customer.svc@aa.com">email to us</a> with an explanation.</td>
+                </tr>
+                <tr>
+                    <td style=3D"height: 20px" height=3D"20px">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td align=3D"left" class=3D"common_footer">For all othe=
+r questions about bookings or upcoming trips, visit our contact page. <a st=
+yle=3D"color: #50657C; text-decoration: none;font-family:Roboto, Arial;" hr=
+ef=3D"http://link.info.email.aa.com/ls/click?REDACTED">Contact American ></=
+a></td>
+                </tr>
+                <tr>
+                    <td style=3D"height: 20px" height=3D"20px">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td align=3D"left" class=3D"common_footer"><b>one</b>wo=
+rld is a registered trademark of <b>one</b>world Alliance, LLC.</td>
+                </tr>
+                <tr>
+                    <td style=3D"height: 80px;" height=3D"80px">&nbsp;</td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!--[if (gte mso 9)|(IE)]>
+                </td>
+                </tr>
+                </table> <![endif]-->
+                </td>
+            </tr>
+        </tbody>
+    </table>
+<img src=3D"http://link.info.email.aa.com/wf/open?REDACTED" alt=3D"" width=
+=3D"1" height=3D"1" border=3D"0" style=3D"height:1px !important;width:1px !=
+important;border-width:0 !important;margin-top:0 !important;margin-bottom:0=
+ !important;margin-right:0 !important;margin-left:0 !important;padding-top:=
+0 !important;padding-bottom:0 !important;padding-right:0 !important;padding=
+-left:0 !important;"/></body>
+
+</html>

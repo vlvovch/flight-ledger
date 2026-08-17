@@ -1,0 +1,1087 @@
+Delivered-To: bob.test@example.com
+Received: by 2002:a05:6022:7211:b0:f2:41ae:662 with SMTP id bj17csp603383lab;
+        Wed, 18 Mar 2026 12:15:58 -0700 (PDT)
+X-Received: by 2002:a05:6512:3c8f:b0:5a1:378c:11e5 with SMTP id 2adb3069b0e04-5a27969db57mr2066647e87.14.1773861357916;
+        Wed, 18 Mar 2026 12:15:57 -0700 (PDT)
+ARC-Seal: i=2; a=rsa-sha256; t=1773861357; cv=pass;
+        d=google.com; s=arc-20240605;
+        b=ITBWJCgZdaDYh6pMw4D0LeV7OhCas2p1h9EaZVeqWMs9xz/BjWjM2m45K45q9qfF8q
+         Up74U77ZV+vNFHxU6PnZXT73dd7iIv1CTN+RBNPIxu37d2Nvpn7uA9lijd6f9zyRx05D
+         Ls6gToAsd1IjE4g7jN8p3aeyMiFidqrxHfLWIlLazmUXiFplq/Hec25g41muGdUo8E6j
+         xdWl7Y2fpxPUw9YxEiOhuJAdqv+OLzco5TXbEydZ+a3ESJa3BWCxalEYlfpLOwEu23BL
+         Es4ZU9KhoD6dmL6SMCzBJ/hAbcWm/XSAiQMLHfxXGGmAaB5ZqPKBTI/VAzog3uQAEsHn
+         cWqA==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature;
+        bh=vgab6tRzhciKBVSsMCLeZYo/b6Us9SnJWxHncmpivCA=;
+        fh=EiVTpcE9GxDeiyRuf3ZqJ5F+QiwNBY4JqJhBP1L8/Iw=;
+        b=coaGLQCj27oEdAkY2pLWYQRFwNA6/0JDP9a2toDRHXS8jmow3UGmDJ8ijf22x6pQ+q
+         3k7HRkWVu02PTWwXHCFv6lLQA6nHV3NBRLFWvyEFnA8xWgfAKDIx+GKCgrzMwFm8ocb5
+         dSiRGjRYGH9DeePxdtYCue9HiLNbePYfr6EZ+H/QbivQb5MmCpl1RGLwv9+iSbyDXAUr
+         4YbAg4ORbBz9tYZAyi0JAsYjtLWM2lKh1QNHwi1F/v0H6rgSaIgp4slCEcvnjRgc/tN+
+         gh+909vAGTmK7u5+bTqNjqtoAL+ShI6Vkcl1nhnzj2GgYS1yagioBJGRVyQk5g9eRRkd
+         +j8g==;
+        dara=google.com
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20230601 header.b=Ey3ocn5c;
+       arc=pass (i=1);
+       spf=pass (google.com: domain of alice.test@example.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=alice.test@example.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;
+       dara=pass header.i=@gmail.com
+Return-Path: <alice.test@example.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id 2adb3069b0e04-5a279c7b5e0sor433104e87.20.2026.03.18.12.15.57
+        for <bob.test@example.com>
+        (Google Transport Security);
+        Wed, 18 Mar 2026 12:15:57 -0700 (PDT)
+Received-SPF: pass (google.com: domain of alice.test@example.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20230601 header.b=Ey3ocn5c;
+       arc=pass (i=1);
+       spf=pass (google.com: domain of alice.test@example.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=alice.test@example.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;
+       dara=pass header.i=@gmail.com
+ARC-Seal: i=1; a=rsa-sha256; t=1773861357; cv=none;
+        d=google.com; s=arc-20240605;
+        b=aRUXbuhQZ/MnZyJcHVXcNFER88YxQDYS1vedCl/DGj396eViy9ZBSbkDy6ZqRI4BjG
+         12wgSmiL4ErSn7IcC+HVqxwW8Vyn5D3ofMoxklBCJ1LHAhLBu+S/wLXM79DwB37kUxN+
+         JT6wpdXLISrBOviZ6+5kXtOpHDvENkQCNTOTevAm+pCPSyVu0LfrHKAoLLl1Z+z7hN7Y
+         EfT/T2PHdHrcxaky+VUzP0dk/cK4yXTS/QeFPKulVre8Nbp83cGNWJrtGW0iC0RjltH1
+         UGceZoEG1REQnXFk/5+itkJBV+TPRpyX2of5yrCWG7+1vkDOYUsLb9bIVI5cUmdYVamX
+         pQGg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature;
+        bh=vgab6tRzhciKBVSsMCLeZYo/b6Us9SnJWxHncmpivCA=;
+        fh=EiVTpcE9GxDeiyRuf3ZqJ5F+QiwNBY4JqJhBP1L8/Iw=;
+        b=G0kNUA9cdsZyNhXeKoj1SiqWPxyxQlVXNS7uRr7FOHMCLarpKyvdrqowwmV2vrriZl
+         sHsTlp1CA5NzVN7gqdmo9pixXOaUOS4z3vFwCUsw0jH8z/aQxwAwS1wk+vsRhhOqHtEO
+         qRtMwu8R+gThusjGGmOzKj64+WsqlMid46wb7/VwNzXCykc6lqhYbfz4xDk9grW+1S8F
+         zhgSEj+wT5MfBCY6wbzWFN/o0Ydwq8kKG1Car3CFvDUCdkU39QBKBYQXvI4H0FKIdSSQ
+         OroCCbi0txm5A3sBdslotrPWnvWP268kLya09ch/SI9wX74+yO16kzZoa+jJfQT5J6cb
+         bfrw==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1773861357; x=1774466157; dara=google.com;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vgab6tRzhciKBVSsMCLeZYo/b6Us9SnJWxHncmpivCA=;
+        b=Ey3ocn5ccyjEZMvox6vKB1Ql/+7KfbsN6Vb7PyMh0vQjx0JfwTGa5+NAP0Xl/GzFMf
+         nrzxPGncyz/VrnIMIHyLQiRwJqoBcQfEHTko4O5kV/M3tq0wG1/p0sOUnTbdH8Tf+M2P
+         KS0KzTWZpT8qcTd7gbE4U04z0jDXeKfaY4hg8z3hM6I3DQnM3uDybJgQQPD+zCR5Ds72
+         aFXIEGUTA3GPzp9aXvOoMwspl98Tv8s0F9AUlqlDVG0INkwX5ydDcLWY2mgGj5AUlA4Y
+         0Aw90wgs5GfHt4KoJcWOl1S3fN07BpYWVitdgWQ8iKn2F69DlpHpp4cuHOTQFW6nZB9n
+         +atw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1773861357; x=1774466157;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vgab6tRzhciKBVSsMCLeZYo/b6Us9SnJWxHncmpivCA=;
+        b=e9MaxytLHCp1f4yK2VaFrB0xx0XAo4zvS307jkMdXFCO0lrI8c3CUBely9WoT8q1Vo
+         IuyfzNjQwaOULvqS2PLP27wP8GG0hImSaR0FyRdSeMbFlkvnR1WHSnOLpBTJ3Pkxbaup
+         6F4G8GYcr+snc4FIDJd5QT/DeaFeOJbOU3T+GI3kc+hF0rAZBUQ6yVSXPxqWNX/fAV7f
+         FoWFogp7macz8CauCBHWN8FkX/IJa7lv7xz6ac0LDrr9EHbXK7dTNgu+HL0TrI59xMv3
+         wfdScqrsRkadzA/mjvSfyecueMUHQlxP9IBv9f4O0XRpqtdpOPANdNHW65Ghu4PHgJHs
+         rLPg==
+X-Gm-Message-State: AOJu0YxS7SGafMVI18u/9dMO+XCUpEQih2DcfUl/Ajp8ZAaYg8+xW4OS
+	DvTZPVV1NhDNISITG/ay9/E7PWrZp24IrfuD0MPVoXKGF434NBDFrSyE/YRa1JMJUg1YisQ+A9b
+	o9BwrzDMF/xxcnM78z5BKgayrXUVXmGdF0Je8
+X-Gm-Gg: ATEYQzydW0Ex4CD6vxGLqxB8GyW/WKfGYmPrV3mSQPnAzreXuXf75yKHWnjLKnxsV/z
+	aoQ6jsD7okDvD3p6jRUg9LBNZTdX0fRA/6a8Zsd6K/vugWy6zV0D3jlgIE5hLnkAE/uq7LdycNO
+	nkemTIhKYBVw6AvoD3urRwa0E9kzZb2qLf9N2WfIPXWpWLDvNrqenc7J9kZNRDgreq9Ysp+lwMv
+	cofBQwxyvttKOVxSATuVa2s9aWOnrhU7eIX4EFrbxgFTRWQIFPZKEykdfOE/Lxhs8jQ5pXvtY7p
+	r57Tt3GHkyxZ66N5nlEkcj6+d4B/LQwiT4OcY4xj
+X-Received: by 2002:a05:6512:3b89:b0:5a1:3207:694c with SMTP id
+ 2adb3069b0e04-5a2796c9af5mr2181774e87.29.1773861356368; Wed, 18 Mar 2026
+ 12:15:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20260315155423.3a940feba2288667@txn-mg.kiwi.com>
+In-Reply-To: <20260315155423.3a940feba2288667@txn-mg.kiwi.com>
+From: Alice Test <alice.test@example.com>
+Date: Wed, 18 Mar 2026 20:15:42 +0100
+X-Gm-Features: AaiRm53-jnZKo8_O_PqssrOGNVFYZ8D9Dwx6MCUatsIpBcCBByYPPnqAeraf834
+Message-ID: <fixture@example.com>
+Subject: =?UTF-8?Q?Fwd=3A_Reserva_755885086=3A_J=C3=A1_est=C3=A1_tudo_pronto_para_a?=
+	=?UTF-8?Q?_sua_viagem=21_=E2=9C=85?=
+To: Bob Test <bob.test@example.com>
+Content-Type: multipart/mixed; boundary="0000000000000729d2064d51486a"
+
+--0000000000000729d2064d51486a
+Content-Type: multipart/alternative; boundary="0000000000000729cf064d514868"
+
+--0000000000000729cf064d514868
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+---------- Forwarded message ---------
+From: Kiwi.com <tickets@kiwi.com>
+Date: Sun, Mar 15, 2026 at 16:54
+Subject: Reserva 755885086: J=C3=A1 est=C3=A1 tudo pronto para a sua viagem=
+! =E2=9C=85
+To: <alice.test@example.com>
+
+
+Pode consultar os detalhes atualizados da sua viagem na sua reserva. =E2=80=
+=8C  =E2=80=8C
+=E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C=
+  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=
+=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=
+=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C
+=E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C=
+  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=
+=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=
+=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C
+=E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C=
+  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=
+=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=
+=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C
+=E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C=
+  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=
+=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=
+=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C
+=E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C=
+  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=
+=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=
+=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C
+=E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C=
+  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=
+=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=80=8C  =E2=
+=80=8C  =E2=80=8C  =E2=80=8C
+[image: Kiwi.com]
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+Para mais informa=C3=A7=C3=B5es, abra a Ajuda e apoio
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+Gerir a minha reserva
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+ou Inicie sess=C3=A3o
+<https://getapp.kiwi.com/FSpA?REDACTED>
+
+Estocolmo [image: =E2=86=94] Londres
+J=C3=A1 est=C3=A1 tudo pronto para a sua viagem! =E2=9C=85
+
+N=C3=BAmero de reserva
+
+755 885 086
+
+Estado da reserva
+
+Confirmada
+
+Recebemos o =C3=BAltimo n=C3=BAmero de reserva em falta, por isso, est=C3=
+=A1 tudo pronto!
+=F0=9F=8E=89
+
+Como efetuou a reserva connosco, provavelmente n=C3=A3o vai mesmo precisar =
+dos
+n=C3=BAmeros de reserva da transportadora. No entanto, =C3=A9 sempre uma bo=
+a ideia
+t=C3=AA-los consigo, para o caso de o pessoal do aeroporto os pedir. No ent=
+anto,
+se vier mesmo a precisar deles, poder=C3=A1 encontr=C3=A1-los nos detalhes =
+do seu
+itiner=C3=A1rio.
+
+   -
+   Pagamento
+
+   O seu pagamento foi efetuado com =C3=AAxito.
+   -
+   Reserva junto das transportadoras
+
+   Efetu=C3=A1mos a reserva da sua viagem junto das transportadoras
+   -
+   Confirma=C3=A7=C3=A3o final de reserva
+
+   As transportadoras confirmaram a sua viagem e est=C3=A1 tudo pronto para
+   poder viajar!
+   -
+   Atualiza=C3=A7=C3=B5es na aplica=C3=A7=C3=A3o Kiwi.com
+
+   Pode ver todos os detalhes, transferir documentos e gerir a sua viagem na
+   nossa aplica=C3=A7=C3=A3o
+   <https://email.txn-mg.kiwi.com/c/REDACTED>
+   .
+
+Pr=C3=B3ximo passo: utilize a nossa aplica=C3=A7=C3=A3o
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+para adicionar servi=C3=A7os extra, obter atualiza=C3=A7=C3=B5es imediatas =
+de viagem e
+aceder aos seus cart=C3=B5es de embarque e bilhetes, mesmo que esteja offli=
+ne
+(n=C3=A3o precisa de recorrer =C3=A0 Wi-Fi do aeroporto!).
+
+Gerir viagem na aplica=C3=A7=C3=A3o
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+Transferir
+e-tickets
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+Onde posso acompanhar o estado da minha reserva? Encontrar=C3=A1 as informa=
+=C3=A7=C3=B5es
+mais atuais na nossa aplica=C3=A7=C3=A3o
+<https://email.txn-mg.kiwi.com/c/REDACTED>.
+N=C3=A3o se esque=C3=A7a de ativar as notifica=C3=A7=C3=B5es push para rece=
+ber atualiza=C3=A7=C3=B5es
+imediatas sobre todas as suas viagens.
+
+Para os seus voos da [image: Ryanair], a Ryanair entrar=C3=A1 em contacto
+consigo diretamente com informa=C3=A7=C3=B5es relevantes, atualiza=C3=A7=C3=
+=B5es e instru=C3=A7=C3=B5es
+sobre como associar os seus voos =C3=A0 sua conta Ryanair, por isso, n=C3=
+=A3o se
+esque=C3=A7a de verificar os e-mails que lhe enviarem. Onde posso efetuar
+altera=C3=A7=C3=B5es =C3=A0 minha viagem? Como a sua reserva inclui v=C3=A1=
+rias
+transportadoras, =C3=A9 necess=C3=A1rio efetuar algumas altera=C3=A7=C3=B5e=
+s no Web site da
+transportadora. Para efetuar altera=C3=A7=C3=B5es nos voos da Ryanair, inic=
+ie sess=C3=A3o
+na sua conta em [image: Ryanair] Ryanair.com para alterar a sua viagem. Para
+todas as outras transportadoras, basta utilizar a aplica=C3=A7=C3=A3o Kiwi.=
+com
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+para efetuar as altera=C3=A7=C3=B5es. Upgrade de viagem
+
+Melhore a sua viagem com servi=C3=A7os adicionais e viaje com conforto. Pode
+adicionar a maioria destes servi=C3=A7os at=C3=A9 48 horas antes da viagem.
+Querem sentar-se juntos?
+
+Reserve j=C3=A1 o seu lugar favorito, antes que fique ocupado.
+Reservar lugar
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+
+Proporcionado por [image: Axa.com]
+Seguro contra imprevistos
+
+Proteja a sua viagem com a AXA Assistance, especialista em seguros de
+viagem. Obtenha cobertura em todo o mundo, apoio permanente e mais de 200
+anos de experi=C3=AAncia.
+Adicionar seguro
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+Artigos sugeridos para si
+
+   - Como saber se precisa de um visto
+   <https://email.txn-mg.kiwi.com/c/REDACTED>
+   - Sele=C3=A7=C3=A3o de lugares
+   <https://email.txn-mg.kiwi.com/c/REDACTED>
+   - Itens proibidos
+   <https://email.txn-mg.kiwi.com/c/REDACTED>
+   - Proteger a sua bagagem contra perdas
+   <https://email.txn-mg.kiwi.com/c/REDACTED>
+   - Pacotes de bagagem com v=C3=A1rias transportadoras
+   <https://email.txn-mg.kiwi.com/c/REDACTED>
+
+Para mais informa=C3=A7=C3=B5es, abra a Ajuda e apoio
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+ou contacte-nos
+<https://email.txn-mg.kiwi.com/c/REDACTED>.
+
+www.kiwi.com
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+[image: Facebook]
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+[image:
+Twitter]
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+[image:
+Instagram]
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+[image:
+LinkedIn]
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+
+[image: Kiwi.com]
+<https://email.txn-mg.kiwi.com/c/REDACTED>
+[image: Fly for less, Guaranteeed!]
+[image: Fly for less, Guaranteeed!]
+
+--0000000000000729cf064d514868
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div><br></div><div><br><div class=3D"gmail_quote gmail_quote_container"><d=
+iv dir=3D"ltr" class=3D"gmail_attr">---------- Forwarded message ---------<=
+br>From: <strong class=3D"gmail_sendername" dir=3D"auto">Kiwi.com</strong> =
+<span dir=3D"auto">&lt;<a href=3D"mailto:tickets@kiwi.com">tickets@kiwi.com=
+</a>&gt;</span><br>Date: Sun, Mar 15, 2026 at 16:54<br>Subject: Reserva 755=
+885086: J=C3=A1 est=C3=A1 tudo pronto para a sua viagem! =E2=9C=85<br>To:  =
+&lt;<a href=3D"mailto:alice.test@example.com">alice.test@example.com</a>&gt=
+;<br></div><br><br><u></u>  <div style=3D"width:100%;margin:0px;padding:0px=
+;font-size:14px;line-height:20px;font-family:Arial,Helvetica,sans-serif;bac=
+kground-image:none;background-position:0% 0%;background-size:auto;backgroun=
+d-repeat:repeat;background-origin:padding-box;background-clip:border-box;co=
+lor:rgb(37,42,49)"><img width=3D"1" height=3D"1" alt=3D"" src=3D"https://em=
+ail.txn-mg.kiwi.com/o/REDACTED" style=3D"font-family: Arial, Helvetica, san=
+s-serif;"><div style=3D"display:none;font-size:1px;line-height:1px;height:0=
+px;width:0px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;font-fa=
+mily:Arial,Helvetica,sans-serif;color:transparent"> Pode consultar os detal=
+hes atualizados da sua viagem na sua reserva. =E2=80=8C=C2=A0 =E2=80=8C=C2=
+=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=
+=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =
+=E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=
+=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=
+=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=
+=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=
+=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =
+=E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=
+=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=
+=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=
+=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=
+=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =
+=E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=
+=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=
+=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=
+=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=
+=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =
+=E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=
+=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=
+=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=
+=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=
+=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =
+=E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=
+=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=
+=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=
+=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=
+=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =
+=E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=
+=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=
+=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=
+=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=
+=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =E2=80=8C=C2=A0 =
+=E2=80=8C=C2=A0 </div> <span id=3D"m_0open-tracking-pixel" style=3D"font-fa=
+mily:Arial,Helvetica,sans-serif"></span><table role=3D"presentation" class=
+=3D"m_0rwd-block-table" width=3D"100%" border=3D"0" cellspacing=3D"0" cellp=
+adding=3D"0" style=3D"width:100%;margin:0px;padding:0px;border-spacing:0px;=
+font-size:14px;line-height:20px;font-family:Arial,Helvetica,sans-serif;text=
+-align:left;table-layout:fixed;background:0% 0% repeat rgb(245,247,249);col=
+or:rgb(37,42,49)"><tbody style=3D"font-family:Arial,Helvetica,sans-serif"><=
+tr style=3D"font-family:Arial,Helvetica,sans-serif"><th align=3D"center" st=
+yle=3D"vertical-align:middle;font-weight:normal;text-align:center;font-fami=
+ly:Arial,Helvetica,sans-serif"><table role=3D"presentation" class=3D"m_0rwd=
+-block-table" width=3D"640" border=3D"0" cellspacing=3D"0" cellpadding=3D"0=
+" style=3D"padding:0px;border-spacing:0px;font-size:14px;line-height:20px;f=
+ont-family:Arial,Helvetica,sans-serif;text-align:left;table-layout:fixed;ma=
+rgin:0px auto;width:640px;color:rgb(37,42,49)"><tbody style=3D"font-family:=
+Arial,Helvetica,sans-serif"><tr style=3D"font-family:Arial,Helvetica,sans-s=
+erif"><th style=3D"vertical-align:middle;font-weight:normal;text-align:left=
+;font-family:Arial,Helvetica,sans-serif"><table role=3D"presentation" class=
+=3D"m_0t-header m_0rwd-block-table" width=3D"100%" border=3D"0" cellspacing=
+=3D"0" cellpadding=3D"0" style=3D"width:100%;margin:0px;padding:0px;border-=
+spacing:0px;font-size:14px;line-height:20px;font-family:Arial,Helvetica,san=
+s-serif;text-align:left;table-layout:fixed;color:rgb(37,42,49)"><tbody styl=
+e=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"font-family:Arial=
+,Helvetica,sans-serif"><th class=3D"m_0rwd-pl-sm m_0rwd-pr-sm" style=3D"ver=
+tical-align:middle;font-weight:normal;text-align:left;padding:24px 0px 16px=
+;font-family:Arial,Helvetica,sans-serif"><table role=3D"presentation" width=
+=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"width:1=
+00%;margin:0px;padding:0px;border-spacing:0px;font-size:14px;line-height:20=
+px;font-family:Arial,Helvetica,sans-serif;text-align:left;table-layout:auto=
+;color:rgb(37,42,49)"><tbody style=3D"font-family:Arial,Helvetica,sans-seri=
+f"><tr style=3D"font-family:Arial,Helvetica,sans-serif"><th class=3D"m_0rwd=
+-pb-sm" style=3D"vertical-align:middle;font-weight:normal;text-align:left;f=
+ont-family:Arial,Helvetica,sans-serif"><table role=3D"presentation" border=
+=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"margin:0px;padding:0px;=
+border-spacing:0px;font-size:14px;line-height:20px;font-family:Arial,Helvet=
+ica,sans-serif;text-align:left;table-layout:auto;width:auto;color:rgb(37,42=
+,49)"><tbody style=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"=
+font-family:Arial,Helvetica,sans-serif"><th style=3D"vertical-align:middle;=
+font-weight:normal;text-align:left;padding:0px 12px 0px 0px;font-family:Ari=
+al,Helvetica,sans-serif"> <a href=3D"https://email.txn-mg.kiwi.com/c/REDACT=
+ED" style=3D"text-decoration:underline;font-family:Arial,Helvetica,sans-ser=
+if;color:rgb(37,42,49)" target=3D"_blank"><img src=3D"https://images.kiwi.c=
+om/whitelabels/0x80/kiwicom-monochromatic.png" alt=3D"Kiwi.com" width=3D"80=
+" style=3D"border: 0px; vertical-align: top; font-family: Arial, Helvetica,=
+ sans-serif;"></a></th></tr></tbody></table></th><th align=3D"right" style=
+=3D"vertical-align:middle;font-weight:normal;text-align:right;font-family:A=
+rial,Helvetica,sans-serif"><table role=3D"presentation" class=3D"m_0rwd-blo=
+ck-table" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"padding=
+:0px;border-spacing:0px;font-size:14px;font-family:Arial,Helvetica,sans-ser=
+if;text-align:left;table-layout:auto;width:auto;margin:0px 0px 0px auto;lin=
+e-height:16px;color:rgb(37,42,49)"><tbody style=3D"font-family:Arial,Helvet=
+ica,sans-serif"><tr style=3D"font-family:Arial,Helvetica,sans-serif"><th cl=
+ass=3D"m_0rwd-ta-left m_0rwd-pl-0" style=3D"vertical-align:middle;font-weig=
+ht:normal;text-align:right;font-size:12px;line-height:16px;padding-left:12p=
+x;font-family:Arial,Helvetica,sans-serif"> Para mais informa=C3=A7=C3=B5es,=
+ abra a <a href=3D"https://email.txn-mg.kiwi.com/c/REDACTED" style=3D"text-=
+decoration:underline;font-weight:bold;white-space:nowrap;font-family:Arial,=
+Helvetica,sans-serif;color:rgb(37,42,49)" target=3D"_blank">Ajuda e apoio</=
+a></th><th class=3D"m_0rwd-hide" style=3D"vertical-align:middle;font-weight=
+:normal;text-align:left;padding-left:12px;font-family:Arial,Helvetica,sans-=
+serif"><div style=3D"font-family:Arial,Helvetica,sans-serif"><a href=3D"htt=
+ps://email.txn-mg.kiwi.com/c/REDACTED" class=3D"m_0t-btn" style=3D"border:1=
+px solid rgb(0,143,123);border-radius:3px;display:inline-block;font-family:=
+Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;line-height:30px=
+;text-align:center;text-decoration:none;white-space:nowrap;padding-left:12p=
+x;padding-right:12px;background-color:rgb(0,143,123);color:rgb(255,255,255)=
+" target=3D"_blank"> Gerir a minha reserva</a></div></th><th class=3D"m_0rw=
+d-ta-left m_0rwd-pl-0 m_0rwd-show" style=3D"vertical-align:middle;font-weig=
+ht:normal;text-align:left;display:none;font-size:12px;line-height:16px;padd=
+ing-left:12px;font-family:Arial,Helvetica,sans-serif"><div style=3D"font-fa=
+mily:Arial,Helvetica,sans-serif"> ou <a href=3D"https://getapp.kiwi.com/FSp=
+A?REDACTED" style=3D"text-decoration:underline;font-family:Arial,Helvetica,=
+sans-serif;color:rgb(37,42,49)" target=3D"_blank">Inicie sess=C3=A3o</a></d=
+iv></th></tr></tbody></table></th></tr></tbody></table><table role=3D"prese=
+ntation" class=3D"m_0rwd-block-table" width=3D"100%" border=3D"0" cellspaci=
+ng=3D"0" cellpadding=3D"0" style=3D"width:100%;margin:0px;padding:0px;borde=
+r-spacing:0px;font-size:14px;line-height:20px;font-family:Arial,Helvetica,s=
+ans-serif;text-align:left;table-layout:auto;color:rgb(37,42,49)"><tbody sty=
+le=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"font-family:Aria=
+l,Helvetica,sans-serif"><th style=3D"vertical-align:middle;font-weight:norm=
+al;text-align:left;padding-top:16px;font-family:Arial,Helvetica,sans-serif"=
+><table role=3D"presentation" class=3D"m_0t-grid--auto" border=3D"0" cellsp=
+acing=3D"0" cellpadding=3D"0" style=3D"margin:0px;padding:0px;border-spacin=
+g:0px;font-size:14px;line-height:20px;font-family:Arial,Helvetica,sans-seri=
+f;text-align:left;width:auto;table-layout:auto;color:rgb(37,42,49)"><tbody =
+style=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"font-family:A=
+rial,Helvetica,sans-serif"></tr></tbody></table></th></tr></tbody></table><=
+/th></tr></tbody></table><table role=3D"presentation" class=3D"m_0rwd-block=
+-table" width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" sty=
+le=3D"width:100%;margin:0px;padding:0px;border-spacing:0px;font-size:14px;l=
+ine-height:20px;font-family:Arial,Helvetica,sans-serif;text-align:left;tabl=
+e-layout:fixed;color:rgb(37,42,49)"><tbody style=3D"font-family:Arial,Helve=
+tica,sans-serif"><tr style=3D"font-family:Arial,Helvetica,sans-serif"><th s=
+tyle=3D"vertical-align:middle;font-weight:normal;text-align:left;border:1px=
+ solid rgb(232,237,241);border-radius:3px 3px 0px 0px;background-image:none=
+;background-position:0% 0%;background-size:auto;background-repeat:repeat;ba=
+ckground-origin:padding-box;background-clip:border-box;padding:40px 32px 12=
+px;font-family:Arial,Helvetica,sans-serif"><p style=3D"padding:0px;text-ali=
+gn:left;font-weight:bold;font-family:Arial,Helvetica,sans-serif;font-size:1=
+6px;line-height:20px;margin:0px 0px 8px;color:rgb(37,42,49)"> <span style=
+=3D"font-family:Arial,Helvetica,sans-serif"> Estocolmo <img src=3D"https://=
+images.kiwi.com/orbit-icons/primary/32x32/flight-return.png" alt=3D"=E2=86=
+=94" width=3D"20" height=3D"20" style=3D"border: 0px; vertical-align: top; =
+font-family: Arial, Helvetica, sans-serif;"> Londres</span></p><h1 style=3D=
+"padding:0px;text-align:left;font-weight:bold;font-family:Arial,Helvetica,s=
+ans-serif;margin:24px 0px 8px;font-size:28px;line-height:36px;color:rgb(37,=
+42,49)">J=C3=A1 est=C3=A1 tudo pronto para a sua viagem! =E2=9C=85</h1><tab=
+le role=3D"presentation" class=3D"m_0rwd-block-table" width=3D"100%" border=
+=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"width:100%;margin:0px;p=
+adding:0px;border-spacing:0px;font-size:14px;line-height:20px;font-family:A=
+rial,Helvetica,sans-serif;text-align:left;table-layout:fixed;color:rgb(37,4=
+2,49)"><tbody style=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D=
+"font-family:Arial,Helvetica,sans-serif"><th style=3D"font-weight:normal;te=
+xt-align:left;vertical-align:top;font-family:Arial,Helvetica,sans-serif"><t=
+able role=3D"presentation" width=3D"100%" border=3D"0" cellspacing=3D"0" ce=
+llpadding=3D"0" style=3D"width:100%;margin:0px;padding:0px;border-spacing:0=
+px;font-size:14px;line-height:20px;font-family:Arial,Helvetica,sans-serif;t=
+ext-align:left;table-layout:fixed;color:rgb(37,42,49)"><tbody style=3D"font=
+-family:Arial,Helvetica,sans-serif"><tr style=3D"font-family:Arial,Helvetic=
+a,sans-serif"><th style=3D"vertical-align:middle;font-weight:normal;text-al=
+ign:left;padding-bottom:24px;font-family:Arial,Helvetica,sans-serif"><table=
+ role=3D"presentation" width=3D"100%" border=3D"0" cellspacing=3D"0" cellpa=
+dding=3D"0" style=3D"width:100%;margin:0px;padding:0px;border-spacing:0px;f=
+ont-size:14px;line-height:20px;font-family:Arial,Helvetica,sans-serif;text-=
+align:left;table-layout:fixed;color:rgb(37,42,49)"><tbody style=3D"font-fam=
+ily:Arial,Helvetica,sans-serif"><tr style=3D"font-family:Arial,Helvetica,sa=
+ns-serif"><th style=3D"vertical-align:middle;font-weight:normal;text-align:=
+left;font-family:Arial,Helvetica,sans-serif"><p style=3D"padding:0px;text-a=
+lign:left;font-weight:bold;font-family:Arial,Helvetica,sans-serif;font-size=
+:12px;line-height:20px;text-transform:uppercase;margin:0px 0px 8px;color:rg=
+b(95,115,140)">N=C3=BAmero de reserva</p><p style=3D"padding:0px;text-align=
+:left;font-weight:bold;font-family:Arial,Helvetica,sans-serif;font-size:16p=
+x;line-height:20px;margin:0px;letter-spacing:3px;color:rgb(37,42,49)">755 8=
+85 086</p></th></tr></tbody></table></th></tr></tbody></table></th><th clas=
+s=3D"m_0rwd-hide" style=3D"font-weight:normal;text-align:left;vertical-alig=
+n:top;width:24px;font-family:Arial,Helvetica,sans-serif"></th><th style=3D"=
+font-weight:normal;text-align:left;vertical-align:top;font-family:Arial,Hel=
+vetica,sans-serif"><table role=3D"presentation" width=3D"100%" border=3D"0"=
+ cellspacing=3D"0" cellpadding=3D"0" style=3D"width:100%;margin:0px;padding=
+:0px;border-spacing:0px;font-size:14px;line-height:20px;font-family:Arial,H=
+elvetica,sans-serif;text-align:left;table-layout:fixed;color:rgb(37,42,49)"=
+><tbody style=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"font-=
+family:Arial,Helvetica,sans-serif"><th style=3D"vertical-align:middle;font-=
+weight:normal;text-align:left;padding-bottom:24px;font-family:Arial,Helveti=
+ca,sans-serif"><table role=3D"presentation" width=3D"100%" border=3D"0" cel=
+lspacing=3D"0" cellpadding=3D"0" style=3D"width:100%;margin:0px;padding:0px=
+;border-spacing:0px;font-size:14px;line-height:20px;font-family:Arial,Helve=
+tica,sans-serif;text-align:left;table-layout:fixed;color:rgb(37,42,49)"><tb=
+ody style=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"font-fami=
+ly:Arial,Helvetica,sans-serif"><th style=3D"vertical-align:middle;font-weig=
+ht:normal;text-align:left;font-family:Arial,Helvetica,sans-serif"><p style=
+=3D"padding:0px;text-align:left;font-weight:bold;font-family:Arial,Helvetic=
+a,sans-serif;font-size:12px;line-height:20px;text-transform:uppercase;margi=
+n:0px 0px 8px;color:rgb(95,115,140)">Estado da reserva</p><p style=3D"paddi=
+ng:0px;text-align:left;font-weight:bold;font-family:Arial,Helvetica,sans-se=
+rif;font-size:16px;line-height:20px;margin:0px;color:rgb(37,42,49)"></p><ta=
+ble role=3D"presentation" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" =
+style=3D"margin:0px;padding:0px;border-spacing:0px;line-height:20px;font-fa=
+mily:Arial,Helvetica,sans-serif;text-align:left;table-layout:fixed;width:au=
+to;font-size:12px;font-weight:bold;color:rgb(37,42,49)"><tbody style=3D"fon=
+t-family:Arial,Helvetica,sans-serif"><tr style=3D"font-family:Arial,Helveti=
+ca,sans-serif"><th class=3D"m_0t-badge__inner" style=3D"text-align:left;bor=
+der-radius:20px;vertical-align:top;font-weight:bold;height:24px;padding:0px=
+ 8px 0px 4px;background:0% 0% repeat rgb(4,135,36);font-family:Arial,Helvet=
+ica,sans-serif;color:rgb(255,255,255)"><table role=3D"presentation" border=
+=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"margin:0px;padding:0px;=
+border-spacing:0px;line-height:20px;font-family:Arial,Helvetica,sans-serif;=
+text-align:left;width:auto;table-layout:auto;max-width:100%;font-size:12px;=
+color:rgb(255,255,255)"><tbody style=3D"font-family:Arial,Helvetica,sans-se=
+rif"><tr style=3D"font-family:Arial,Helvetica,sans-serif"><th class=3D"m_0t=
+-icon__icon" style=3D"font-size:0px;text-align:center;width:1px;padding:0px=
+ 4px 0px 0px;vertical-align:top;font-weight:bold;font-family:Arial,Helvetic=
+a,sans-serif"> <img src=3D"https://images.kiwi.com/orbit-icons/white/32x32/=
+check-circle.png" alt=3D"" width=3D"16" height=3D"16" style=3D"border: 0px;=
+ vertical-align: middle; font-family: Arial, Helvetica, sans-serif;"></th><=
+th style=3D"text-align:left;vertical-align:top;font-weight:bold;font-family=
+:Arial,Helvetica,sans-serif"> <span style=3D"white-space:nowrap;font-family=
+:Arial,Helvetica,sans-serif"> Confirmada</span></th></tr></tbody></table></=
+th></tr></tbody></table></th></tr></tbody></table></th></tr></tbody></table=
+></th></tr></tbody></table><p style=3D"margin:0px 0px 12px;font-family:Aria=
+l,Helvetica,sans-serif"> Recebemos o =C3=BAltimo n=C3=BAmero de reserva em =
+falta, por isso, est=C3=A1 tudo pronto! =F0=9F=8E=89</p><p style=3D"margin:=
+0px 0px 12px;font-family:Arial,Helvetica,sans-serif"> Como efetuou a reserv=
+a connosco, provavelmente n=C3=A3o vai mesmo precisar dos n=C3=BAmeros de r=
+eserva da transportadora. No entanto, =C3=A9 sempre uma boa ideia t=C3=AA-l=
+os consigo, para o caso de o pessoal do aeroporto os pedir. No entanto, se =
+vier mesmo a precisar deles, poder=C3=A1 encontr=C3=A1-los nos detalhes do =
+seu itiner=C3=A1rio.</p><ul border=3D"0" cellspacing=3D"0" cellpadding=3D"0=
+" style=3D"margin:0px;padding:0px;list-style:none;font-family:Arial,Helveti=
+ca,sans-serif"><li style=3D"margin:0px;padding:0px;font-family:Arial,Helvet=
+ica,sans-serif"><table role=3D"presentation" border=3D"0" cellpadding=3D"0"=
+ cellspacing=3D"0" width=3D"100%" style=3D"width:100%;margin:0px;padding:0p=
+x;font-size:14px;font-family:Arial,Helvetica,sans-serif;text-align:left;tab=
+le-layout:fixed;border-spacing:0px;line-height:16px;color:rgb(37,42,49)"><t=
+body style=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"font-fam=
+ily:Arial,Helvetica,sans-serif"><td width=3D"16" style=3D"width:16px;text-a=
+lign:center;padding:0px 7px 0px 0px;vertical-align:top;font-family:Arial,He=
+lvetica,sans-serif"> <img src=3D"https://mailing-media.kiwi.com/images/orbi=
+t-design/timeline/timeline_checked.png" alt=3D"" width=3D"16" height=3D"16"=
+ style=3D"border: 0px; vertical-align: top; width: 16px; display: block; ma=
+rgin-left: auto; margin-right: auto; font-family: Arial, Helvetica, sans-se=
+rif;"></td><td style=3D"padding:0px 14px;vertical-align:top;font-size:12px;=
+font-weight:bold;font-family:Arial,Helvetica,sans-serif"> <span style=3D"fo=
+nt-family:Arial,Helvetica,sans-serif;color:rgb(95,115,140)">Pagamento</span=
+></td></tr></tbody></table><table role=3D"presentation" border=3D"0" cellpa=
+dding=3D"0" cellspacing=3D"0" width=3D"100%" style=3D"width:100%;margin:0px=
+;padding:0px;font-size:14px;line-height:20px;font-family:Arial,Helvetica,sa=
+ns-serif;text-align:left;table-layout:fixed;border-spacing:0px;color:rgb(37=
+,42,49)"><tbody style=3D"font-family:Arial,Helvetica,sans-serif"><tr style=
+=3D"font-family:Arial,Helvetica,sans-serif"><td width=3D"12" style=3D"width=
+:7px;text-align:center;padding:0px;vertical-align:top;font-family:Arial,Hel=
+vetica,sans-serif"></td><td width=3D"14" style=3D"width:14px;text-align:cen=
+ter;padding:0px;vertical-align:top;border-left-width:2px;border-left-style:=
+solid;font-family:Arial,Helvetica,sans-serif;border-left-color:rgb(40,161,5=
+6)"></td><td style=3D"padding:12px 22px 4px 14px;vertical-align:top;font-fa=
+mily:Arial,Helvetica,sans-serif"><p style=3D"margin:0px 0px 12px;font-famil=
+y:Arial,Helvetica,sans-serif;color:rgb(95,115,140)"> O seu pagamento foi ef=
+etuado com =C3=AAxito.</p></td></tr></tbody></table></li><li style=3D"margi=
+n:0px;padding:0px;font-family:Arial,Helvetica,sans-serif"><table role=3D"pr=
+esentation" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%"=
+ style=3D"width:100%;margin:0px;padding:0px;font-size:14px;font-family:Aria=
+l,Helvetica,sans-serif;text-align:left;table-layout:fixed;border-spacing:0p=
+x;line-height:16px;color:rgb(37,42,49)"><tbody style=3D"font-family:Arial,H=
+elvetica,sans-serif"><tr style=3D"font-family:Arial,Helvetica,sans-serif"><=
+td width=3D"16" style=3D"width:16px;text-align:center;padding:0px 7px 0px 0=
+px;vertical-align:top;font-family:Arial,Helvetica,sans-serif"> <img src=3D"=
+https://mailing-media.kiwi.com/images/orbit-design/timeline/timeline_checke=
+d.png" alt=3D"" width=3D"16" height=3D"16" style=3D"border: 0px; vertical-a=
+lign: top; width: 16px; display: block; margin-left: auto; margin-right: au=
+to; font-family: Arial, Helvetica, sans-serif;"></td><td style=3D"padding:0=
+px 14px;vertical-align:top;font-size:12px;font-weight:bold;font-family:Aria=
+l,Helvetica,sans-serif"> <span style=3D"font-family:Arial,Helvetica,sans-se=
+rif;color:rgb(95,115,140)">Reserva junto das transportadoras</span></td></t=
+r></tbody></table><table role=3D"presentation" border=3D"0" cellpadding=3D"=
+0" cellspacing=3D"0" width=3D"100%" style=3D"width:100%;margin:0px;padding:=
+0px;font-size:14px;line-height:20px;font-family:Arial,Helvetica,sans-serif;=
+text-align:left;table-layout:fixed;border-spacing:0px;color:rgb(37,42,49)">=
+<tbody style=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"font-f=
+amily:Arial,Helvetica,sans-serif"><td width=3D"12" style=3D"width:7px;text-=
+align:center;padding:0px;vertical-align:top;font-family:Arial,Helvetica,san=
+s-serif"></td><td width=3D"14" style=3D"width:14px;text-align:center;paddin=
+g:0px;vertical-align:top;border-left-width:2px;border-left-style:solid;font=
+-family:Arial,Helvetica,sans-serif;border-left-color:rgb(40,161,56)"></td><=
+td style=3D"padding:12px 22px 4px 14px;vertical-align:top;font-family:Arial=
+,Helvetica,sans-serif"><p style=3D"margin:0px 0px 12px;font-family:Arial,He=
+lvetica,sans-serif;color:rgb(95,115,140)"> Efetu=C3=A1mos a reserva da sua =
+viagem junto das transportadoras</p></td></tr></tbody></table></li><li styl=
+e=3D"margin:0px;padding:0px;font-family:Arial,Helvetica,sans-serif"><table =
+role=3D"presentation" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" widt=
+h=3D"100%" style=3D"width:100%;margin:0px;padding:0px;font-size:14px;font-f=
+amily:Arial,Helvetica,sans-serif;text-align:left;table-layout:fixed;border-=
+spacing:0px;line-height:16px;color:rgb(37,42,49)"><tbody style=3D"font-fami=
+ly:Arial,Helvetica,sans-serif"><tr style=3D"font-family:Arial,Helvetica,san=
+s-serif"><td width=3D"16" style=3D"width:16px;text-align:center;padding:0px=
+ 7px 0px 0px;vertical-align:top;font-family:Arial,Helvetica,sans-serif"> <i=
+mg src=3D"https://mailing-media.kiwi.com/images/orbit-design/timeline/timel=
+ine_checked.png" alt=3D"" width=3D"16" height=3D"16" style=3D"border: 0px; =
+vertical-align: top; width: 16px; display: block; margin-left: auto; margin=
+-right: auto; font-family: Arial, Helvetica, sans-serif;"></td><td style=3D=
+"padding:0px 14px;vertical-align:top;font-size:12px;font-weight:bold;font-f=
+amily:Arial,Helvetica,sans-serif"> <span style=3D"font-family:Arial,Helveti=
+ca,sans-serif;color:rgb(95,115,140)">Confirma=C3=A7=C3=A3o final de reserva=
+</span></td></tr></tbody></table><table role=3D"presentation" border=3D"0" =
+cellpadding=3D"0" cellspacing=3D"0" width=3D"100%" style=3D"width:100%;marg=
+in:0px;padding:0px;font-size:14px;line-height:20px;font-family:Arial,Helvet=
+ica,sans-serif;text-align:left;table-layout:fixed;border-spacing:0px;color:=
+rgb(37,42,49)"><tbody style=3D"font-family:Arial,Helvetica,sans-serif"><tr =
+style=3D"font-family:Arial,Helvetica,sans-serif"><td width=3D"12" style=3D"=
+width:7px;text-align:center;padding:0px;vertical-align:top;font-family:Aria=
+l,Helvetica,sans-serif"></td><td width=3D"14" style=3D"width:14px;text-alig=
+n:center;padding:0px;vertical-align:top;border-left-width:2px;border-left-s=
+tyle:solid;font-family:Arial,Helvetica,sans-serif;border-left-color:rgb(1,1=
+14,203)"></td><td style=3D"padding:12px 22px 4px 14px;vertical-align:top;fo=
+nt-family:Arial,Helvetica,sans-serif"><p style=3D"margin:0px 0px 12px;font-=
+family:Arial,Helvetica,sans-serif;color:rgb(95,115,140)"> As transportadora=
+s confirmaram a sua viagem e est=C3=A1 tudo pronto para poder viajar!</p></=
+td></tr></tbody></table></li><li style=3D"margin:0px;padding:0px;font-famil=
+y:Arial,Helvetica,sans-serif"><table role=3D"presentation" border=3D"0" cel=
+lpadding=3D"0" cellspacing=3D"0" width=3D"100%" style=3D"width:100%;margin:=
+0px;padding:0px;font-size:14px;font-family:Arial,Helvetica,sans-serif;text-=
+align:left;table-layout:fixed;border-spacing:0px;line-height:16px;color:rgb=
+(37,42,49)"><tbody style=3D"font-family:Arial,Helvetica,sans-serif"><tr sty=
+le=3D"font-family:Arial,Helvetica,sans-serif"><td width=3D"16" style=3D"wid=
+th:16px;text-align:center;padding:0px 7px 0px 0px;vertical-align:top;font-f=
+amily:Arial,Helvetica,sans-serif"> <img src=3D"https://mailing-media.kiwi.c=
+om/images/orbit-design/timeline/mobile.png" alt=3D"" width=3D"16" height=3D=
+"16" style=3D"border: 0px; vertical-align: top; width: 16px; display: block=
+; margin-left: auto; margin-right: auto; font-family: Arial, Helvetica, san=
+s-serif;"></td><td style=3D"padding:0px 14px;vertical-align:top;font-size:1=
+2px;font-weight:bold;font-family:Arial,Helvetica,sans-serif"> <span style=
+=3D"font-family:Arial,Helvetica,sans-serif;color:rgb(0,112,200)">Atualiza=
+=C3=A7=C3=B5es na aplica=C3=A7=C3=A3o Kiwi.com</span></td></tr></tbody></ta=
+ble><table role=3D"presentation" border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0" width=3D"100%" style=3D"width:100%;margin:0px;padding:0px;font-size:=
+14px;line-height:20px;font-family:Arial,Helvetica,sans-serif;text-align:lef=
+t;table-layout:fixed;border-spacing:0px;color:rgb(37,42,49)"><tbody style=
+=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"font-family:Arial,=
+Helvetica,sans-serif"><td width=3D"12" style=3D"width:7px;text-align:center=
+;padding:0px;vertical-align:top;font-family:Arial,Helvetica,sans-serif"></t=
+d><td width=3D"14" style=3D"text-align:center;padding:0px;vertical-align:to=
+p;width:16px;font-family:Arial,Helvetica,sans-serif"></td><td style=3D"padd=
+ing:12px 22px 4px 14px;vertical-align:top;font-family:Arial,Helvetica,sans-=
+serif"><p style=3D"margin:0px 0px 12px;font-family:Arial,Helvetica,sans-ser=
+if"> Pode ver todos os detalhes, transferir documentos e gerir a sua viagem=
+ <a href=3D"https://email.txn-mg.kiwi.com/c/REDACTED" style=3D"text-decorat=
+ion:underline;font-family:Arial,Helvetica,sans-serif;color:rgb(37,42,49)" t=
+arget=3D"_blank">na nossa aplica=C3=A7=C3=A3o</a>.</p></td></tr></tbody></t=
+able></li></ul><p style=3D"margin:0px 0px 12px;font-family:Arial,Helvetica,=
+sans-serif"> Pr=C3=B3ximo passo: <a href=3D"https://email.txn-mg.kiwi.com/c=
+/REDACTED" style=3D"text-decoration:underline;font-family:Arial,Helvetica,s=
+ans-serif;color:rgb(37,42,49)" target=3D"_blank">utilize a nossa aplica=C3=
+=A7=C3=A3o</a> para adicionar servi=C3=A7os extra, obter atualiza=C3=A7=C3=
+=B5es imediatas de viagem e aceder aos seus cart=C3=B5es de embarque e bilh=
+etes, mesmo que esteja offline (n=C3=A3o precisa de recorrer =C3=A0 Wi-Fi d=
+o aeroporto!).</p><p style=3D"margin:0px 0px 12px;font-family:Arial,Helveti=
+ca,sans-serif"></p><table role=3D"presentation" class=3D"m_0rwd-block-table=
+ m_0t-grid--auto" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D=
+"margin:0px auto;padding:0px;border-spacing:0px;font-size:14px;line-height:=
+20px;font-family:Arial,Helvetica,sans-serif;text-align:left;width:auto;tabl=
+e-layout:auto;color:rgb(37,42,49)"><tbody style=3D"font-family:Arial,Helvet=
+ica,sans-serif"><tr style=3D"font-family:Arial,Helvetica,sans-serif"><th st=
+yle=3D"font-weight:normal;text-align:left;vertical-align:top;padding-bottom=
+:12px;font-family:Arial,Helvetica,sans-serif"><a href=3D"https://email.txn-=
+mg.kiwi.com/c/REDACTED" class=3D"m_0t-btn" style=3D"border:1px solid rgb(0,=
+143,123);border-radius:3px;display:inline-block;font-family:Arial,Helvetica=
+,sans-serif;font-size:14px;font-weight:bold;line-height:42px;text-align:cen=
+ter;text-decoration:none;white-space:nowrap;padding-left:12px;padding-right=
+:12px;background-color:rgb(0,143,123);color:rgb(255,255,255)" target=3D"_bl=
+ank"> Gerir viagem na aplica=C3=A7=C3=A3o</a></th><th class=3D"m_0t-grid__c=
+ol--gutter-xs m_0rwd-hide" style=3D"font-weight:normal;text-align:left;vert=
+ical-align:top;width:8px;font-family:Arial,Helvetica,sans-serif"></th><th s=
+tyle=3D"font-weight:normal;text-align:left;vertical-align:top;padding-botto=
+m:12px;font-family:Arial,Helvetica,sans-serif"><a href=3D"https://email.txn=
+-mg.kiwi.com/c/REDACTED" class=3D"m_0t-btn" style=3D"border:1px solid rgb(2=
+32,237,241);border-radius:3px;display:inline-block;font-family:Arial,Helvet=
+ica,sans-serif;font-size:14px;font-weight:bold;line-height:42px;text-align:=
+center;text-decoration:none;white-space:nowrap;padding-left:12px;padding-ri=
+ght:12px;background-color:rgb(232,237,241);color:rgb(37,42,49)" target=3D"_=
+blank"> Transferir e-tickets =C2=A0<img src=3D"https://images.kiwi.com/orbi=
+t-icons/primary/48x48/download.png" alt=3D"" width=3D"24" height=3D"24" sty=
+le=3D"border: 0px; vertical-align: middle; font-family: Arial, Helvetica, s=
+ans-serif;"></a></th></tr></tbody></table><table class=3D"m_0rwd-block-tabl=
+e" width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" role=3D"=
+presentation" style=3D"width:100%;margin:0px;padding:0px 0px 16px;border-sp=
+acing:0px;font-size:14px;line-height:20px;font-family:Arial,Helvetica,sans-=
+serif;text-align:left;table-layout:fixed;color:rgb(37,42,49)"><tbody style=
+=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"font-family:Arial,=
+Helvetica,sans-serif"><th style=3D"vertical-align:middle;font-weight:normal=
+;text-align:left;padding:16px;border-radius:3px;background:0% 0% repeat rgb=
+(245,247,249);font-family:Arial,Helvetica,sans-serif;color:rgb(37,42,49)"><=
+table role=3D"presentation" border=3D"0" cellspacing=3D"0" cellpadding=3D"0=
+" style=3D"margin:0px;padding:0px;border-spacing:0px;font-size:14px;line-he=
+ight:20px;font-family:Arial,Helvetica,sans-serif;text-align:left;table-layo=
+ut:auto;max-width:100%;width:100%;color:rgb(37,42,49)"><tbody style=3D"font=
+-family:Arial,Helvetica,sans-serif"><tr style=3D"font-family:Arial,Helvetic=
+a,sans-serif"><th class=3D"m_0t-icon__icon" style=3D"font-weight:normal;fon=
+t-size:0px;text-align:center;width:1px;padding:0px 12px 0px 0px;vertical-al=
+ign:top;font-family:Arial,Helvetica,sans-serif"> <img src=3D"https://images=
+.kiwi.com/orbit-icons/info/48x48/information-circle.png" alt=3D"" width=3D"=
+24" height=3D"24" style=3D"border: 0px; vertical-align: middle; font-family=
+: Arial, Helvetica, sans-serif;"></th><th style=3D"font-weight:normal;text-=
+align:left;vertical-align:top;font-family:Arial,Helvetica,sans-serif"> <dl =
+style=3D"font-family:Arial,Helvetica,sans-serif"> <dt style=3D"margin:0px 0=
+px 12px;font-weight:bold;font-family:Arial,Helvetica,sans-serif">Onde posso=
+ acompanhar o estado da minha reserva?</dt> <dd style=3D"margin:0px 0px 12p=
+x;font-family:Arial,Helvetica,sans-serif"> Encontrar=C3=A1 as informa=C3=A7=
+=C3=B5es mais atuais <a href=3D"https://email.txn-mg.kiwi.com/c/REDACTED" s=
+tyle=3D"text-decoration:underline;font-weight:bold;font-family:Arial,Helvet=
+ica,sans-serif;color:rgb(37,42,49)" target=3D"_blank">na nossa aplica=C3=A7=
+=C3=A3o</a>. N=C3=A3o se esque=C3=A7a de ativar as notifica=C3=A7=C3=B5es p=
+ush para receber atualiza=C3=A7=C3=B5es imediatas sobre todas as suas viage=
+ns. <br><br> Para os seus voos da <img src=3D"https://images.kiwi.com/airli=
+nes/128/FR.png?default=3Dairline.png" alt=3D"Ryanair" width=3D"16" height=
+=3D"16" style=3D"border: 0px; vertical-align: middle; border-radius: 50%; f=
+ont-family: Arial, Helvetica, sans-serif;">, a Ryanair entrar=C3=A1 em cont=
+acto consigo diretamente com informa=C3=A7=C3=B5es relevantes, atualiza=C3=
+=A7=C3=B5es e instru=C3=A7=C3=B5es sobre como associar os seus voos =C3=A0 =
+sua conta Ryanair, por isso, n=C3=A3o se esque=C3=A7a de verificar os e-mai=
+ls que lhe enviarem. </dd> <dt style=3D"margin:0px 0px 12px;font-weight:bol=
+d;font-family:Arial,Helvetica,sans-serif">Onde posso efetuar altera=C3=A7=
+=C3=B5es =C3=A0 minha viagem?</dt> <dd style=3D"margin:0px 0px 12px;font-fa=
+mily:Arial,Helvetica,sans-serif"> Como a sua reserva inclui v=C3=A1rias tra=
+nsportadoras, =C3=A9 necess=C3=A1rio efetuar algumas altera=C3=A7=C3=B5es n=
+o Web site da transportadora. </dd> <dt style=3D"margin:0px 0px 12px;font-w=
+eight:bold;font-family:Arial,Helvetica,sans-serif"> Para efetuar altera=C3=
+=A7=C3=B5es nos voos da Ryanair, inicie sess=C3=A3o na sua conta em <img sr=
+c=3D"https://images.kiwi.com/airlines/128/FR.png?default=3Dairline.png" alt=
+=3D"Ryanair" width=3D"16" height=3D"16" style=3D"border: 0px; vertical-alig=
+n: middle; border-radius: 50%; font-family: Arial, Helvetica, sans-serif;">=
+ Ryanair.com para alterar a sua viagem.</dt> <dd style=3D"margin:0px 0px 12=
+px;font-family:Arial,Helvetica,sans-serif"> Para todas as outras transporta=
+doras, basta utilizar <a href=3D"https://email.txn-mg.kiwi.com/c/REDACTED" =
+style=3D"text-decoration:underline;font-weight:bold;font-family:Arial,Helve=
+tica,sans-serif;color:rgb(37,42,49)" target=3D"_blank">a aplica=C3=A7=C3=A3=
+o Kiwi.com</a> para efetuar as altera=C3=A7=C3=B5es. </dd> </dl></th></tr><=
+/tbody></table></th></tr></tbody></table><h2 style=3D"padding:0px;text-alig=
+n:left;font-weight:bold;font-family:Arial,Helvetica,sans-serif;margin:24px =
+0px 8px;font-size:12px;line-height:20px;text-transform:uppercase;color:rgb(=
+95,115,140)">Upgrade de viagem</h2><p style=3D"margin:0px 0px 12px;font-fam=
+ily:Arial,Helvetica,sans-serif"> Melhore a sua viagem com servi=C3=A7os adi=
+cionais e viaje com conforto. Pode adicionar a maioria destes servi=C3=A7os=
+ at=C3=A9 48 horas antes da viagem.</p><table role=3D"presentation" class=
+=3D"m_0rwd-block-table" width=3D"100%" border=3D"0" cellspacing=3D"0" cellp=
+adding=3D"0" style=3D"width:100%;margin:0px;padding:0px;border-spacing:0px;=
+font-size:14px;line-height:20px;font-family:Arial,Helvetica,sans-serif;text=
+-align:left;table-layout:fixed;color:rgb(37,42,49)"><tbody style=3D"font-fa=
+mily:Arial,Helvetica,sans-serif"><tr style=3D"font-family:Arial,Helvetica,s=
+ans-serif"><th style=3D"vertical-align:middle;font-weight:normal;text-align=
+:left;padding-bottom:8px;font-family:Arial,Helvetica,sans-serif"><table rol=
+e=3D"presentation" class=3D"m_0t-bnr-img m_0rwd-block-table" width=3D"100%"=
+ border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"width:100%;margi=
+n:0px;padding:0px;border-spacing:0px;font-size:14px;line-height:20px;font-f=
+amily:Arial,Helvetica,sans-serif;text-align:left;table-layout:fixed;color:r=
+gb(37,42,49)"><tbody style=3D"font-family:Arial,Helvetica,sans-serif"><tr s=
+tyle=3D"font-family:Arial,Helvetica,sans-serif"><th class=3D"m_0u-pl-md m_0=
+u-pr-md m_0rwd-clearfix m_0u-bg-default" style=3D"vertical-align:middle;fon=
+t-weight:normal;text-align:left;background:0% 0% repeat rgb(245,247,249);pa=
+dding-top:16px;padding-left:16px;padding-right:16px;border-radius:3px;heigh=
+t:140px;font-family:Arial,Helvetica,sans-serif"><table role=3D"presentation=
+" class=3D"m_0rwd-block-table" width=3D"100%" border=3D"0" cellspacing=3D"0=
+" cellpadding=3D"0" style=3D"width:100%;margin:0px;padding:0px;border-spaci=
+ng:0px;font-size:14px;line-height:20px;font-family:Arial,Helvetica,sans-ser=
+if;text-align:left;direction:ltr;table-layout:auto;color:rgb(37,42,49)"><tb=
+ody style=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"font-fami=
+ly:Arial,Helvetica,sans-serif"><th style=3D"font-weight:normal;text-align:l=
+eft;direction:ltr;width:152px;vertical-align:top;font-family:Arial,Helvetic=
+a,sans-serif"><div class=3D"m_0rwd-hide" style=3D"text-align:center;margin-=
+bottom:0px;font-family:Arial,Helvetica,sans-serif"><img src=3D"https://mail=
+ing-media.kiwi.com/images/orbit-design/ancillary_services/SeatingEmpty@3x.p=
+ng" alt=3D"" width=3D"117" height=3D"88" style=3D"border: 0px; vertical-ali=
+gn: top; font-family: Arial, Helvetica, sans-serif;"></div></th><th class=
+=3D"m_0rwd-hide" style=3D"font-weight:normal;text-align:left;width:12px;ver=
+tical-align:middle;font-family:Arial,Helvetica,sans-serif"></th><th class=
+=3D"m_0rwd-pl-sm m_0rwd-pr-sm" style=3D"font-weight:normal;text-align:left;=
+direction:ltr;vertical-align:middle;font-family:Arial,Helvetica,sans-serif"=
+><h3 style=3D"padding:0px;text-align:left;font-weight:bold;font-family:Aria=
+l,Helvetica,sans-serif;font-size:16px;line-height:20px;margin:0px 0px 8px;c=
+olor:rgb(37,42,49)"> Querem sentar-se juntos? </h3><p style=3D"margin:0px 0=
+px 12px;font-family:Arial,Helvetica,sans-serif;color:rgb(95,115,140)"> Rese=
+rve j=C3=A1 o seu lugar favorito, antes que fique ocupado.</p><table role=
+=3D"presentation" class=3D"m_0rwd-block-table" width=3D"100%" border=3D"0" =
+cellspacing=3D"0" cellpadding=3D"0" style=3D"width:100%;margin:0px;padding:=
+0px;border-spacing:0px;font-size:14px;line-height:20px;font-family:Arial,He=
+lvetica,sans-serif;text-align:left;table-layout:fixed;color:rgb(37,42,49)">=
+<tbody style=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"font-f=
+amily:Arial,Helvetica,sans-serif"><th class=3D"m_0rwd-ta-left" style=3D"ver=
+tical-align:middle;font-weight:normal;text-align:left;padding-bottom:16px;f=
+ont-family:Arial,Helvetica,sans-serif"><a href=3D"https://email.txn-mg.kiwi=
+.com/c/REDACTED" class=3D"m_0t-btn" style=3D"border:1px solid rgb(0,143,123=
+);border-radius:3px;display:inline-block;font-family:Arial,Helvetica,sans-s=
+erif;font-size:12px;font-weight:bold;line-height:30px;text-align:center;tex=
+t-decoration:none;white-space:nowrap;padding-left:12px;padding-right:12px;b=
+ackground-color:rgb(0,143,123);color:rgb(255,255,255)" target=3D"_blank"> R=
+eservar lugar</a></th></tr></tbody></table></th></tr></tbody></table></th><=
+/tr></tbody></table></th></tr></tbody></table><table role=3D"presentation" =
+class=3D"m_0rwd-block-table" width=3D"100%" border=3D"0" cellspacing=3D"0" =
+cellpadding=3D"0" style=3D"width:100%;margin:0px;padding:0px;border-spacing=
+:0px;font-size:14px;line-height:20px;font-family:Arial,Helvetica,sans-serif=
+;text-align:left;table-layout:fixed;color:rgb(37,42,49)"><tbody style=3D"fo=
+nt-family:Arial,Helvetica,sans-serif"><tr style=3D"font-family:Arial,Helvet=
+ica,sans-serif"><th style=3D"vertical-align:middle;font-weight:normal;text-=
+align:left;padding-bottom:8px;font-family:Arial,Helvetica,sans-serif"><tabl=
+e role=3D"presentation" class=3D"m_0t-bnr-img m_0rwd-block-table" width=3D"=
+100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"width:100%;=
+margin:0px;padding:0px;border-spacing:0px;font-size:14px;line-height:20px;f=
+ont-family:Arial,Helvetica,sans-serif;text-align:left;table-layout:fixed;co=
+lor:rgb(37,42,49)"><tbody style=3D"font-family:Arial,Helvetica,sans-serif">=
+<tr style=3D"font-family:Arial,Helvetica,sans-serif"><th class=3D"m_0u-pl-m=
+d m_0u-pr-md m_0rwd-clearfix m_0u-bg-default" style=3D"vertical-align:middl=
+e;font-weight:normal;text-align:left;background:0% 0% repeat rgb(245,247,24=
+9);padding-top:16px;padding-left:16px;padding-right:16px;border-radius:3px;=
+height:140px;font-family:Arial,Helvetica,sans-serif"><table role=3D"present=
+ation" class=3D"m_0rwd-block-table" width=3D"100%" border=3D"0" cellspacing=
+=3D"0" cellpadding=3D"0" style=3D"width:100%;margin:0px;padding:0px;border-=
+spacing:0px;font-size:14px;line-height:20px;font-family:Arial,Helvetica,san=
+s-serif;text-align:left;direction:ltr;table-layout:auto;color:rgb(37,42,49)=
+"><tbody style=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"font=
+-family:Arial,Helvetica,sans-serif"><th style=3D"font-weight:normal;text-al=
+ign:left;direction:ltr;width:152px;vertical-align:top;font-family:Arial,Hel=
+vetica,sans-serif"><div class=3D"m_0rwd-hide" style=3D"text-align:center;ma=
+rgin-bottom:0px;font-family:Arial,Helvetica,sans-serif"><img src=3D"https:/=
+/mailing-media.kiwi.com/images/orbit-design/ancillary_services/SecurityShie=
+ldV2@3x.png" alt=3D"" width=3D"117" height=3D"88" style=3D"border: 0px; ver=
+tical-align: top; font-family: Arial, Helvetica, sans-serif;"></div><p styl=
+e=3D"margin:0px 0px 12px;font-size:12px;line-height:16px;font-family:Arial,=
+Helvetica,sans-serif;color:rgb(95,115,140)"> Proporcionado por=C2=A0<img sr=
+c=3D"https://images.kiwi.com/logos/0x48/Axa.png" alt=3D"Axa.com" width=3D"3=
+2" height=3D"32" style=3D"border: 0px; vertical-align: bottom; font-family:=
+ Arial, Helvetica, sans-serif;"></p></th><th class=3D"m_0rwd-hide" style=3D=
+"font-weight:normal;text-align:left;width:12px;vertical-align:middle;font-f=
+amily:Arial,Helvetica,sans-serif"></th><th class=3D"m_0rwd-pl-sm m_0rwd-pr-=
+sm" style=3D"font-weight:normal;text-align:left;direction:ltr;vertical-alig=
+n:middle;font-family:Arial,Helvetica,sans-serif"><h3 style=3D"padding:0px;t=
+ext-align:left;font-weight:bold;font-family:Arial,Helvetica,sans-serif;font=
+-size:16px;line-height:20px;margin:0px 0px 8px;color:rgb(37,42,49)"> Seguro=
+ contra imprevistos </h3><p style=3D"margin:0px 0px 12px;font-family:Arial,=
+Helvetica,sans-serif;color:rgb(95,115,140)"> Proteja a sua viagem com a AXA=
+ Assistance, especialista em seguros de viagem. Obtenha cobertura em todo o=
+ mundo, apoio permanente e mais de 200 anos de experi=C3=AAncia.</p><table =
+role=3D"presentation" class=3D"m_0rwd-block-table" width=3D"100%" border=3D=
+"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"width:100%;margin:0px;padd=
+ing:0px;border-spacing:0px;font-size:14px;line-height:20px;font-family:Aria=
+l,Helvetica,sans-serif;text-align:left;table-layout:fixed;color:rgb(37,42,4=
+9)"><tbody style=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"fo=
+nt-family:Arial,Helvetica,sans-serif"><th class=3D"m_0rwd-ta-left" style=3D=
+"vertical-align:middle;font-weight:normal;text-align:left;padding-bottom:16=
+px;font-family:Arial,Helvetica,sans-serif"><a href=3D"https://email.txn-mg.=
+kiwi.com/c/REDACTED" class=3D"m_0t-btn" style=3D"border:1px solid rgb(0,143=
+,123);border-radius:3px;display:inline-block;font-family:Arial,Helvetica,sa=
+ns-serif;font-size:12px;font-weight:bold;line-height:30px;text-align:center=
+;text-decoration:none;white-space:nowrap;padding-left:12px;padding-right:12=
+px;background-color:rgb(0,143,123);color:rgb(255,255,255)" target=3D"_blank=
+"> Adicionar seguro</a></th></tr></tbody></table></th></tr></tbody></table>=
+</th></tr></tbody></table></th></tr></tbody></table></th></tr></tbody></tab=
+le><table role=3D"presentation" class=3D"m_0rwd-block-table" width=3D"100%"=
+ border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"width:100%;margi=
+n:0px;padding:0px;border-spacing:0px;font-size:14px;line-height:20px;font-f=
+amily:Arial,Helvetica,sans-serif;text-align:left;table-layout:fixed;color:r=
+gb(37,42,49)"><tbody style=3D"font-family:Arial,Helvetica,sans-serif"><tr s=
+tyle=3D"font-family:Arial,Helvetica,sans-serif"><th style=3D"vertical-align=
+:middle;font-weight:normal;text-align:left;padding-top:24px;font-family:Ari=
+al,Helvetica,sans-serif"><table role=3D"presentation" class=3D"m_0rwd-block=
+-table" width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" sty=
+le=3D"width:100%;margin:0px;padding:0px;border-spacing:0px;font-size:14px;l=
+ine-height:20px;font-family:Arial,Helvetica,sans-serif;text-align:left;tabl=
+e-layout:fixed;color:rgb(37,42,49)"><tbody style=3D"font-family:Arial,Helve=
+tica,sans-serif"><tr style=3D"font-family:Arial,Helvetica,sans-serif"><th s=
+tyle=3D"vertical-align:middle;font-weight:normal;text-align:left;border:1px=
+ solid rgb(232,237,241);border-radius:3px;background-image:none;background-=
+position:0% 0%;background-size:auto;background-repeat:repeat;background-ori=
+gin:padding-box;background-clip:border-box;padding:24px 32px 16px;font-fami=
+ly:Arial,Helvetica,sans-serif"><h2 style=3D"padding:0px;text-align:left;fon=
+t-weight:bold;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-he=
+ight:20px;text-transform:uppercase;margin:0px 0px 8px;color:rgb(95,115,140)=
+">Artigos sugeridos para si</h2><ul style=3D"margin:0px 0px 12px;padding:0p=
+x 0px 0px 16px;list-style:square;font-weight:bold;font-size:12px;line-heigh=
+t:16px;font-family:Arial,Helvetica,sans-serif"><li style=3D"margin:0px 0px =
+4px;padding:0px;font-family:Arial,Helvetica,sans-serif"> <a href=3D"https:/=
+/email.txn-mg.kiwi.com/c/REDACTED" style=3D"text-decoration:underline;font-=
+family:Arial,Helvetica,sans-serif;color:rgb(37,42,49)" target=3D"_blank"> C=
+omo saber se precisa de um visto</a> <img src=3D"https://images.kiwi.com/or=
+bit-icons/primary/32x32/new-window.png" alt=3D"" width=3D"16" height=3D"16"=
+ style=3D"border: 0px; vertical-align: top; font-family: Arial, Helvetica, =
+sans-serif;"></li><li style=3D"margin:0px 0px 4px;padding:8px 0px 0px;font-=
+family:Arial,Helvetica,sans-serif"> <a href=3D"https://email.txn-mg.kiwi.co=
+m/c/REDACTED" style=3D"text-decoration:underline;font-family:Arial,Helvetic=
+a,sans-serif;color:rgb(37,42,49)" target=3D"_blank"> Sele=C3=A7=C3=A3o de l=
+ugares</a> <img src=3D"https://images.kiwi.com/orbit-icons/primary/32x32/ne=
+w-window.png" alt=3D"" width=3D"16" height=3D"16" style=3D"border: 0px; ver=
+tical-align: top; font-family: Arial, Helvetica, sans-serif;"></li><li styl=
+e=3D"margin:0px 0px 4px;padding:8px 0px 0px;font-family:Arial,Helvetica,san=
+s-serif"> <a href=3D"https://email.txn-mg.kiwi.com/c/REDACTED" style=3D"tex=
+t-decoration:underline;font-family:Arial,Helvetica,sans-serif;color:rgb(37,=
+42,49)" target=3D"_blank"> Itens proibidos</a> <img src=3D"https://images.k=
+iwi.com/orbit-icons/primary/32x32/new-window.png" alt=3D"" width=3D"16" hei=
+ght=3D"16" style=3D"border: 0px; vertical-align: top; font-family: Arial, H=
+elvetica, sans-serif;"></li><li style=3D"margin:0px 0px 4px;padding:8px 0px=
+ 0px;font-family:Arial,Helvetica,sans-serif"> <a href=3D"https://email.txn-=
+mg.kiwi.com/c/REDACTED" style=3D"text-decoration:underline;font-family:Aria=
+l,Helvetica,sans-serif;color:rgb(37,42,49)" target=3D"_blank"> Proteger a s=
+ua bagagem contra perdas</a> <img src=3D"https://images.kiwi.com/orbit-icon=
+s/primary/32x32/new-window.png" alt=3D"" width=3D"16" height=3D"16" style=
+=3D"border: 0px; vertical-align: top; font-family: Arial, Helvetica, sans-s=
+erif;"></li><li style=3D"margin:0px 0px 4px;padding:8px 0px 0px;font-family=
+:Arial,Helvetica,sans-serif"> <a href=3D"https://email.txn-mg.kiwi.com/c/RE=
+DACTED" style=3D"text-decoration:underline;font-family:Arial,Helvetica,sans=
+-serif;color:rgb(37,42,49)" target=3D"_blank"> Pacotes de bagagem com v=C3=
+=A1rias transportadoras</a> <img src=3D"https://images.kiwi.com/orbit-icons=
+/primary/32x32/new-window.png" alt=3D"" width=3D"16" height=3D"16" style=3D=
+"border: 0px; vertical-align: top; font-family: Arial, Helvetica, sans-seri=
+f;"></li></ul></th></tr></tbody></table></th></tr></tbody></table><table ro=
+le=3D"presentation" class=3D"m_0rwd-block-table" width=3D"100%" border=3D"0=
+" cellspacing=3D"0" cellpadding=3D"0" style=3D"width:100%;margin:0px;paddin=
+g:0px;border-spacing:0px;font-size:14px;line-height:20px;font-family:Arial,=
+Helvetica,sans-serif;text-align:left;table-layout:fixed;color:rgb(37,42,49)=
+"><tbody style=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"font=
+-family:Arial,Helvetica,sans-serif"><th class=3D"m_0rwd-pl-sm m_0rwd-pr-sm"=
+ style=3D"vertical-align:middle;font-weight:normal;text-align:left;padding:=
+24px 24px 16px;font-family:Arial,Helvetica,sans-serif"><table style=3D"widt=
+h:100%;margin:0px;padding:0px;border-spacing:0px;font-size:14px;line-height=
+:20px;font-family:Arial,Helvetica,sans-serif;text-align:left;table-layout:a=
+uto;color:rgb(37,42,49)"><tbody style=3D"font-family:Arial,Helvetica,sans-s=
+erif"><tr style=3D"font-family:Arial,Helvetica,sans-serif"><th style=3D"fon=
+t-weight:normal;text-align:left;vertical-align:top;font-size:12px;font-fami=
+ly:Arial,Helvetica,sans-serif;color:rgb(95,115,140)"><p style=3D"margin:0px=
+ 0px 8px;font-family:Arial,Helvetica,sans-serif"> Para mais informa=C3=A7=
+=C3=B5es, abra a <a href=3D"https://email.txn-mg.kiwi.com/c/REDACTED" style=
+=3D"text-decoration:underline;font-weight:bold;font-family:Arial,Helvetica,=
+sans-serif;color:rgb(37,42,49)" target=3D"_blank">Ajuda e apoio</a> ou <a h=
+ref=3D"https://email.txn-mg.kiwi.com/c/REDACTED" style=3D"text-decoration:u=
+nderline;font-weight:bold;font-family:Arial,Helvetica,sans-serif;color:rgb(=
+37,42,49)" target=3D"_blank">contacte-nos</a>. <br> <a href=3D"https://emai=
+l.txn-mg.kiwi.com/c/REDACTED" style=3D"text-decoration:underline;font-weigh=
+t:bold;font-family:Arial,Helvetica,sans-serif;color:rgb(37,42,49)" target=
+=3D"_blank">www.kiwi.com</a></p></th><th style=3D"vertical-align:middle;fon=
+t-weight:normal;text-align:right;font-family:Arial,Helvetica,sans-serif"><t=
+able style=3D"width:100%;margin:0px;padding:0px;border-spacing:0px;font-siz=
+e:14px;line-height:20px;font-family:Arial,Helvetica,sans-serif;text-align:l=
+eft;table-layout:auto;color:rgb(37,42,49)"><tbody style=3D"font-family:Aria=
+l,Helvetica,sans-serif"><tr style=3D"font-family:Arial,Helvetica,sans-serif=
+"><td style=3D"vertical-align:middle;font-family:Arial,Helvetica,sans-serif=
+"> <a href=3D"https://email.txn-mg.kiwi.com/c/REDACTED" style=3D"text-decor=
+ation:none;padding:0px 0px 8px;font-family:Arial,Helvetica,sans-serif;color=
+:rgb(37,42,49)" target=3D"_blank"> <img src=3D"https://images.kiwi.com/orbi=
+t-icons/secondary/48x48/facebook.png" alt=3D"Facebook" width=3D"24" height=
+=3D"24" style=3D"border: 0px; vertical-align: top; font-family: Arial, Helv=
+etica, sans-serif;"> </a></td><td style=3D"vertical-align:middle;font-famil=
+y:Arial,Helvetica,sans-serif"> <a href=3D"https://email.txn-mg.kiwi.com/c/R=
+EDACTED" style=3D"text-decoration:none;padding:0px 0px 8px;font-family:Aria=
+l,Helvetica,sans-serif;color:rgb(37,42,49)" target=3D"_blank"> <img src=3D"=
+https://images.kiwi.com/orbit-icons/secondary/48x48/twitter.png" alt=3D"Twi=
+tter" width=3D"24" height=3D"24" style=3D"border: 0px; vertical-align: top;=
+ font-family: Arial, Helvetica, sans-serif;"> </a></td><td style=3D"vertica=
+l-align:middle;font-family:Arial,Helvetica,sans-serif"> <a href=3D"https://=
+email.txn-mg.kiwi.com/c/REDACTED" style=3D"text-decoration:none;padding:0px=
+ 0px 8px;font-family:Arial,Helvetica,sans-serif;color:rgb(37,42,49)" target=
+=3D"_blank"> <img src=3D"https://images.kiwi.com/orbit-icons/secondary/48x4=
+8/instagram.png" alt=3D"Instagram" width=3D"24" height=3D"24" style=3D"bord=
+er: 0px; vertical-align: top; font-family: Arial, Helvetica, sans-serif;"> =
+</a></td><td style=3D"vertical-align:middle;font-family:Arial,Helvetica,san=
+s-serif"> <a href=3D"https://email.txn-mg.kiwi.com/c/REDACTED" style=3D"tex=
+t-decoration:none;padding:0px 0px 8px;font-family:Arial,Helvetica,sans-seri=
+f;color:rgb(37,42,49)" target=3D"_blank"> <img src=3D"https://images.kiwi.c=
+om/orbit-icons/secondary/48x48/linkedin.png" alt=3D"LinkedIn" width=3D"24" =
+height=3D"24" style=3D"border: 0px; vertical-align: top; font-family: Arial=
+, Helvetica, sans-serif;"> </a></td></tr></tbody></table></th></tr><tr styl=
+e=3D"font-family:Arial,Helvetica,sans-serif"><th style=3D"font-weight:norma=
+l;text-align:left;vertical-align:top;font-size:12px;font-family:Arial,Helve=
+tica,sans-serif;color:rgb(95,115,140)"></th><th style=3D"vertical-align:mid=
+dle;font-weight:normal;text-align:left;font-family:Arial,Helvetica,sans-ser=
+if"><p style=3D"margin:0px 0px 12px;text-align:right;font-family:Arial,Helv=
+etica,sans-serif"> <a href=3D"https://email.txn-mg.kiwi.com/c/REDACTED" sty=
+le=3D"text-decoration:underline;font-family:Arial,Helvetica,sans-serif;colo=
+r:rgb(37,42,49)" target=3D"_blank"> <img src=3D"https://images.kiwi.com/whi=
+telabels/0x80/kiwicom-monochromatic.png" alt=3D"Kiwi.com" width=3D"70" styl=
+e=3D"border: 0px; vertical-align: top; font-family: Arial, Helvetica, sans-=
+serif;"> </a></p></th></tr></tbody></table></th></tr></tbody></table><table=
+ role=3D"presentation" class=3D"m_0rwd-hide" width=3D"100%" border=3D"0" ce=
+llspacing=3D"0" cellpadding=3D"0" style=3D"width:100%;margin:0px;padding:0p=
+x;border-spacing:0px;font-size:14px;line-height:20px;font-family:Arial,Helv=
+etica,sans-serif;text-align:left;table-layout:fixed;color:rgb(37,42,49)"><t=
+body style=3D"font-family:Arial,Helvetica,sans-serif"><tr style=3D"font-fam=
+ily:Arial,Helvetica,sans-serif"><th style=3D"vertical-align:middle;font-wei=
+ght:normal;text-align:left;font-family:Arial,Helvetica,sans-serif"> <img sr=
+c=3D"https://mailing-media.kiwi.com/images/orbit-design/footer/footer_deskt=
+op@2x.png" class=3D"m_0rwd-hide" alt=3D"Fly for less, Guaranteeed!" width=
+=3D"640" height=3D"96" style=3D"border: 0px; vertical-align: top; font-fami=
+ly: Arial, Helvetica, sans-serif;"></th></tr></tbody></table><table role=3D=
+"presentation" class=3D"m_0rwd-block-table" width=3D"100%" border=3D"0" cel=
+lspacing=3D"0" cellpadding=3D"0" style=3D"width:100%;margin:0px;padding:0px=
+;border-spacing:0px;font-size:14px;line-height:20px;font-family:Arial,Helve=
+tica,sans-serif;text-align:left;table-layout:fixed;display:none;color:rgb(3=
+7,42,49)"><tbody style=3D"font-family:Arial,Helvetica,sans-serif"><tr style=
+=3D"font-family:Arial,Helvetica,sans-serif"><th class=3D"m_0rwd-ta-left" st=
+yle=3D"vertical-align:middle;font-weight:normal;text-align:left;font-family=
+:Arial,Helvetica,sans-serif"> <img src=3D"https://mailing-media.kiwi.com/im=
+ages/orbit-design/footer/footer_mobile@2x.png" alt=3D"Fly for less, Guarant=
+eeed!" width=3D"320" height=3D"64" style=3D"border: 0px; vertical-align: to=
+p; font-family: Arial, Helvetica, sans-serif;"></th></tr></tbody></table></=
+th></tr></tbody></table></th></tr></tbody></table> <img src=3D"https://mail=
+ing-media.kiwi.com/images/spacer.png" alt=3D"" width=3D"640" height=3D"1" c=
+lass=3D"m_0rwd-hide" style=3D"border: 0px; vertical-align: top; min-width: =
+640px; font-family: Arial, Helvetica, sans-serif;"></div></div></div>
+
+--0000000000000729cf064d514868--
+--0000000000000729d2064d51486a
+Content-Type: application/pdf; 
+	name="E-ticket.pdf"
+Content-Disposition: attachment; 
+	filename="E-ticket.pdf"
+Content-Transfer-Encoding: base64
+Content-ID: <19d025ff048cc9065e91>
+X-Attachment-Id: 19d025ff048cc9065e91
+
+JVBERi0xLjQKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqCjIgMCBv
+Ymo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iagozIDAgb2JqPDwvVHlw
+ZS9QYWdlL1BhcmVudCAyIDAgUi9NZWRpYUJveFswIDAgMjAwIDEwMF0+PmVuZG9iagp0cmFpbGVy
+PDwvUm9vdCAxIDAgUj4+CiUlRU9GCg==
+
+--0000000000000729d2064d51486a
+Content-Type: application/ics; name="SP00000000_00000000.ics"
+Content-Disposition: attachment; filename="SP00000000_00000000.ics"
+Content-Transfer-Encoding: base64
+Content-ID: <19d025ff048faed2dc72>
+X-Attachment-Id: 19d025ff048faed2dc72
+
+QkVHSU46VkNBTEVOREFSDQpQUk9ESUQ6LS8vZml4dHVyZS8vc3ludGhldGljLy9FTg0KVkVSU0lP
+TjoyLjANCkJFR0lOOlZFVkVOVA0KVUlEOmZpeHR1cmUtMUBleGFtcGxlLmNvbQ0KRFRTVEFNUDoy
+MDI2MDEwMVQwMDAwMDBaDQpTVU1NQVJZOkZsaWdodCAoWFgwMDAwKQ0KRFRTVEFSVDoyMDI2MDEw
+MVQwMDAwMDBaDQpEVEVORDoyMDI2MDEwMVQwMTAwMDBaDQpBVFRFTkRFRTptYWlsdG86Ym9iLnRl
+c3RAZXhhbXBsZS5jb20NClNUQVRVUzpDT05GSVJNRUQNCkVORDpWRVZFTlQNCkVORDpWQ0FMRU5E
+QVINCg==
+
+--0000000000000729d2064d51486a
+Content-Type: application/ics; name="SP00000000_00000000.ics"
+Content-Disposition: attachment; filename="SP00000000_00000000.ics"
+Content-Transfer-Encoding: base64
+Content-ID: <19d025ff04817576fcf3>
+X-Attachment-Id: 19d025ff04817576fcf3
+
+QkVHSU46VkNBTEVOREFSDQpQUk9ESUQ6LS8vZml4dHVyZS8vc3ludGhldGljLy9FTg0KVkVSU0lP
+TjoyLjANCkJFR0lOOlZFVkVOVA0KVUlEOmZpeHR1cmUtMkBleGFtcGxlLmNvbQ0KRFRTVEFNUDoy
+MDI2MDEwMVQwMDAwMDBaDQpTVU1NQVJZOkZsaWdodCAoWFgwMDAwKQ0KRFRTVEFSVDoyMDI2MDEw
+MVQwMDAwMDBaDQpEVEVORDoyMDI2MDEwMVQwMTAwMDBaDQpBVFRFTkRFRTptYWlsdG86Ym9iLnRl
+c3RAZXhhbXBsZS5jb20NClNUQVRVUzpDT05GSVJNRUQNCkVORDpWRVZFTlQNCkVORDpWQ0FMRU5E
+QVINCg==
+
+--0000000000000729d2064d51486a
+Content-Type: application/ics; name="SP00000000_00000000.ics"
+Content-Disposition: attachment; filename="SP00000000_00000000.ics"
+Content-Transfer-Encoding: base64
+Content-ID: <19d025ff048ad4645d04>
+X-Attachment-Id: 19d025ff048ad4645d04
+
+QkVHSU46VkNBTEVOREFSDQpQUk9ESUQ6LS8vZml4dHVyZS8vc3ludGhldGljLy9FTg0KVkVSU0lP
+TjoyLjANCkJFR0lOOlZFVkVOVA0KVUlEOmZpeHR1cmUtM0BleGFtcGxlLmNvbQ0KRFRTVEFNUDoy
+MDI2MDEwMVQwMDAwMDBaDQpTVU1NQVJZOkZsaWdodCAoWFgwMDAwKQ0KRFRTVEFSVDoyMDI2MDEw
+MVQwMDAwMDBaDQpEVEVORDoyMDI2MDEwMVQwMTAwMDBaDQpBVFRFTkRFRTptYWlsdG86Ym9iLnRl
+c3RAZXhhbXBsZS5jb20NClNUQVRVUzpDT05GSVJNRUQNCkVORDpWRVZFTlQNCkVORDpWQ0FMRU5E
+QVINCg==
+
+--0000000000000729d2064d51486a
+Content-Type: application/ics; name="SP00000000_00000000.ics"
+Content-Disposition: attachment; filename="SP00000000_00000000.ics"
+Content-Transfer-Encoding: base64
+Content-ID: <19d025ff0489e413ec95>
+X-Attachment-Id: 19d025ff0489e413ec95
+
+QkVHSU46VkNBTEVOREFSDQpQUk9ESUQ6LS8vZml4dHVyZS8vc3ludGhldGljLy9FTg0KVkVSU0lP
+TjoyLjANCkJFR0lOOlZFVkVOVA0KVUlEOmZpeHR1cmUtNEBleGFtcGxlLmNvbQ0KRFRTVEFNUDoy
+MDI2MDEwMVQwMDAwMDBaDQpTVU1NQVJZOkZsaWdodCAoWFgwMDAwKQ0KRFRTVEFSVDoyMDI2MDEw
+MVQwMDAwMDBaDQpEVEVORDoyMDI2MDEwMVQwMTAwMDBaDQpBVFRFTkRFRTptYWlsdG86Ym9iLnRl
+c3RAZXhhbXBsZS5jb20NClNUQVRVUzpDT05GSVJNRUQNCkVORDpWRVZFTlQNCkVORDpWQ0FMRU5E
+QVINCg==
+
+--0000000000000729d2064d51486a--

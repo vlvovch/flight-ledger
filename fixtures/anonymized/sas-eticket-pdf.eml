@@ -1,0 +1,169 @@
+Delivered-To: no-reply@flysas.com
+X-Google-Smtp-Source: 
+ AGHT+IEceXN6OGXdqg+PIYO9/zLzSCUnuyaEPptv1LDDnOPSa1S+R5I6p2uj7Fx+WJAeA14ONToD
+X-Received: by 2002:a05:6000:178e:b0:3e3:e7a0:1fec with SMTP id
+ ffacd0b85a97d-3e6427d82c9mr8676037f8f.16.1757391042149;
+        Mon, 08 Sep 2025 21:10:42 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1757391042; cv=none;
+        d=google.com; s=arc-20240605;
+        b=GGh2FI4WhDJniEDf3Y5MnQRmtcy9qQ8T95TpliUgoMwIJNu2ij3lrRsL16X3qcAz1A
+         hJTK31GL7kknpMwsA+F55aGq0CyD9EKa97Gog0zNO2JYOUwiqNDXXuPq8KOgHl3TniUd
+         60xRIqwt5PEzKvOR5DzkamDaQKuzUaYXdahtogIKXZNU8KWIc23ttu7SHwx0hl/BhsC1
+         OFIVo814FRzZlNTUfXbQtYBO6SdRhkHEc2aJ8Dm+zQFEZfHYNFoa04L0/4OSArICvmMB
+         LUvR3RZV8eSuOoMmOEhgGWhygfao4ffmxIKRGthpOJ6MlE/hb5+h3AOhETRW67dphm8G
+         n6RQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=mime-version:date:subject:app-metainfo:mailrelay-header
+         :mailrelay-request-id:job-id:message-id:to:from:dkim-signature
+         :dkim-filter;
+        bh=Rb8BBDx4AeS/3ZkWebCVkBFY/8/pxEfYbzv0kPF9a5o=;
+        fh=mTfQWD3tojzDJOLothMlBvMcDxYnf5S8YgTLNHNIWRQ=;
+        b=NXVORcVXUWuqqTnkWa2riZbXq8WyKZRtOaBEmA0e2Cenw1ot4D6w+KhEPcziKtKXc1
+         7BD3crqsrAI9o6MHmhxrEYw6tNu42BbgTI2YHZoweha/DRjZ8rymVSjHkPj/8WP/HRkb
+         gcNmA70NBv9T3IBhT9tPV2rjeKWnkPD8Lv7moiLJL7drnpChd7Mb9cSkBtxURdXtsUJi
+         K/D24OAax9cXmYr2R7fJDWsSreFJez9GCanne6eYLaYXQuqmR2TepWLBj+4j8lYk9F5y
+         sZnRMmJkjU0IjlxK69wcV6WiVNwvVzyg9wdE7iri+h6Np9zrrSyB4CyT7MSrgwnfyq5O
+         dXJQ==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@flysas.com header.s=amadeus header.b=hvCnFWTC;
+       spf=pass (google.com: domain of tdsfndprd@doc.mail.amadeus.com
+ designates 82.150.225.79 as permitted sender)
+ smtp.mailfrom=tdsfndprd@doc.mail.amadeus.com;
+       dmarc=pass (p=QUARANTINE sp=NONE dis=NONE) header.from=flysas.com
+Return-Path: <no-reply@flysas.com>
+Received-SPF: pass (google.com: domain of tdsfndprd@doc.mail.amadeus.com
+ designates 82.150.225.79 as permitted sender) client-ip=82.150.225.79;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@flysas.com header.s=amadeus header.b=hvCnFWTC;
+       spf=pass (google.com: domain of tdsfndprd@doc.mail.amadeus.com
+ designates 82.150.225.79 as permitted sender)
+ smtp.mailfrom=tdsfndprd@doc.mail.amadeus.com;
+       dmarc=pass (p=QUARANTINE sp=NONE dis=NONE) header.from=flysas.com
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.amadeus.net B40483139B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flysas.com;
+	s=amadeus; t=1757391041;
+	bh=Rb8BBDx4AeS/3ZkWebCVkBFY/8/pxEfYbzv0kPF9a5o=;
+	h=From:TO:Subject:Date;
+	b=hvCnFWTCPpIEWC0CGEILw08OSyX2AwIDplmZdDEKKU9WH1YpWFMigtD4GAV3fqIBu
+	 +Eu9f+wgqJccXsM4uIuzH4iM5Xtadjs5hX01+dDtEllEpDtxpxt9zbLIoKS4eiTTTc
+	 TzmNNYsDOt/qlFh6UZyAWcgaxKL/0L+ZK1f30c2qKxyXl1MC8e7GgMykMn0p5bvNQ9
+	 0DQs3/WHji9niT8/tYDXSGcoGp/IhOUS8VzIdxeRLsLiVrjoS03sshoRImLRvFD9BE
+	 HhTOnaqIQ+8/TQGPRrHupZI9BTcAbGyfDVq3Uxxyci4/dOtSpW0bPeLYeiXy1Y1mZm
+	 H2ZFA6GflpHRQ==
+From: no-reply@flysas.com
+TO: no-reply@flysas.com
+Message-ID: <MID/SK/C53138013325/1@tds.amadeus.com>
+Job-ID: 1
+Mailrelay-Request-ID: msgid: <MID/SK/C53138013325/1@tds.amadeus.com>;
+ carfid: 8C761027; 
+Mailrelay-Header: v=1; app: TDS/MID; sender: <no-reply@flysas.com>;
+ doctype: INV; 
+App-MetaInfo: phase: PRD; partition: tds_peak5; region: prd-we-tcmw01b;
+ as: acs://prd-we-tcmw01b/tds-prd5/tds-5; 
+Subject: 
+ =?UTF-8?B?RWxlY3Ryb25pYyBUaWNrZXQgSXRpbmVyYXJ5IGFuZCBSZWNlaXB0IGZyb20g?=
+ =?UTF-8?B?U0FTIC0gQm9va2luZyByZWZlcmVuY2UgS0k0SzZBIEZvciBwYXNzZW5nZXIg?=
+ =?UTF-8?B?RElOSVogREEgU0lMVkVJUkEgLyBUSElBR08=?=
+Date: Tue, 09 Sep 2025 04:10:41 +0000
+Content-Type: multipart/mixed;
+ boundary="----=_Part_298417_1201263226.1757391041552"
+MIME-Version: 1.0
+Received: by 2002:a05:6022:720e:b0:79:5d1:4cd7 with SMTP id bj14csp1620486lab;
+        Mon, 8 Sep 2025 21:10:42 -0700 (PDT)
+Received: from relay.amadeus.net (relay.amadeus.net. [82.150.225.79])
+        by mx.google.com with ESMTPS id
+ ffacd0b85a97d-3d0a6a01baesi18614708f8f.384.2025.09.08.21.10.41
+        for <no-reply@flysas.com>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 08 Sep 2025 21:10:42 -0700 (PDT)
+Received: from tds-5 (unknown [192.0.2.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by relay.amadeus.net (Postfix) with ESMTPSA id B40483139B
+	for <no-reply@flysas.com>; Tue,  9 Sep 2025 04:10:41 +0000 (GMT)
+
+------=_Part_298417_1201263226.1757391041552
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/html; charset="utf-8"
+
+
+
+
+
+
+<html><head><title>Report 1</title></head>
+	<body style="display:block;offset:0;font-size:7pt;bgColor:#ffffff">
+		
+		<table width = "720" cellpadding="0" cellspacing="0" border="0" style="display:block;padding-left:0;padding-right:0;padding-top:1;padding-bottom:1;table-layout:auto;word-wrap:normal;">
+			<tr><td width="1%"></td><td width="89%"></td><td width="10%"></td></tr>
+			<tr>
+				<td style="padding:0"></td>
+				<td style="padding:0">
+					<p style="display:block;"><span style="font-size:13.3px;font-family:Arial;">Thank you for traveling with us!</span></p>
+					<p style="display:block;"><span style="font-size:13.3px;font-family:Arial;">This is your Electronic Ticket Itinerary and Receipt.</span></p>
+					<p style="display:block;"><span style="font-size:13.3px;font-family:Arial;">You will receive an email and/or SMS when check-in opens. On most flights you can check in 30 hours before departure.</span></p>
+				</td>	
+			</tr>
+			<tr><td style="padding:0padding-bottom:0em">&nbsp;</td></tr>
+			<tr>
+				<td style="padding:0"></td>
+				<td style="padding:0"><a href="https://www.sas.dk/ask">https://www.sas.dk/ask</a></td>
+			</tr>
+			<tr><td style="padding:0padding-bottom:0em">&nbsp;</td></tr>
+			<tr>
+				<td style="padding:0"></td>
+				<td style="padding:0"><a href="https://www.sas.no/ask">https://www.sas.no/ask</a></td>
+			</tr>                                                    
+			<tr><td style="padding:0padding-bottom:0em">&nbsp;</td></tr>
+			<tr>
+				<td style="padding:0"></td>
+				<td style="padding:0"><a href="https://www.sas.se/ask">https://www.sas.se/ask</a></td>
+			</tr>
+			<tr><td style="padding:0padding-bottom:0em">&nbsp;</td></tr>
+			<tr>
+				<td style="padding:0"></td>
+				<td style="padding:0"><a href=" https://www.flysas.com">https://www.flysas.com</a></td>
+			</tr>
+			<tr><td style="padding:0padding-bottom:0em">&nbsp;</td></tr>
+			<tr>
+				<td style="padding:0"></td>
+				<td style="padding:0">
+					<p style="display:block;"><span style="font-size:13.3px;font-family:Arial;">A good piece of advice. Download the SAS App where you can book, rebook, check-in, download newspapers and much more.</span></p>
+				</td>
+			</tr>
+			<tr><td style="padding:0padding-bottom:0em">&nbsp;</td></tr>
+			<tr>
+				<td style="padding:0"></td>
+				<td style="padding:0">	
+					<p style="display:block;"><span style="font-size:13.3px;font-family:Arial;">We look forward to seeing you onboard!</span></p>
+					<p style="display:block;"><span style="font-size:13.3px;font-family:Arial;">Best regards,</span></p>
+					<p style="display:block;"><span style="font-size:13.3px;font-family:Arial;">SAS<br>WE ARE TRAVELERS</span></p>
+				</td>
+			</tr>
+			<tr><td style="padding:0padding-bottom:0em">&nbsp;</td></tr>
+			<tr>
+				<td style="padding:0"></td>
+				<td style="padding:0">
+					<p style="display:block;"><span style="font-size:13.3px;font-family:Arial;">This is a system generated e-mail and not possible to respond.</span></p>
+				</td>	
+			</tr>
+		</table>
+	</body>
+</html>
+
+
+------=_Part_298417_1201263226.1757391041552
+Content-Type: application/pdf; name=037932.pdf
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=037932.pdf
+Content-Description: 037932.pdf
+
+JVBERi0xLjQKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqCjIgMCBv
+Ymo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iagozIDAgb2JqPDwvVHlw
+ZS9QYWdlL1BhcmVudCAyIDAgUi9NZWRpYUJveFswIDAgMjAwIDEwMF0+PmVuZG9iagp0cmFpbGVy
+PDwvUm9vdCAxIDAgUj4+CiUlRU9GCg==
+
+------=_Part_298417_1201263226.1757391041552--

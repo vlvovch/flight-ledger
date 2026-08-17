@@ -1,0 +1,66 @@
+Subject: Your flight is booked: ZZ0042 to Honolulu on 08/15/2026
+From: "Hawaiian Airlines Reservation" <reservation@email.hawaiianairlines.com>
+Date: Fri, 14 Aug 2026 22:11:01 -0600
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html lang="en">
+<head><title>Alaska Airlines</title></head>
+<script type="application/ld+json">
+[{"@context":"https://schema.org","@type":"FlightReservation","inLanguage":"EN","reservationId":"ZZ0042","reservationStatus":"https://schema.org/ReservationConfirmed","underName":{"@type":"Person","name":"Jane Doe"},"reservationFor":{"@type":"Flight","flightNumber":"1064","departureTime":"2026-08-15T11:58:00-10:00","arrivalTime":"2026-08-15T12:37:00-10:00","provider":{"@type":"Airline","name":"Alaska Airlines","iataCode":"AS"},"departureAirport":{"@type":"Airport","name":"LIH","iataCode":"LIH"},"arrivalAirport":{"@type":"Airport","name":"HNL","iataCode":"HNL"}}}]
+</script>
+<body>
+<p>Aloha, Jane&nbsp; <br/>Atmos Rewards member</p>
+<p>Confirmation code: <br/><span>ZZ0042</span></p>
+<p>Your trip to Honolulu starts&nbsp;here</p>
+<p>Mahalo, Jane. Your trip is booked.</p>
+
+<p>Trip details</p>
+<p>Confirmation&nbsp;code</p>
+<h3><a href="https://click.email.hawaiianairlines.com/?qs=anon">ZZ0042</a></h3>
+
+<p>Flight 1&nbsp;<span>&middot;&nbsp;</span>Sat Aug 15</p>
+<h4>Hawaiian Airlines</h4>
+<p>AS 1064&nbsp;<span>&middot;&nbsp;</span>Boeing 717-200</p>
+<p>Flight operated by Alaska as Hawaiian Airlines.</p>
+<p>LIH</p>
+<p>HNL</p>
+<p>Lihue</p>
+<p>Honolulu</p>
+<p>11:58 AM</p>
+<p>12:37 PM</p>
+<p>Sat Aug 15</p>
+<p>Sat Aug 15</p>
+<h4>Traveler(s):</h4>
+<p>Jane Doe</p>
+<p>14F&nbsp;<span>&middot;&nbsp;</span>Class: L&nbsp;COACH</p>
+<p>Alex Doe</p>
+<p>14E&nbsp;<span>&middot;&nbsp;</span>Class: L&nbsp;COACH</p>
+
+<p>Summary of airfare&nbsp;charges</p>
+<h3>Fare breakdown</h3>
+<h4>Air travel charges</h4>
+<p>Jane Doe</p>
+<p>Atmos&trade; Rewards Member: <a href="https://click.email.hawaiianairlines.com/?qs=anon">Join now</a></p>
+<p>Ticket 0272999999910</p>
+<p>Base fare and&nbsp;surcharges</p>
+<p>$180.47</p>
+<p>Taxes and other&nbsp;fees</p>
+<p>$24.44</p>
+<p>Per-person total</p>
+<p>$204.91</p>
+<p>Alex Doe</p>
+<p>Ticket 0272999999911</p>
+<p>Base fare and&nbsp;surcharges</p>
+<p>$180.47</p>
+<p>Taxes and other&nbsp;fees</p>
+<p>$24.44</p>
+<p>Per-person total</p>
+<p>$204.91</p>
+<p>Total charges for air&nbsp;travel</p>
+<p>$409.82</p>
+<p>$409.82 to be charged to the VISA card with number VI0042 held by Jane Doe on Aug 15, 2026.</p>
+</body>
+</html>

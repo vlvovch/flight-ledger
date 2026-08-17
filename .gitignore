@@ -1,0 +1,38 @@
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/.next-build/
+/.next-preview/
+/out/
+next-env.d.ts
+
+# Your ledgers. The whole directory, not a pattern of it: it now holds one
+# database per account, snapshots under data/backups/, and accounts.json —
+# which carries the account NAMES. Back it up via Settings → Export.
+# (the app creates this directory on first run, so it needn't be tracked —
+# and git cannot re-include a file whose parent directory is excluded anyway)
+/data/
+
+# raw email fixtures (real personal emails — never committed;
+# anonymized regression fixtures live in fixtures/anonymized/)
+/fixtures/eml/
+
+# local agent / editor config
+/.claude/
+
+# misc
+.DS_Store
+*.tsbuildinfo
+npm-debug.log*
+/public/sqlite3.wasm
+/.next-browser/
+
+# downloaded BTS monthly files (public data, rebuildable)
+.bts-cache/
+
+local/
+# local env (client id lives here on dev machines)
+.env*.local
+.env
