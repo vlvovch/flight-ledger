@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FileUp, Upload } from "lucide-react";
 import { Modal, ErrorNote } from "./ui";
 import { api, fmtInt } from "@/lib/format";
@@ -31,6 +31,7 @@ export default function ImportModal({
   onClose,
   onApplied,
   context = "activity",
+  initialFile,
 }: {
   onClose: () => void;
   onApplied: () => void;
@@ -40,6 +41,10 @@ export default function ImportModal({
    *  Flights tab speaks flight-first and takes both CSVs, since the United
    *  activity file legitimately creates flights too. */
   context?: "activity" | "flights";
+  /** A file dropped on the page before the dialog existed. It goes through
+   *  the same gate as the picker, so a non-CSV lands here as the dialog's
+   *  own error message rather than being swallowed by the drop. */
+  initialFile?: File | null;
 }) {
   const [stage, setStage] = useState<Stage>("pick");
   const [error, setError] = useState<string | null>(null);
@@ -192,6 +197,14 @@ export default function ImportModal({
     }
     pickFile(file);
   };
+
+  /* Mount-time only, deliberately: initialFile is the file from the drop
+     that opened this dialog, and re-running on a prop identity change would
+     restart a review in progress. */
+  useEffect(() => {
+    if (initialFile) takeFile(initialFile);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const apply = async () => {
     if (!preview) return;

@@ -153,6 +153,64 @@ export default function FlightsPage() {
   const [showImport, setShowImport] = useState(false);
   const [edit, setEdit] = useState<EnrichedSegment | null>(null);
 
+  /* Page-level drop, same shape as Tickets: dragenter/leave are depth-counted
+     because they refire on every child crossing, the window swallows stray
+     drops so a miss can't navigate away, and an open dialog owns its own drop
+     zone. A dropped CSV opens the import dialog already reading the file —
+     which one (MileagePlus, myFlightradar24, Flighty) the dialog sniffs
+     itself. CSV import is one file at a time, so extras are ignored. */
+  const [dragging, setDragging] = useState(false);
+  const [dropped, setDropped] = useState<File | null>(null);
+  const importOpen = useRef(false);
+  useEffect(() => {
+    importOpen.current = showImport;
+  }, [showImport]);
+
+  useEffect(() => {
+    let depth = 0;
+    const hasFiles = (e: DragEvent) =>
+      Array.from(e.dataTransfer?.types ?? []).includes("Files");
+
+    const onEnter = (e: DragEvent) => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      depth++;
+      if (!importOpen.current) setDragging(true);
+    };
+    const onOver = (e: DragEvent) => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = "copy";
+    };
+    const onLeave = (e: DragEvent) => {
+      if (!hasFiles(e)) return;
+      depth = Math.max(0, depth - 1);
+      if (depth === 0) setDragging(false);
+    };
+    const onDrop = (e: DragEvent) => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      depth = 0;
+      setDragging(false);
+      if (importOpen.current) return;
+      const file = e.dataTransfer?.files?.[0];
+      if (!file) return;
+      setDropped(file);
+      setShowImport(true);
+    };
+
+    window.addEventListener("dragenter", onEnter);
+    window.addEventListener("dragover", onOver);
+    window.addEventListener("dragleave", onLeave);
+    window.addEventListener("drop", onDrop);
+    return () => {
+      window.removeEventListener("dragenter", onEnter);
+      window.removeEventListener("dragover", onOver);
+      window.removeEventListener("dragleave", onLeave);
+      window.removeEventListener("drop", onDrop);
+    };
+  }, []);
+
   const refresh = useCallback(() => {
     api<{ flights: EnrichedSegment[] }>("/api/flights").then((r) => setFlights(r.flights));
     api<{ tickets: TicketRow[] }>("/api/tickets").then((r) => setTickets(r.tickets));
@@ -254,6 +312,20 @@ export default function FlightsPage() {
 
   return (
     <div className="mx-auto max-w-[1440px]">
+      {dragging && !showImport && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(6,11,22,0.72)] p-8 backdrop-blur-[2px]">
+          <div className="pointer-events-none flex flex-col items-center rounded-lg border border-dashed border-s-miles bg-[var(--tint-accent)] px-16 py-14 text-center">
+            <FileUp size={30} className="mb-3 text-s-miles" />
+            <p className="t-display text-[20px] leading-none text-ink">
+              Drop a CSV to import
+            </p>
+            <p className="mt-2 text-[12.5px] text-mute">
+              MileagePlus My&nbsp;Activity, myFlightradar24 or Flighty export —
+              the format is recognized automatically
+            </p>
+          </div>
+        </div>
+      )}
       <header className="reveal mb-5 flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="t-label mb-1 text-s-miles">Flight ledger</div>
@@ -702,7 +774,15 @@ export default function FlightsPage() {
       )}
 
       {showImport && (
-        <ImportModal context="flights" onClose={() => setShowImport(false)} onApplied={refresh} />
+        <ImportModal
+          context="flights"
+          initialFile={dropped}
+          onClose={() => {
+            setShowImport(false);
+            setDropped(null);
+          }}
+          onApplied={refresh}
+        />
       )}
     </div>
   );
