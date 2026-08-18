@@ -174,6 +174,12 @@ Cents per flown mile.
 Personal CPM = 100 × net personal allocated cost / flown distance
 ```
 
+Deliberately over the SAME miles as gross CPM — reimbursed flying included —
+so the two are one subtraction apart: gross minus personal is what someone
+else paid per mile. The other question, what personally-paid travel itself
+costs per mile, is a different basis and lives in the travel mix's Personal
+slice; folding it into this column would put two rulers in one table.
+
 ### 4.3 Lifetime-mile CPM
 
 ```text
@@ -253,6 +259,20 @@ refund is granted per ticket and not per leg.
 `RETIRED_SEGMENT_STATUSES` in [types.ts](../src/lib/types.ts) records the
 mapping and `retireSegmentStatuses` applies it on open. The ticket status
 `refunded` is unaffected.
+
+**A flight becomes flown by landing.** On every enriched read, a sweep
+(`advanceArrivedLegs` in repo.ts) moves any `ticketed` leg past the arrival
+boundary — scheduled arrival plus a six-hour margin where the schedule is
+known (arrival.ts), the day rule where it isn't — to `flown_unreconciled`.
+Cancelled stays cancelled, flown and reconciled rows are never touched, and
+every advance is logged under the `arrival` actor so Recent changes answers
+"who marked this flown" with "it landed". One deference: a ticketed leg on a
+ticket with a SUCCESSOR is a reissue leftover, and the clock cannot tell
+"landed" from "reissued away before departure" — there the sweep applies the
+exchange's own rule instead (issued before the leg's date and not carried by
+the new itinerary → cancelled; the boundary day stays a question for the
+receipt re-import). Reconciliation remains evidence-only — the sweep says
+you flew, and only a MileagePlus posting says United agrees.
 
 **Not built:** file attachments on a segment. Notes carry what has been needed.
 
@@ -445,7 +465,6 @@ Fifteen exception kinds:
 | `suggested_match` | scored in the review band, awaiting a decision |
 | `duplicate_segment` | same date, route and flight number twice — live copies only; a canceled coupon beside its rebooking is history, not a double entry |
 | `duplicate_activity` | same posting imported twice |
-| `past_but_upcoming` | a flight whose scheduled arrival (plus margin — arrival.ts) has passed is still marked ticketed — nothing advances a status on a timer, so it says so instead of guessing |
 | `broken_chain` | two tickets claim the same predecessor — a reissue chain is a line, and a fork spends the original's value twice |
 | `duplicate_ticket` | one eTicket number on two ticket rows |
 | `unconverted_currency` | foreign-currency ticket still held at 1:1 |
@@ -964,6 +983,14 @@ databases disagree on where an airport's reference point sits.
   for historical records.
 - **CSV** — the united.com "My Activity" export. Transparent and easy to
   validate.
+- **Flight-log CSV** — the myFlightradar24 and Flighty exports, each
+  detected by header on the Flights page's drop target (the MileagePlus page
+  imports postings and nothing else — a log dropped there is redirected in
+  words). Flighty speaks ICAO airline codes; a translation table files them
+  under the IATA codes the ledger keys on. A flight log rather than an accounting document: it
+  creates history the ledger never met and fills blanks (seat, cabin,
+  aircraft, tail, purpose, times) on flights it already has — never
+  overwriting a value a receipt or the user put there first.
 - **Manual entry** — the universal fallback.
 
 **Not built:** Gmail read-only integration and a forwarding address. Both were
@@ -1539,7 +1566,7 @@ notices and are treated as such.
 
 ## 19. Testing strategy
 
-`npm run selftest` — **855 checks plus a 500-case fuzz**, run against pure
+`npm run selftest` — **885 checks plus a 500-case fuzz**, run against pure
 functions with no server. `npm run typecheck` for types.
 
 ## 19.1 Unit tests

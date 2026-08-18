@@ -13,6 +13,8 @@ import { getAirport } from "../src/lib/airports";
 import {
   buildCashFlow,
   forecastLifetime,
+  rollupCashYears,
+  rollupYears,
 
   summarizeRoutes,
   type MonthlySummary,
@@ -85,6 +87,13 @@ import {
   type LocksLike,
 } from "../src/lib/browser/ownership";
 import {
+  buildFlightDiaryPreview,
+  looksLikeFlightDiary,
+  looksLikeFlighty,
+  parseFlightDiaryCsv,
+  parseFlightyCsv,
+} from "../src/lib/flightdiary-import";
+import {
   DRIVE_BACKUP_NAME,
   DriveError,
   backupFingerprint,
@@ -124,6 +133,9 @@ import {
 import { POST as apiTicketCreate } from "../src/app/api/tickets/route";
 import { DELETE as apiTicketDelete } from "../src/app/api/tickets/[id]/route";
 import { POST as apiBackupRestore } from "../src/app/api/backup/route";
+import { POST as apiFlightdiary } from "../src/app/api/import/flightdiary/route";
+import { GET as apiChanges } from "../src/app/api/changes/route";
+import { GET as apiAnalytics } from "../src/app/api/analytics/route";
 import { POST as apiAdjustmentCreate } from "../src/app/api/adjustments/route";
 import { POST as apiPaymentCreate } from "../src/app/api/payments/route";
 import { PUT as apiSettingsPut } from "../src/app/api/settings/route";
@@ -2631,6 +2643,41 @@ console.log("receipt parsing (anonymized fixtures):");
     );
   }
   {
+    /* Year altitude: ratios re-derive from summed bases. A one-hop month at
+       10¢ and a nine-flight month at 1¢ make a 1.9¢ year — the 5.5¢ an
+       average of averages would claim is the bug this guards against. */
+    const years = rollupYears([
+      { month: "2025-01", flights: 1, cpmMiles: 1000, cpmGross: 100 },
+      { month: "2025-02", flights: 9, cpmMiles: 9000, cpmGross: 90 },
+      { month: "2026-03", flights: 2, gross: 123.45 },
+    ] as unknown as MonthlySummary[]);
+    check(
+      "yearly rollup: months fold into their year, ratios from summed bases",
+      years.length === 2 &&
+        years[0].month === "2025" &&
+        years[0].flights === 10 &&
+        years[0].grossCpm === 1.9 &&
+        years[1].month === "2026" &&
+        years[1].gross === 123.45,
+      JSON.stringify(years.map((y) => ({ m: y.month, f: y.flights, c: y.grossCpm })))
+    );
+    const cash = rollupCashYears([
+      { month: "2025-11", out: 100, in: 0, inAssumed: 0, net: -100, cumulative: -100, tickets: 1, adjustments: 0 },
+      { month: "2025-12", out: 0, in: 40, inAssumed: 40, net: 40, cumulative: -60, tickets: 0, adjustments: 1 },
+      { month: "2026-01", out: 50, in: 0, inAssumed: 0, net: -50, cumulative: -110, tickets: 1, adjustments: 0 },
+    ]);
+    check(
+      "yearly cash: sums move, the running total is the year's last word",
+      cash.length === 2 &&
+        cash[0].month === "2025" &&
+        cash[0].out === 100 &&
+        cash[0].inAssumed === 40 &&
+        cash[0].cumulative === -60 &&
+        cash[1].cumulative === -110,
+      JSON.stringify(cash)
+    );
+  }
+  {
     /* PINNED extras: the receipt names the leg, so the money lands there —
        the exact case that motivated the rule: a $477.20 round trip, fully
        reimbursed by work, with a $299 upgrade on the return paid personally.
@@ -4710,6 +4757,169 @@ console.log("receipt supersession (reissues & cancellations):");
 }
 
 /* ------------------- classification & match scoring --------------------- */
+/* ------------------- myFlightradar24 flight diary ----------------------- */
+console.log("flight diary import:");
+{
+  const diaryCsv = readFileSync("fixtures/flightdiary.csv", "utf8");
+  check(
+    "diary: detected by header, activity CSV is not",
+    looksLikeFlightDiary(diaryCsv) &&
+      !looksLikeFlightDiary("Transaction Date,Activity Type,Description,PQF,PQP")
+  );
+  const parsed = parseFlightDiaryCsv(diaryCsv);
+  check("diary: no parse error", parsed.error == null, parsed.error);
+  check(
+    "diary: five rows parsed, the codeless airport skipped with a reason",
+    parsed.rows.length === 5 &&
+      parsed.skipped.length === 1 &&
+      parsed.skipped[0].reason.includes("IATA"),
+    JSON.stringify({ r: parsed.rows.length, s: parsed.skipped })
+  );
+  const ua = parsed.rows.find((r) => r.flight_number === "100")!;
+  check(
+    "diary: the full row — carrier split off, cabin decoded, tail kept, aircraft de-parenthesized",
+    ua.carrier === "UA" &&
+      ua.origin === "SFO" &&
+      ua.destination === "IAH" &&
+      ua.departure_time === "08:15" &&
+      ua.cabin === "Economy" &&
+      ua.seat === "21F" &&
+      ua.tail_number === "N37462" &&
+      ua.aircraft === "Boeing 737-900" &&
+      ua.purpose === "business" &&
+      ua.note === "Test trip",
+    JSON.stringify(ua)
+  );
+  const bare = parsed.rows.find((r) => r.origin === "FRA" && r.destination === "PMI")!;
+  check(
+    "diary: the sparse row — ' (/)' airline, 00:00:00 times and 0-codes all read as unknown",
+    bare.carrier === null &&
+      bare.flight_number === null &&
+      bare.departure_time === null &&
+      bare.cabin === null &&
+      bare.purpose === null &&
+      bare.aircraft === null,
+    JSON.stringify(bare)
+  );
+  check(
+    "diary: Premium Plus and personal decode from the numeric codes",
+    parsed.rows.find((r) => r.flight_number === "441")?.cabin === "Premium Plus" &&
+      parsed.rows.find((r) => r.flight_number === "441")?.purpose === "personal"
+  );
+
+  /* preview against a ledger: one flight known but blank, one complete */
+  const known = mkSeg("S-ua100", {
+    marketing_carrier: "UA", flight_number: "100", origin: "SFO",
+    destination: "IAH", flight_date: "2024-03-01", status: "flown_reconciled",
+    seat: null, cabin: "Economy", tail_number: null, aircraft: null,
+    departure_time: null, arrival_time: null, purpose: "business",
+  });
+  const pv = buildFlightDiaryPreview(parsed.rows, [known], "2026-08-17");
+  const filled = pv.rows.find((r) => r.segmentId === "S-ua100");
+  check(
+    "diary: a known flight becomes fills for exactly its blanks — the receipt's cabin stays",
+    filled?.action === "fill" &&
+      filled.fills!.includes("seat") &&
+      filled.fills!.includes("tail") &&
+      filled.fills!.includes("departs") &&
+      !filled.fills!.includes("cabin"),
+    JSON.stringify(filled)
+  );
+  check(
+    "diary: the in-file duplicate is skipped, not doubled",
+    pv.skipped.some((s) => s.reason.includes("Duplicate")),
+    JSON.stringify(pv.skipped)
+  );
+  check(
+    "diary: history is born flown-unreconciled, the future is born ticketed",
+    pv.rows.find((r) => r.row.flight_number === "441")?.status === "flown_unreconciled" &&
+      pv.rows.find((r) => r.row.flight_number === "286")?.status === "ticketed",
+    JSON.stringify(pv.rows.filter((r) => r.action === "create").map((r) => r.status))
+  );
+  /* a carrier-less row still gets its flight, under the honest sentinel —
+     old charters have no airline anyone remembers, and losing the flight
+     was worse than filing it as unknown */
+  check(
+    "diary: a carrier-less row is created under the unknown airline, never null",
+    pv.rows.some(
+      (r) => r.action === "create" && r.row.destination === "PMI" && r.row.carrier === "??"
+    ) && !pv.rows.some((r) => r.action === "create" && r.row.carrier == null),
+    JSON.stringify(pv.rows.filter((r) => r.action === "create").map((r) => r.row.carrier))
+  );
+  /* a diary row without a flight number still finds its flight by date and
+     route — but only when the day has exactly one candidate */
+  const pmiSeg = mkSeg("S-pmi", {
+    marketing_carrier: "LH", flight_number: "1157", origin: "FRA",
+    destination: "PMI", flight_date: "2019-06-10", status: "flown_reconciled",
+    seat: null, cabin: null,
+  });
+  const pv2 = buildFlightDiaryPreview(parsed.rows, [pmiSeg], "2026-08-17");
+  check(
+    "diary: a numberless row matches the day's only flight on its route",
+    pv2.rows.find((r) => r.row.destination === "PMI")?.segmentId === "S-pmi",
+    JSON.stringify(pv2.rows.find((r) => r.row.destination === "PMI"))
+  );
+  const twin = mkSeg("S-pmi2", { ...pmiSeg, id: undefined as never, flight_number: "1159" });
+  const pv3 = buildFlightDiaryPreview(parsed.rows, [pmiSeg, { ...twin, id: "S-pmi2" }], "2026-08-17");
+  check(
+    "diary: two candidates on the day — created fresh under ?? rather than merged by guess",
+    pv3.rows.find((r) => r.row.destination === "PMI")?.action === "create" &&
+      pv3.rows.find((r) => r.row.destination === "PMI")?.row.carrier === "??",
+    JSON.stringify(pv3.rows.find((r) => r.row.destination === "PMI"))
+  );
+}
+
+/* ------------------------------ Flighty ------------------------------- */
+console.log("flighty import:");
+{
+  const t = readFileSync("fixtures/flighty.csv", "utf8");
+  check(
+    "flighty: detected by its own header, never as a diary",
+    looksLikeFlighty(t) && !looksLikeFlightDiary(t)
+  );
+  const p = parseFlightyCsv(t);
+  check("flighty: no parse error", p.error == null, p.error);
+  const ua = p.rows.find((r) => r.flight_number === "1234")!;
+  check(
+    "flighty: ICAO becomes IATA, ISO times become HH:MM, codes decode",
+    ua.carrier === "UA" &&
+      ua.departure_time === "08:15" &&
+      ua.arrival_time === "13:45" &&
+      ua.cabin === "Economy" &&
+      ua.purpose === "business" &&
+      ua.tail_number === "N37462",
+    JSON.stringify(ua)
+  );
+  check(
+    "flighty: an unmapped ICAO passes through raw — the truth in the other alphabet",
+    p.rows.find((r) => r.flight_number === "77")?.carrier === "XXQ"
+  );
+  check(
+    "flighty: a cancelled flight is skipped with its reason, not filed as travel",
+    p.skipped.length === 1 && p.skipped[0].reason.includes("Cancelled"),
+    JSON.stringify(p.skipped)
+  );
+  check(
+    "flighty: a diverted flight lands where it landed, and says so",
+    p.rows.some(
+      (r) => r.destination === "SMF" && (r.note ?? "").includes("diverted from SFO")
+    ),
+    JSON.stringify(p.rows.find((r) => r.destination === "SMF"))
+  );
+  check(
+    "flighty: the airline-less charter walks the unknown-carrier path",
+    buildFlightDiaryPreview(p.rows, [], "2026-08-17").rows.find(
+      (r) => r.row.origin === "GDN"
+    )?.row.carrier === "??"
+  );
+  check(
+    "flighty: T00:00 is midnight-as-unknown, not a departure time",
+    p.rows.find((r) => r.origin === "GDN")?.departure_time === null &&
+      p.rows.find((r) => r.origin === "GDN")?.arrival_time === null,
+    JSON.stringify(p.rows.find((r) => r.origin === "GDN"))
+  );
+}
+
 console.log("activity classification & scoring:");
 {
   check("card row", classifyActivity("PQP Earn Explorer Card", false, null) === "credit_card");
@@ -4855,25 +5065,6 @@ console.log("reconciliation:");
   /* The still-marked-upcoming nag fires on the same scheduled-arrival
      boundary the import uses — not a day later. Same leg, three instants:
      airborne, date-passed-but-still-short-of-arrival-plus-margin, landed. */
-  {
-    const inFlight = enrich(
-      mkSeg("arr1", {
-        origin: "FRA", destination: "SFO", flight_date: "2026-08-08",
-        departure_time: "13:20", arrival_time: "16:05", status: "ticketed",
-      })
-    );
-    const nagAt = (now: string) =>
-      buildReconcileReport(
-        { ...base, segments: [inFlight], activities: [] },
-        settings,
-        now
-      ).counts.past_but_upcoming ?? 0;
-    check(
-      "the upcoming nag waits for scheduled arrival plus margin, then fires",
-      nagAt("2026-08-09T03:00:00Z") === 0 && nagAt("2026-08-09T07:00:00Z") === 1,
-      JSON.stringify({ airborne: nagAt("2026-08-09T03:00:00Z"), landed: nagAt("2026-08-09T07:00:00Z") })
-    );
-  }
 
   const dupSegs = [
     enrich(mkSeg("d1", { origin: "IAH", destination: "SFO", flight_date: "2026-07-10", flight_number: "1976" })),
@@ -6992,17 +7183,74 @@ console.log("premier status:");
   );
   check("the raised set applies from 2025", programFor(2025).tiers[0].pqp === 5000);
   check("…and stays in force after that", programFor(2026).tiers[3].pqp === 22000);
+  /* years before the model's own floor mint no chips: PQP/PQF began in 2020,
+     and a diary import of 2012 travel must not conjure "no status" years the
+     table can't score */
+  check(
+    "flying before the first program year creates no Premier year",
+    build([seg("2012-07-14", null, null, "??"), seg("2024-03-01", 500, 2)]).every(
+      (y) => y.year >= "2020"
+    ),
+    JSON.stringify(build([seg("2012-07-14", null, null, "??")]).map((y) => y.year))
+  );
+  /* Three certainties, three stretches: posted stops at the last posting,
+     the flown-awaiting-credit line carries to the last flown leg, and the
+     booked dash carries to year end — each from its own junction. */
   {
-    const old = build([seg("2018-03-01", 9999, 40)])[0];
-    check("a year before PQP/PQF existed is flagged", old.beforeTable === true);
+    const posted = seg("2026-03-01", 500, 2);
+    const flownPending = {
+      ...seg("2026-06-10", null, null, "UA", "flown_unreconciled"),
+      projected_pqp: 300, projected_pqf: 1,
+    };
+    const booked = {
+      ...seg("2026-09-20", null, null), status: "ticketed" as const,
+      projected_pqp: 200, projected_pqf: 1,
+    };
+    const y = buildPremierYears(
+      [posted, flownPending, booked] as Parameters<typeof buildPremierYears>[0],
+      [], DEFAULT_PREMIER_PROGRAMS, "2026-08-02"
+    )[0];
+    const at = (d: string) => y.points.find((p) => p.date === d)!;
     check(
-      "…and gets no tier, next rung or milestones rather than a wrong one",
-      old.tier === null && old.nextTier === null && old.milestones.length === 0,
-      JSON.stringify({ tier: old.tier?.name, next: old.nextTier?.name, ms: old.milestones.length })
+      "premier series: the flown stretch ends at its last leg, the dash carries on",
+      at("2026-06-10").flownPqp === 800 &&
+        at("2026-09-20").flownPqp === null &&
+        at("2026-09-20").projPqp === 1000 &&
+        at("2026-03-01").flownPqp === 500, // junction carries the value so the lines connect
+      JSON.stringify({
+        flownAtJune: at("2026-06-10").flownPqp,
+        flownAtSep: at("2026-09-20").flownPqp,
+        projAtSep: at("2026-09-20").projPqp,
+      })
     );
-    check("…while its totals still show", old.pqp === 9999 && old.pqf === 40);
-    check("2020 is inside the table and IS scored", build([seg("2020-03-01", 3500, 9)])[0].tier?.name === "Premier Silver");
   }
+  /* the lifetime view: a balance that opens on the baseline plus prior
+     years, jumps on flight dates, and only ever rises */
+  {
+    const legs = [
+      { ...seg("2025-11-01", 100, 1), distance_miles: 2000, lifetime_miles: 2000 },
+      { ...seg("2026-04-02", 200, 1), distance_miles: 1000, lifetime_miles: null },
+      { ...seg("2026-06-09", null, null, "??"), distance_miles: 500, lifetime_miles: null },
+    ];
+    const y26 = buildPremierYears(
+      legs as Parameters<typeof buildPremierYears>[0],
+      [], DEFAULT_PREMIER_PROGRAMS, "2026-08-02", 10000
+    ).find((y) => y.year === "2026")!;
+    const apr = y26.points.find((p) => p.date === "2026-04-02")!;
+    check(
+      "lifetime balance: opens on baseline+history, jumps on the flight date, ?? earns nothing",
+      y26.openingLifetime === 12000 &&
+        apr.lifetimeBalance != null && apr.lifetimeBalance > 12000 &&
+        y26.closingLifetime === apr.lifetimeBalance,
+      JSON.stringify({ open: y26.openingLifetime, apr: apr.lifetimeBalance, close: y26.closingLifetime })
+    );
+  }
+  check(
+    "…while 2020 itself is inside the table and IS scored",
+    build([seg("2020-03-01", 3500, 9)])[0]?.tier?.name === "Premier Silver",
+    build([seg("2020-03-01", 3500, 9)])[0]?.tier?.name ?? "none"
+  );
+
 
   /* the user's real 2024: 12,981 PQP / 50 PQF — Platinum on the old bars,
      only Gold on the new ones. Their 2025 receipts print "Premier Platinum". */
@@ -7470,6 +7718,221 @@ async function routeHandlerChecks() {
       created.body.segment?.distance_miles === routeDistanceMiles("IAH", "SFO"),
       String(created.body.segment?.distance_miles)
     );
+
+    /* The lifetime chart's day series and the monthly rollup are two
+       resolutions of ONE balance — their closing figures must agree, and
+       each daily point must sit on a real flight date. */
+    {
+      const an = await j(await apiAnalytics());
+      const daily = an.body.lifetimeDaily as { date: string; withEst: number; flown: number }[];
+      const monthlyCum = an.body.cumulativeLifetime as { withEst: number; flown: number }[];
+      check(
+        "lifetime day series closes exactly where the monthly rollup closes",
+        daily.length > 0 &&
+          daily[daily.length - 1].withEst === Math.round(monthlyCum[monthlyCum.length - 1].withEst) &&
+          daily[daily.length - 1].flown === Math.round(monthlyCum[monthlyCum.length - 1].flown),
+        JSON.stringify({
+          d: daily[daily.length - 1],
+          m: monthlyCum[monthlyCum.length - 1],
+        })
+      );
+    }
+
+    /* The arrival rule, on this same temp ledger: a "ticketed" leg whose
+       scheduled arrival passed the margin becomes flown on the next enriched
+       read — a flight becomes flown by landing, not by waiting for an
+       import. The advance is a real write, logged under its own actor. */
+    {
+      const past = await j(
+        await apiFlightCreate(
+          req("POST", "/api/flights", {
+            origin: "IAH", destination: "SFO", flight_date: "2024-11-05",
+            departure_time: "08:00", arrival_time: "10:30",
+            status: "ticketed", marketing_carrier: "UA", flight_number: "999",
+          })
+        )
+      );
+      const future = await j(
+        await apiFlightCreate(
+          req("POST", "/api/flights", {
+            origin: "SFO", destination: "IAH", flight_date: "2031-01-01",
+            status: "ticketed", marketing_carrier: "UA", flight_number: "998",
+          })
+        )
+      );
+      await apiFlights(); // any enriched read runs the sweep
+      const sweptPast = await j(
+        await apiFlightGet(req("GET", "/x"), ctx(past.body.segment.id))
+      );
+      const sweptFuture = await j(
+        await apiFlightGet(req("GET", "/x"), ctx(future.body.segment.id))
+      );
+      check(
+        "arrival sweep: the landed leg is flown, the future leg still ticketed",
+        sweptPast.body.status === "flown_unreconciled" &&
+          sweptFuture.body.status === "ticketed",
+        JSON.stringify({ past: sweptPast.body.status, future: sweptFuture.body.status })
+      );
+      const changes = await j(await apiChanges(req("GET", "/api/changes?limit=10")));
+      check(
+        "arrival sweep: the advance is logged under the arrival actor",
+        (changes.body.changes as { actor: string }[]).some((c) => c.actor === "arrival"),
+        JSON.stringify((changes.body.changes as { actor: string }[]).map((c) => c.actor).slice(0, 5))
+      );
+      await apiFlightDelete(req("DELETE", "/x"), ctx(past.body.segment.id));
+      await apiFlightDelete(req("DELETE", "/x"), ctx(future.body.segment.id));
+
+      /* The clock defers to the exchange: a ticketed leg on a ticket with a
+         SUCCESSOR is a reissue leftover, and the real EKJ13Q chain showed
+         what blanket-flown does to one — dead legs allocating money. Past
+         the reissue and not carried → cancelled; the boundary day and a
+         carried coupon both stay questions. */
+      const pred = await j(
+        await apiTicketCreate(req("POST", "/api/tickets", {
+          confirmation_code: "SWEEP1", issue_date: "2024-10-01", gross_total: 100,
+        }))
+      );
+      const succ = await j(
+        await apiTicketCreate(req("POST", "/api/tickets", {
+          confirmation_code: "SWEEP1", issue_date: "2024-11-04",
+          predecessor_ticket_id: pred.body.id, gross_total: 0,
+        }))
+      );
+      const mkLeg = async (t: string, date: string, o: string, dd: string) =>
+        (await j(
+          await apiFlightCreate(req("POST", "/api/flights", {
+            origin: o, destination: dd, flight_date: date, status: "ticketed",
+            marketing_carrier: "UA", ticket_id: t,
+            departure_time: "08:00", arrival_time: "10:00",
+          }))
+        )).body.segment.id as string;
+      const dead = await mkLeg(pred.body.id, "2024-11-05", "IAH", "SFO");
+      const boundary = await mkLeg(pred.body.id, "2024-11-04", "SFO", "LAX");
+      const carriedOld = await mkLeg(pred.body.id, "2024-11-06", "LAX", "DEN");
+      const carriedNew = await mkLeg(succ.body.id, "2024-11-06", "LAX", "DEN");
+      await apiFlights(); // sweep
+      const st = async (id: string) =>
+        (await j(await apiFlightGet(req("GET", "/x"), ctx(id)))).body.status;
+      check(
+        "arrival sweep: exchanged-away legs cancel, the boundary day and carried coupons stand",
+        (await st(dead)) === "canceled" &&
+          (await st(boundary)) === "ticketed" &&
+          (await st(carriedOld)) === "ticketed" &&
+          (await st(carriedNew)) === "flown_unreconciled",
+        JSON.stringify({
+          dead: await st(dead), boundary: await st(boundary),
+          carriedOld: await st(carriedOld), carriedNew: await st(carriedNew),
+        })
+      );
+      for (const id of [dead, boundary, carriedOld, carriedNew])
+        await apiFlightDelete(req("DELETE", "/x"), ctx(id));
+      await apiTicketDelete(req("DELETE", "/x"), ctx(succ.body.id));
+      await apiTicketDelete(req("DELETE", "/x"), ctx(pred.body.id));
+    }
+
+    /* The flight-diary import, end to end on this same temp ledger: the
+       UA1976 flight just created has a seat but no aircraft or tail — a
+       diary row for the SAME flight must fill only those blanks, and a
+       replayed apply must double nothing. */
+    {
+      const diaryCsv =
+        '\nDate,"Flight number",From,To,"Dep time","Arr time",Duration,Airline,Aircraft,Registration,"Seat number","Seat type","Flight class","Flight reason",Note,Dep_id,Arr_id,Airline_id,Aircraft_id\n' +
+        '2025-03-01,UA1976,"Houston / Test (IAH/KIAH)","San Francisco / Test (SFO/KSFO)",09:00:00,11:30:00,04:30:00,"United Airlines (UA/UAL)","Boeing 737-900 (B739)",N37462,1A,1,1,2,,1,2,3,4\n' +
+        '2018-05-20,AF83,"San Francisco / Test (SFO/KSFO)","Paris / Test (CDG/LFPG)",15:30:00,10:55:00,10:25:00,"Air France (AF/AFR)","Boeing 777-300ER (B77W)",F-GSQB,33C,3,1,1,,2,5,6,7\n';
+      const dpv = await j(
+        await apiFlightdiary(
+          req("POST", "/api/import/flightdiary", { mode: "preview", csv: diaryCsv })
+        )
+      );
+      const rows = dpv.body.rows as { action: string; fills?: string[] }[];
+      check(
+        "diary route: one fill for the ledger's flight, one brand-new create",
+        dpv.status === 200 &&
+          rows.some((r) => r.action === "fill" && r.fills?.includes("tail")) &&
+          rows.filter((r) => r.action === "create").length === 1,
+        JSON.stringify(rows)
+      );
+      const applied = await j(
+        await apiFlightdiary(
+          req("POST", "/api/import/flightdiary", {
+            mode: "apply",
+            rows: rows.filter((r) => r.action !== "unchanged"),
+          })
+        )
+      );
+      check(
+        "diary route: apply creates one, fills one, errors none",
+        applied.body.created === 1 &&
+          applied.body.filled === 1 &&
+          applied.body.errors.length === 0,
+        JSON.stringify(applied.body)
+      );
+      const after = await j(await apiFlightGet(req("GET", "/x"), ctx(segId)));
+      check(
+        "diary route: the tail and aircraft landed, the seat the user typed stood",
+        after.body.tail_number === "N37462" &&
+          after.body.aircraft === "Boeing 737-900" &&
+          after.body.seat === "20F",
+        JSON.stringify(after.body)
+      );
+      const replay = await j(
+        await apiFlightdiary(
+          req("POST", "/api/import/flightdiary", {
+            mode: "apply",
+            rows: rows.filter((r) => r.action !== "unchanged"),
+          })
+        )
+      );
+      check(
+        "diary route: a replayed apply downgrades to fills and creates nothing",
+        replay.body.created === 0 && replay.body.duplicates === 1,
+        JSON.stringify(replay.body)
+      );
+      /* the crash the first real import found: a hand-crafted apply row with
+         no carrier must fail as ONE row in words — never as a SQLite NOT
+         NULL that rolls back everyone else's flights with it */
+      const nullCarrier = await j(
+        await apiFlightdiary(
+          req("POST", "/api/import/flightdiary", {
+            mode: "apply",
+            rows: [
+              {
+                action: "create",
+                row: {
+                  index: 1, date: "2013-08-03", carrier: null, flight_number: null,
+                  origin: "GDN", destination: "RIX", departure_time: null,
+                  arrival_time: null, cabin: null, seat: null, aircraft: null,
+                  tail_number: null, purpose: null, note: null,
+                },
+              },
+            ],
+          })
+        )
+      );
+      check(
+        "diary route: a carrier-less create errors as one row, in words",
+        nullCarrier.status === 200 &&
+          nullCarrier.body.created === 0 &&
+          nullCarrier.body.errors.length === 1 &&
+          /marketing_carrier/.test(nullCarrier.body.errors[0]),
+        JSON.stringify(nullCarrier.body)
+      );
+      /* leave the temp ledger exactly as this block found it — the section's
+         later checks count rows, and a guest that moves the furniture breaks
+         the host's inventory */
+      const all = await j(await apiFlights());
+      const af = (all.body.flights as { id: string; marketing_carrier: string }[]).find(
+        (s) => s.marketing_carrier === "AF"
+      );
+      if (af) await apiFlightDelete(req("DELETE", "/x"), ctx(af.id));
+      await apiFlightPatch(
+        req("PATCH", "/x", {
+          departure_time: null, arrival_time: null, cabin: null,
+          aircraft: null, tail_number: null, purpose: null,
+        }),
+        ctx(segId)
+      );
+    }
 
     /* Rejections: a 400, a reason in words, and nothing written. */
     for (const [name, payload] of [

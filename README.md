@@ -42,6 +42,14 @@ npm run seed:demo
   exact · UA604 exact · SFO → IAH exact"), and asks only when it's genuinely
   ambiguous. Re-importing the same file is a no-op.
 
+- **Flight-log import** — a myFlightradar24 or Flighty CSV export drops on
+  the Flights page and quick-starts the ledger with any airline's history:
+  routes, times, cabins, seats, aircraft types and tail registrations
+  (Flighty's ICAO airline codes are translated to the IATA codes the ledger
+  files by). On flights the ledger already has, a log fills blanks only — a
+  receipt's cabin or a hand-entered seat always outranks it. A flight logged
+  with no airline is filed under an honest `??` rather than refused.
+
 - **Premier status by year** — PQP and PQF against the thresholds United
   published for *that* qualification year, drawn as the same three arc gauges
   united.com uses. The rings are stacked by source, so you can see a total's
@@ -196,7 +204,7 @@ when you press sync.
 |---|---|
 | `npm run dev` | Start the dashboard |
 | `npm run build && npm start` | Production build and serve (uses `.next-build/`, so it won't disturb a running dev server) |
-| `npm run selftest` | 855 checks over distance, cost allocation, parsing and status math, plus a 500-case fuzz |
+| `npm run selftest` | 885 checks over distance, cost allocation, parsing and status math, plus a 500-case fuzz |
 | `npm run typecheck` | TypeScript check |
 | `npm run lint` | ESLint over `src/` and `scripts/` (Next's recommended rules, flat config) |
 | `npm run seed:demo` | Populate sample data (needs a running server) |
