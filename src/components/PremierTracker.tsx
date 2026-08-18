@@ -5,7 +5,7 @@ import type { PremierSource, PremierYear } from "@/lib/premier";
 import { shortfall } from "@/lib/premier";
 import { fmtDate, fmtInt } from "@/lib/format";
 import { Panel } from "./ui";
-import { AwardBalanceChart, C, PremierChart } from "@/components/charts";
+import { AwardBalanceChart, C, LifetimeBalanceChart, PremierChart } from "@/components/charts";
 import { PremierGauge, PremierMark, markColor } from "./premier-ui";
 import type { GaugeSlice } from "./premier-ui";
 
@@ -89,6 +89,7 @@ function YearDetail({ y }: { y: PremierYear }) {
      persists while they compare years. */
   const [routeChoice, setRouteChoice] = useState<Route | null>(null);
   const [awardView, setAwardView] = useState(false);
+  const [lifetimeView, setLifetimeView] = useState(false);
   /* Gauges can read two ways: what United has credited, or that plus what
      the booked calendar should add. The toggle exists because both are real
      questions — "where am I" and "where do I land if these flights happen". */
@@ -134,13 +135,7 @@ function YearDetail({ y }: { y: PremierYear }) {
 
   return (
     <div className="space-y-4 border-t border-line px-4 pb-4 pt-3">
-      {y.beforeTable ? (
-        <p className="text-[12.5px] text-ink2">
-          Before 2020, MileagePlus qualified on miles, segments and dollars —
-          PQP and PQF didn&apos;t exist, so this year&apos;s totals aren&apos;t
-          scored against a tier.
-        </p>
-      ) : next ? (
+      {next ? (
         <div>
           <div className="mb-1 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
             <h3 className="t-label !text-[10px]">
@@ -230,7 +225,9 @@ function YearDetail({ y }: { y: PremierYear }) {
              the thing the chart is for — the pace. */
           const reach = Math.max(
             0,
-            ...y.points.map((m) => Math.max(m.cumPqp ?? 0, m.projPqp ?? 0)),
+            ...y.points.map((m) =>
+              Math.max(m.cumPqp ?? 0, m.projPqp ?? 0, m.flownPqp ?? 0)
+            ),
             proj?.pqp ?? 0
           );
           const ceiling = next
@@ -242,12 +239,18 @@ function YearDetail({ y }: { y: PremierYear }) {
             (t) => barOf(t) <= Math.max(reach, ceiling) * 1.02
           );
           const hasAward = y.points.some((m) => m.awardBalance != null);
-          const showAward = awardView && hasAward;
+          const hasLifetime = y.points.some((m) => m.lifetimeBalance != null);
+          const showAward = awardView && hasAward && !(lifetimeView && hasLifetime);
+          const showLifetime = lifetimeView && hasLifetime;
           return (
             <div>
               <div className="mb-1 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                 <h3 className="t-label !text-[10px]">
-                  {showAward ? "Award miles through the year" : "PQP through the year"}
+                  {showLifetime
+                    ? "Lifetime miles through the year"
+                    : showAward
+                      ? "Award miles through the year"
+                      : "PQP through the year"}
                 </h3>
                 {/* Opening and closing levels with the move between them, as
                     a figure each rather than a run-on sentence. "now" is only
@@ -276,6 +279,29 @@ function YearDetail({ y }: { y: PremierYear }) {
                     <span className="t-num text-ink">{fmtInt(y.closingAward)}</span>
                   </span>
                 )}
+                {showLifetime && (() => {
+                  const lnet = y.closingLifetime - y.openingLifetime;
+                  return (
+                    <span className="flex items-baseline gap-1.5 text-[11.5px]">
+                      <span className="t-label !text-[9px]">opened</span>
+                      <span className="t-num text-ink2">{fmtInt(y.openingLifetime)}</span>
+                      <span
+                        className={`t-num rounded px-1.5 py-px text-[11px] ${
+                          lnet > 0
+                            ? "bg-[color-mix(in_oklab,var(--color-s-miles)_16%,transparent)] text-s-miles"
+                            : "text-mute"
+                        }`}
+                      >
+                        {lnet > 0 ? "+" : ""}
+                        {fmtInt(lnet)}
+                      </span>
+                      <span className="t-label !text-[9px]">
+                        {y.closed ? "closed" : "now"}
+                      </span>
+                      <span className="t-num text-ink">{fmtInt(y.closingLifetime)}</span>
+                    </span>
+                  );
+                })()}
                 {/* One control, three views. The award balance was briefly its
                     own panel underneath; two stacked year-long charts made the
                     section scroll for no gain, when only one is ever being
@@ -286,19 +312,28 @@ function YearDetail({ y }: { y: PremierYear }) {
                       ["both", "PQP + PQF"],
                       ["pqpOnly", "PQP only"],
                       ...(hasAward ? ([["award", "Award miles"]] as const) : []),
+                      ...(hasLifetime ? ([["lifetime", "Lifetime miles"]] as const) : []),
                     ] as const
                   ).map(([r, text]) => (
                     <button
                       key={r}
                       onClick={() => {
-                        if (r === "award") setAwardView(true);
-                        else {
+                        if (r === "award") {
+                          setAwardView(true);
+                          setLifetimeView(false);
+                        } else if (r === "lifetime") {
+                          setLifetimeView(true);
                           setAwardView(false);
+                        } else {
+                          setAwardView(false);
+                          setLifetimeView(false);
                           setRouteChoice(r);
                         }
                       }}
                       title={
-                        r === "award"
+                        r === "lifetime"
+                          ? "Lifetime miles (est.), opening where last year closed — the Million Miler currency"
+                          : r === "award"
                           ? "Redeemable-mile balance, opening where last year closed"
                           : r === "both"
                             ? `Bars at the PQP half of each tier's points-plus-flights route${
@@ -309,7 +344,7 @@ function YearDetail({ y }: { y: PremierYear }) {
                               }`
                       }
                       className={`t-display px-2.5 py-1 text-[10px] tracking-[0.1em] transition-colors ${
-                        (showAward ? "award" : route) === r
+                        (showLifetime ? "lifetime" : showAward ? "award" : route) === r
                           ? "bg-[var(--tint-accent-strong)] text-ink"
                           : "text-mute hover:text-ink2"
                       }`}
@@ -328,8 +363,8 @@ function YearDetail({ y }: { y: PremierYear }) {
               <div className="grid">
                 <div
                   className="[grid-area:1/1]"
-                  style={{ visibility: showAward ? "hidden" : "visible" }}
-                  aria-hidden={showAward}
+                  style={{ visibility: showAward || showLifetime ? "hidden" : "visible" }}
+                  aria-hidden={showAward || showLifetime}
                 >
                   <PremierChart
                     data={y.points}
@@ -344,6 +379,15 @@ function YearDetail({ y }: { y: PremierYear }) {
                     aria-hidden={!showAward}
                   >
                     <AwardBalanceChart data={y.points} year={y.year} />
+                  </div>
+                )}
+                {hasLifetime && (
+                  <div
+                    className="[grid-area:1/1]"
+                    style={{ visibility: showLifetime ? "visible" : "hidden" }}
+                    aria-hidden={!showLifetime}
+                  >
+                    <LifetimeBalanceChart data={y.points} year={y.year} />
                   </div>
                 )}
               </div>
@@ -510,7 +554,7 @@ function YearDetail({ y }: { y: PremierYear }) {
 
       <p className="text-[11px] text-mute">
         Thresholds:{" "}
-        {y.beforeTable ? "not applicable this far back" : `${y.program.from} set`}.
+        {`${y.program.from} set`}.
         {y.program.from === 2020 && Number(y.year) <= 2021 && (
           <>
             {" "}

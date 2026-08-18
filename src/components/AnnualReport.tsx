@@ -198,7 +198,7 @@ export default function AnnualReport({
           </section>
         )}
 
-        {premier && !premier.beforeTable && (
+        {premier && (
           <section className="mt-7">
             <h2 className="t-label mb-2">Premier status</h2>
             <p className="text-[13px] text-ink2">

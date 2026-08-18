@@ -47,7 +47,8 @@ export const GET = handled(async () => {
     data.segments,
     data.activities,
     settings.premier_programs ?? DEFAULT_PREMIER_PROGRAMS,
-    todayStr()
+    todayStr(),
+    settings.lifetime_baseline_miles || 0
   );
 
   return jsonOk({

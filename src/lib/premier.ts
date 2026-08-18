@@ -18,6 +18,7 @@ import {
   NON_ALLOCABLE_STATUSES,
   isFlightActivity,
 } from "./types";
+import { estimatedLifetimeMiles } from "./types";
 import type { ActivityRecord, SegmentStatus } from "./types";
 
 export interface PremierTier {
@@ -202,7 +203,12 @@ export interface PremierDayPoint {
   projPqp: number | null;
   /** cumulative flights including booked ones, from the junction on */
   projPqf: number | null;
+  /** posted + flown-awaiting-credit only (no booked): the thin solid stretch */
+  flownPqp: number | null;
+  flownPqf: number | null;
   awardBalance: number | null;
+  /** running lifetime miles (est.), baseline included; null past the last flight */
+  lifetimeBalance: number | null;
 }
 
 export interface PremierYear {
@@ -216,7 +222,6 @@ export interface PremierYear {
   /** paid United / United Express segments — what the program floor counts */
   uaFlights: number;
   /** the year predates PQP/PQF entirely — nothing here can be scored */
-  beforeTable: boolean;
   tier: PremierTier | null;
   nextTier: PremierTier | null;
   /** shortfall to nextTier on each route (0 once met) */
@@ -231,6 +236,8 @@ export interface PremierYear {
    *  miles existed before the first row here, every figure is offset by that
    *  same amount and the SHAPE is what's being read, not the level. */
   openingAward: number;
+  openingLifetime: number;
+  closingLifetime: number;
   /** what the balance closed the year at, or opened at if nothing moved */
   closingAward: number;
   monthly: PremierMonth[];
@@ -274,6 +281,13 @@ export interface PremierSegment {
   flight_number: string | null;
   origin: string;
   destination: string;
+  /* lifetime-balance view: present when the caller passes full segments —
+     absent in older tests, which simply get no lifetime series */
+  lifetime_miles?: number | null;
+  distance_miles?: number | null;
+  credits_mileageplus?: number | null;
+  issuing_carrier?: string | null;
+  ticket_id?: string | null;
 }
 
 const label = (s: PremierSegment) =>
@@ -305,7 +319,9 @@ export function buildPremierYears(
   segments: PremierSegment[],
   activities: ActivityRecord[],
   programs: PremierProgram[] = DEFAULT_PREMIER_PROGRAMS,
-  todayStr: string = new Date().toISOString().slice(0, 10)
+  todayStr: string = new Date().toISOString().slice(0, 10),
+  /** miles flown before tracking began — the balance the series opens on */
+  lifetimeBaseline = 0
 ): PremierYear[] {
   const years = new Map<
     string,
@@ -313,8 +329,9 @@ export function buildPremierYears(
       /** ua marks a posting from a UA-metal flight — the milestone walk
        *  counts these toward the flights floor as it replays the year */
       events: { date: string; pqp: number; pqf: number; source: string; ua?: boolean }[];
-      /** booked-but-not-yet-credited PQP/PQF, at the date it should post */
-      projected: { date: string; pqp: number; pqf: number }[];
+      /** uncredited PQP/PQF at the date it should post — booked legs and
+       *  flown-awaiting-credit legs alike, told apart by the flag */
+      projected: { date: string; pqp: number; pqf: number; flown: boolean }[];
       pendingPqp: number;
       pendingPqf: number;
       pendingFlights: number;
@@ -335,6 +352,14 @@ export function buildPremierYears(
       items: Map<string, Map<string, { pqp: number; n: number }>>;
     }
   >();
+  /* The tracker's own floor: the earliest qualification year any program in
+     the table describes — 2020 in the built-in table, because PQP/PQF didn't
+     exist before. A 2012 flight is real history for every other page, but a
+     Premier chip for a year the model can't score is a "NO STATUS" that
+     means "no model", and a diary import of old travel once minted a decade
+     of them. */
+  const floorYear = String(Math.min(...programs.map((p) => p.from)));
+
   const addSource = (
     y: {
       sources: Map<string, PremierSource>;
@@ -377,6 +402,7 @@ export function buildPremierYears(
 
   for (const s of segments) {
     if (NON_ALLOCABLE_STATUSES.includes(s.status)) continue;
+    if (s.flight_date.slice(0, 4) < floorYear) continue;
     const y = get(s.flight_date.slice(0, 4));
     const posted = FLOWN_STATUSES.includes(s.status) && (s.pqp != null || s.pqf != null);
     if (posted) {
@@ -446,7 +472,12 @@ export function buildPremierYears(
       y.pendingPqf += projPqfAdd;
     }
     if (projPqpAdd > 0 || projPqfAdd > 0)
-      y.projected.push({ date: s.flight_date, pqp: projPqpAdd, pqf: projPqfAdd });
+      y.projected.push({
+        date: s.flight_date,
+        pqp: projPqpAdd,
+        pqf: projPqfAdd,
+        flown: FLOWN_STATUSES.includes(s.status),
+      });
   }
 
   const nonFlight = activities.filter((a) => !isFlightActivity(a.activity_type));
@@ -454,6 +485,7 @@ export function buildPremierYears(
     const pqp = a.pqp ?? 0;
     const pqf = a.pqf ?? 0;
     if (pqp === 0 && pqf === 0) continue;
+    if (a.activity_date.slice(0, 4) < floorYear) continue;
     const y = get(a.activity_date.slice(0, 4));
     y.events.push({ date: a.activity_date, pqp, pqf, source: a.description });
     y.nonFlightPqp += pqp;
@@ -494,6 +526,26 @@ export function buildPremierYears(
     if (a.award_miles) awardMoves.push({ date: a.activity_date, award: a.award_miles });
   }
   awardMoves.sort((a, b) => a.date.localeCompare(b.date));
+
+  /* Lifetime is a balance like award miles, but it only ever rises, and only
+     on flights that credit — the same estimate the dashboard uses, so the
+     two charts can never disagree about the same day. */
+  const lifetimeMoves: { date: string; miles: number }[] = [];
+  for (const s of segments) {
+    if (!FLOWN_STATUSES.includes(s.status)) continue;
+    const miles = estimatedLifetimeMiles({
+      lifetime_miles: s.lifetime_miles ?? null,
+      distance_miles: s.distance_miles ?? null,
+      award_miles: s.award_miles ?? null,
+      operating_carrier: s.operating_carrier ?? null,
+      marketing_carrier: s.marketing_carrier,
+      issuing_carrier: s.issuing_carrier ?? null,
+      credits_mileageplus: s.credits_mileageplus ?? null,
+      ticket_id: s.ticket_id ?? null,
+    });
+    if (miles > 0) lifetimeMoves.push({ date: s.flight_date, miles });
+  }
+  lifetimeMoves.sort((a, b) => a.date.localeCompare(b.date));
 
   const out: PremierYear[] = [];
   for (const [year, y] of years) {
@@ -545,6 +597,12 @@ export function buildPremierYears(
     const openingAward = awardMoves
       .filter((m) => m.date < `${year}-01-01`)
       .reduce((a, m) => a + m.award, 0);
+    const openingLifetime =
+      lifetimeBaseline +
+      lifetimeMoves
+        .filter((m) => m.date < `${year}-01-01`)
+        .reduce((a, m) => a + m.miles, 0);
+    const lifetimeInYear = lifetimeMoves.filter((m) => m.date.slice(0, 4) === year);
     const awardByMonth = new Map<string, number>();
     for (const m of awardMoves) {
       if (m.date.slice(0, 4) !== year) continue;
@@ -610,13 +668,26 @@ export function buildPremierYears(
     for (const m of awardInYear) {
       awardByDate.set(m.date, (awardByDate.get(m.date) ?? 0) + m.award);
     }
+    const lifetimeByDate = new Map<string, number>();
+    for (const m of lifetimeInYear) {
+      lifetimeByDate.set(m.date, (lifetimeByDate.get(m.date) ?? 0) + m.miles);
+    }
+    const lastLifetimeDate = [...lifetimeByDate.keys()].sort().pop() ?? null;
     const projByDate = new Map<string, { pqp: number; pqf: number }>();
+    const flownProjByDate = new Map<string, { pqp: number; pqf: number }>();
     for (const e of y.projected) {
       const cur = projByDate.get(e.date) ?? { pqp: 0, pqf: 0 };
       cur.pqp += e.pqp;
       cur.pqf += e.pqf;
       projByDate.set(e.date, cur);
+      if (e.flown) {
+        const f = flownProjByDate.get(e.date) ?? { pqp: 0, pqf: 0 };
+        f.pqp += e.pqp;
+        f.pqf += e.pqf;
+        flownProjByDate.set(e.date, f);
+      }
     }
+    const lastFlownDate = [...flownProjByDate.keys()].sort().pop() ?? null;
     const lastPqpDate = [...pqpByDate.keys()].sort().pop() ?? null;
     const lastAwardDate = [...awardByDate.keys()].sort().pop() ?? null;
     /* Anchor on 1 January so both lines start where the year starts: PQP at
@@ -639,22 +710,29 @@ export function buildPremierYears(
         ...monthEnds,
         ...pqpByDate.keys(),
         ...awardByDate.keys(),
+        ...lifetimeByDate.keys(),
         ...projByDate.keys(),
       ]),
     ].sort();
     let runPqp = 0;
     let runPqf = 0;
     let runAward = openingAward;
+    let runLifetime = openingLifetime;
     let runProj = 0;
     let runProjPqf = 0;
+    let runFlown = 0;
+    let runFlownPqf = 0;
     const points: PremierDayPoint[] = dates.map((date) => {
       const mv = pqpByDate.get(date);
       const aw = awardByDate.get(date) ?? 0;
       runPqp += mv?.pqp ?? 0;
       runPqf += mv?.pqf ?? 0;
       runAward += aw;
+      runLifetime += lifetimeByDate.get(date) ?? 0;
       runProj += projByDate.get(date)?.pqp ?? 0;
       runProjPqf += projByDate.get(date)?.pqf ?? 0;
+      runFlown += flownProjByDate.get(date)?.pqp ?? 0;
+      runFlownPqf += flownProjByDate.get(date)?.pqf ?? 0;
       const [yy, mm, dd] = date.split("-").map(Number);
       return {
         date,
@@ -672,8 +750,28 @@ export function buildPremierYears(
             : Math.round(runPqp + runProj),
         projPqf:
           lastPqpDate != null && date < lastPqpDate ? null : runPqf + runProjPqf,
+        /* the near-certain stretch: flown legs whose credit hasn't posted —
+           starts at the posted junction, ends at the last flown leg, and is
+           drawn thinner-solid rather than dashed: practically fact, awaiting
+           paperwork. Booked projection continues past it as the dash. */
+        flownPqp:
+          lastFlownDate == null || (lastPqpDate != null && date < lastPqpDate)
+            ? null
+            : date <= lastFlownDate
+              ? Math.round(runPqp + runFlown)
+              : null,
+        flownPqf:
+          lastFlownDate == null || (lastPqpDate != null && date < lastPqpDate)
+            ? null
+            : date <= lastFlownDate
+              ? runPqf + runFlownPqf
+              : null,
         awardBalance:
           lastAwardDate != null && date <= lastAwardDate ? Math.round(runAward) : null,
+        lifetimeBalance:
+          lastLifetimeDate != null && date <= lastLifetimeDate
+            ? Math.round(runLifetime)
+            : null,
       };
     });
 
@@ -682,11 +780,9 @@ export function buildPremierYears(
     /* Before 2020 MileagePlus qualified on miles, segments and dollars, not
        PQP/PQF. Scoring such a year against PQP bars would be meaningless, so
        it's reported with its totals and no tier rather than a wrong one. */
-    const beforeTable = Number(year) < Math.min(...programs.map((p) => p.from));
-    const tier = beforeTable ? null : tierFor(pqp, pqf, program, y.uaFlights);
-    const nextTier = beforeTable
-      ? null
-      : (tiers.find((t) => !pathFor(pqp, pqf, t, program.minFlights, y.uaFlights)) ?? null);
+    const tier = tierFor(pqp, pqf, program, y.uaFlights);
+    const nextTier =
+      tiers.find((t) => !pathFor(pqp, pqf, t, program.minFlights, y.uaFlights)) ?? null;
     /* year-end = posted + flown-awaiting-credit + booked */
     const standPqp = Math.round(pqp + y.flownPendingPqp);
     const standPqf = pqf + y.flownPendingPqf;
@@ -702,18 +798,21 @@ export function buildPremierYears(
       nonFlightPqp: Math.round(y.nonFlightPqp),
       flights: y.flights,
       uaFlights: y.uaFlights,
-      beforeTable,
       tier,
       nextTier,
       needPqp: nextTier ? Math.max(0, nextTier.pqp - pqp) : 0,
       needPqf: nextTier ? Math.max(0, nextTier.pqf - pqf) : 0,
       needPqpOnly: nextTier ? Math.max(0, nextTier.pqpOnly - pqp) : 0,
       needMinFlights: Math.max(0, program.minFlights - y.uaFlights),
-      milestones: beforeTable ? [] : milestones,
+      milestones,
       flownPendingPqp: Math.round(y.flownPendingPqp),
       flownPendingPqf: y.flownPendingPqf,
       openingAward: Math.round(openingAward),
       closingAward,
+      openingLifetime: Math.round(openingLifetime),
+      closingLifetime: Math.round(
+        openingLifetime + lifetimeInYear.reduce((a, m) => a + m.miles, 0)
+      ),
       monthly: [...byMonth.values()].sort((a, b) => a.month.localeCompare(b.month)),
       points,
       sources: [...y.sources.values()]
