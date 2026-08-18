@@ -35,7 +35,9 @@ const CHANGE_ACTORS: Record<string, string> = {
   manual: "you",
   "import:receipt": "receipt import",
   "import:mileageplus": "CSV import",
+  "import:flightdiary": "flight-diary import",
   "import:bts": "aircraft import",
+  arrival: "the arrival rule",
   restore: "backup restore",
 };
 const CHANGE_TABLES: Record<string, string> = {
@@ -714,7 +716,7 @@ export default function SettingsPage() {
           </button>
         </div>
 
-        <Panel label="Export" accent={C.award}>
+        <Panel label="Backup & restore" accent={C.award}>
           <div className="px-4 pb-4">
             <p className="mb-3 text-[12.5px] text-mute">
               Exports cover the ledger that is open —{" "}
@@ -724,7 +726,8 @@ export default function SettingsPage() {
                   "tracker.db"}
               </span>
               . Only the JSON backup can be restored; the CSVs are for taking
-              one table elsewhere. Both are plain text.
+              one table elsewhere. Both are plain text. Restore replaces this
+              ledger with the backup&apos;s contents.
             </p>
             {/* Only one of these is qualitatively different: the JSON backup
                 is the one that can be restored. The rest are all the same act
@@ -732,12 +735,33 @@ export default function SettingsPage() {
                 choice, not five buttons competing with the one that matters.
                 A seventh table later costs a line in the list, not a row of
                 wrapped buttons. */}
-            <div className="mb-2">
+            {/* The backup and its return door belong side by side — they
+                used to sit half a page apart, restore filed under danger,
+                and the pairing is the point: what one button writes, its
+                neighbour reads back. */}
+            <div className="mb-2 flex flex-wrap items-center gap-2">
               <button
                 className="btn btn-ghost"
                 onClick={() => void apiDownload("/api/export?what=backup")}
               >
                 <Download size={13} /> Full backup (JSON)
+              </button>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="application/json"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) restore(file);
+                  e.target.value = "";
+                }}
+              />
+              <button
+                className="btn btn-ghost"
+                onClick={() => fileRef.current?.click()}
+              >
+                <Upload size={13} /> Restore JSON backup
               </button>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -854,36 +878,20 @@ export default function SettingsPage() {
           </div>
         </Panel>
 
-        <Panel label="Restore & danger zone" accent="var(--color-critical)">
+        <Panel label="Danger zone" accent="var(--color-critical)">
           <div className="px-4 pb-4">
             <div className="flex flex-wrap items-center gap-2">
-              <input
-                ref={fileRef}
-                type="file"
-                accept="application/json"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) restore(file);
-                  e.target.value = "";
-                }}
-              />
               <button
-                className="btn btn-ghost"
-                onClick={() => fileRef.current?.click()}
-              >
-                <Upload size={13} /> Restore JSON backup
-              </button>
-              <button
-                className="btn btn-danger ml-auto"
+                className="btn btn-danger"
                 onClick={() => setConfirmWipe(true)}
               >
                 Erase all data
               </button>
             </div>
             <p className="mt-2 text-[11px] text-mute">
-              Restore replaces everything with the backup’s contents. Erase
-              keeps settings but removes every flight, ticket and adjustment.
+              Erase keeps settings but removes every flight, ticket and
+              adjustment. Consider a JSON backup first — it restores from the
+              Backup &amp; restore panel above.
             </p>
           </div>
         </Panel>

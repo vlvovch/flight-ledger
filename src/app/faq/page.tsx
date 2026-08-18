@@ -162,18 +162,24 @@ export default function FaqPage() {
 
           <QA q="What's the fastest way to start?">
             <p>
-              Import your united.com &ldquo;My&nbsp;Activity&rdquo; CSV first (united.com →
+              Import your united.com <strong>My&nbsp;Activity</strong> CSV first (united.com →
               MileagePlus → My&nbsp;Activity). That one file creates your flights
               along with the miles and PQP United posted for them.
             </p>
             <p>
               Then add costs by dropping eTicket receipt emails on the Tickets
-              page. To load years of history at once: in Gmail, search{" "}
+              page. To load years of history at once: in <strong>Gmail</strong>, search{" "}
               <code>from:receipts@united.com OR from:notifications@united.com
               OR from:unitedairlines@united.com</code>, apply a label, export
-              that label with Google Takeout, and drop the resulting{" "}
+              that label with <strong>Google Takeout</strong>, and drop the resulting{" "}
               <code>.mbox</code> file here. Importing the same file twice is
               safe; nothing is duplicated.
+            </p>
+            <p>
+              You can also start from a flight log kept in{" "}
+              <strong>Flighty</strong> or <strong>myFlightradar24</strong>: drop its CSV export on the Flights page and
+              your whole history loads in one go — any airline, not just
+              United.
             </p>
             <p>
               Prefer to start small? Log a flight by hand and go from there.
@@ -182,9 +188,10 @@ export default function FaqPage() {
 
           <QA q="What if I don't use Gmail?">
             <p>
-              Any saved email works. Thunderbird and Apple Mail can save a
+              Any saved email works. <strong>Thunderbird</strong> and{" "}
+              <strong>Apple&nbsp;Mail</strong> can save a
               whole search result as <code>.eml</code> files, and you can drop
-              those in directly. Outlook saves <code>.msg</code> files, which
+              those in directly. <strong>Outlook</strong> saves <code>.msg</code> files, which
               the importer can&rsquo;t read, so Outlook users should export through
               Thunderbird.
             </p>
@@ -207,6 +214,24 @@ export default function FaqPage() {
               airline belong in the ledger, count toward cost per mile and the
               map, and the travel mix will show your United flying next to
               everyone else&rsquo;s.
+            </p>
+          </QA>
+
+          <QA q="Can I import from Flighty or myFlightradar24?">
+            <p>
+              Yes. Export your log as CSV from either app&rsquo;s settings and
+              drop the file on the Flights page — the format is recognized
+              automatically. Routes, dates, times, cabins,
+              seats, aircraft types and tail numbers come across; a flight
+              logged with no airline is kept and filed under an honest{" "}
+              <code>??</code> rather than refused.
+            </p>
+            <p>
+              On flights the ledger already has, a log only fills blanks — a
+              receipt&rsquo;s cabin or a hand-entered seat always outranks it. You
+              see the full list of adds and fills before anything is written,
+              and can untick any row: some exports carry flights that were
+              only tracked, never flown.
             </p>
           </QA>
 
