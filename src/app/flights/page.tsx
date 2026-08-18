@@ -208,9 +208,21 @@ export default function FlightsPage() {
       count: filtered.length,
       flownCount: flown.length,
       dist,
-      pqp: filtered.reduce((a, f) => a + (f.pqp ?? 0), 0),
-      pqf: filtered.reduce((a, f) => a + (f.pqf ?? 0), 0),
-      award: filtered.reduce((a, f) => a + (f.award_miles ?? 0), 0),
+      /* Earn totals count only flights that credit to MileagePlus — the same
+         gate the cells use, so a stray value on a non-crediting row can't
+         show "—" in its cell yet still move the footer. */
+      pqp: filtered.reduce(
+        (a, f) => a + (expectsMileagePlusCredit(f) ? (f.pqp ?? 0) : 0),
+        0
+      ),
+      pqf: filtered.reduce(
+        (a, f) => a + (expectsMileagePlusCredit(f) ? (f.pqf ?? 0) : 0),
+        0
+      ),
+      award: filtered.reduce(
+        (a, f) => a + (expectsMileagePlusCredit(f) ? (f.award_miles ?? 0) : 0),
+        0
+      ),
       lifetime: filtered.reduce((a, f) => a + (f.lifetime_miles ?? 0), 0),
       // posted where available; flown-but-unposted estimate distance on
       // UA-operated flights and 0 on non-UA (no lifetime accrual)
@@ -405,14 +417,19 @@ export default function FlightsPage() {
                         {f.flight_number ?? ""}
                       </td>
                       <td>
-                        <span className="t-num text-ink">
+                        {/* City names live in the hover tooltip, not the row:
+                            anyone scanning this table reads airport codes, and
+                            the spelled-out cities were the widest thing in it. */}
+                        <span
+                          className="t-num text-ink"
+                          title={
+                            f.origin_city || f.destination_city
+                              ? `${f.origin_city ?? f.origin} – ${f.destination_city ?? f.destination}`
+                              : undefined
+                          }
+                        >
                           {f.origin} → {f.destination}
                         </span>
-                        {(f.origin_city || f.destination_city) && (
-                          <span className="ml-2 hidden text-[10.5px] text-mute xl:inline">
-                            {f.origin_city} – {f.destination_city}
-                          </span>
-                        )}
                       </td>
                       {/* Status rides along with the cabin instead of owning a
                           column: 165 of 205 flights are "Reconciled", so a
@@ -495,6 +512,13 @@ export default function FlightsPage() {
                           >
                             Award
                           </span>
+                        ) : !credits ? (
+                          /* A non-crediting flight has no MileagePlus earning
+                             to report, so all three earn cells dash — even
+                             over a stray recorded 0, which otherwise reads as
+                             "posted and earned nothing" on a flight that was
+                             never in the program. */
+                          "—"
                         ) : f.award_miles != null ? (
                           fmtInt(f.award_miles)
                         ) : f.projected_award_miles != null ? (
@@ -504,7 +528,9 @@ export default function FlightsPage() {
                         )}
                       </td>
                       <td className={`num ${earn}`}>
-                        {f.pqp != null ? (
+                        {!credits ? (
+                          "—"
+                        ) : f.pqp != null ? (
                           fmtInt(f.pqp)
                         ) : f.projected_pqp != null ? (
                           <Proj v={fmtInt(f.projected_pqp)} />
@@ -513,7 +539,9 @@ export default function FlightsPage() {
                         )}
                       </td>
                       <td className={`num ${earn}`}>
-                        {f.pqf != null ? (
+                        {!credits ? (
+                          "—"
+                        ) : f.pqf != null ? (
                           f.pqf
                         ) : f.projected_pqf != null ? (
                           <Proj v={String(f.projected_pqf)} />
@@ -533,8 +561,8 @@ export default function FlightsPage() {
                                 : ", recorded on the ticket"
                             }. Valued at ${mileValue}¢ each = ${fmtMoney(milesValue, currency)}.`}
                           >
-                            {(milesSpent / 1000).toFixed(1)}k
                             {f.award_miles_estimated ? "*" : ""}
+                            {(milesSpent / 1000).toFixed(1)}k
                             {" + "}
                           </span>
                         )}
@@ -578,8 +606,11 @@ export default function FlightsPage() {
                                 f.award_miles_estimated ? ". Miles derived from PQP × 100." : ""
                               }`}
                             >
-                              {fmtCpm(cpm)}
+                              {/* Marker in front, like ≈ on estimates: a
+                                  trailing star ragged the right-aligned
+                                  column's edge. */}
                               <span className="text-mute">*</span>
+                              {fmtCpm(cpm)}
                             </span>
                           ) : (
                             fmtCpm(cpm)
@@ -671,7 +702,7 @@ export default function FlightsPage() {
       )}
 
       {showImport && (
-        <ImportModal onClose={() => setShowImport(false)} onApplied={refresh} />
+        <ImportModal context="flights" onClose={() => setShowImport(false)} onApplied={refresh} />
       )}
     </div>
   );
