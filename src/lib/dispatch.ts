@@ -25,6 +25,7 @@ import * as changes from "@/routes/changes";
 import * as exportRoute from "@/routes/export";
 import * as flights from "@/routes/flights";
 import * as flightsId from "@/routes/flights-id";
+import * as importFlightdiary from "@/routes/import-flightdiary";
 import * as importMileageplus from "@/routes/import-mileageplus";
 import * as importReceipt from "@/routes/import-receipt";
 import * as payments from "@/routes/payments";
@@ -56,6 +57,7 @@ const STATIC: Record<string, Partial<Record<Method, Handler>>> = {
   "/api/changes": methodsOf(changes),
   "/api/export": methodsOf(exportRoute),
   "/api/flights": methodsOf(flights),
+  "/api/import/flightdiary": methodsOf(importFlightdiary),
   "/api/import/mileageplus": methodsOf(importMileageplus),
   "/api/import/receipt": methodsOf(importReceipt),
   "/api/payments": methodsOf(payments),

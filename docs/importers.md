@@ -689,3 +689,50 @@ other respect.
 
 Without this the reconcile queue nags forever about flights nobody owes you
 credit for, which buries the one flight that really is missing.
+
+## myFlightradar24 flight diary
+
+A CSV, not an email — dropped on the Flights page, whose importer routes
+by sniffing the unmistakable header row (the United activity CSV lands
+there too; the MileagePlus page stays postings-only and redirects a diary
+in words). The export is
+a flight log with no money in it, and it is read for the two things a log
+knows that receipts rarely state: history from before the ledger began, and
+the physical details of flights already recorded — seat, cabin, aircraft
+type, tail registration, purpose, scheduled times. On a known flight the
+diary fills blanks only; a value from a receipt or the user's own hand
+always stands.
+
+Format notes, learned from real exports: the file opens with a blank line
+before the header; airports print as "City / Name (IATA/ICAO)" and a field
+without an IATA code cannot be imported; "00:00:00" is the diary's spelling
+of an unknown time; an empty airline prints as " (/)", an empty aircraft as
+" ()"; cabin and reason are numeric codes. A row without a flight number
+still finds its ledger flight when its date and route have exactly one
+candidate — two shuttle hops on one day are never merged by guess. A row
+with no airline at all — old charters, mostly — is filed under the honest
+`??` carrier rather than refused or guessed: it can't credit, can't earn,
+and shows in the airline mix as exactly what it is. History is born
+`flown_unreconciled`; a future-dated row is born `ticketed`.
+
+## Flighty
+
+The same pipeline as the flight diary, different dialect: airlines arrive as
+ICAO codes ("UAL", "DLH"), which a translation table files under the IATA
+codes the ledger keys on — an unmapped code passes through raw, the truth in
+the other alphabet. Scheduled gate times arrive as local ISO stamps and keep
+only their HH:MM — except midnight, which is Flighty's spelling of
+"unknown" on old synced flights, read as no time at all. A cancelled flight is skipped with its reason — the log
+import files travel, not cancellations — and a diverted flight lands where
+it actually landed, with a note naming the destination it was sold as.
+Flighty's per-flight PNR is not yet read; it could one day attach a log row
+to the ticket that bought it.
+
+One warning the preview wears as checkboxes: Flighty's export is a full
+data dump, and it can carry flights the app itself never shows — rows that
+were only tracked, or swept in by a sync and never surfaced (deleting a
+visible flight does remove it from the export; the phantoms are the ones
+with nothing visible to delete). A phantom is, by definition, a flight the
+ledger doesn't have, which is exactly the "Flights to add" list — so every
+create row carries a tick, and unticking is how a watched stranger's
+flight stays out of your log.

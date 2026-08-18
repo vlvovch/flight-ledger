@@ -55,6 +55,9 @@ interface FieldSpec {
   name: string;
   kind: "string" | "number" | "date" | "time" | "iata" | "enum" | "tail";
   required?: boolean;
+  /** may be omitted (a schema default fills it) but never explicitly null —
+      the shape of a NOT NULL column with a DEFAULT */
+  nonNull?: boolean;
   enumVals?: readonly string[];
   min?: number;
   upper?: boolean;
@@ -70,6 +73,7 @@ function prepare(input: Values, specs: FieldSpec[], partial: boolean): Prepared 
     const v = norm(input[spec.name]);
     if (v === null) {
       if (spec.required) return err(`${spec.name} is required`);
+      if (spec.nonNull) return err(`${spec.name} must not be blank`);
       out[spec.name] = null;
       continue;
     }
@@ -123,7 +127,12 @@ function prepare(input: Values, specs: FieldSpec[], partial: boolean): Prepared 
 
 const SEGMENT_SPECS: FieldSpec[] = [
   { name: "ticket_id", kind: "string" },
-  { name: "marketing_carrier", kind: "string", upper: true },
+  /* nonNull in words here, because the schema would otherwise say it in
+     SQLite's: the column is NOT NULL with a 'UA' default, so omission is
+     fine but an explicit null overrides the default — a carrier-less diary
+     row once crashed a whole import transaction instead of erroring as one
+     row. */
+  { name: "marketing_carrier", kind: "string", upper: true, nonNull: true },
   { name: "operating_carrier", kind: "string", upper: true },
   { name: "flight_number", kind: "string" },
   { name: "origin", kind: "iata", required: true },

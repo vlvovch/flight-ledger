@@ -109,6 +109,14 @@ export const GROSS_INCREASING_TYPES: AdjustmentType[] = ["extra"];
 /** Adjustment types that reduce gross spend (money actually returned for the ticket). */
 export const GROSS_REDUCING_TYPES: AdjustmentType[] = ["refund"];
 
+/** The airline when nobody wrote one down — an old charter, a decades-old
+ *  diary row. A real value rather than NULL because the ledger files every flight
+ *  under its carrier (mix, CPM, crediting all key on it), and an honest
+ *  "??" bucket beats both refusing the flight and guessing an airline. Never
+ *  UA in disguise: it fails every UA check, so it can't credit, can't earn
+ *  lifetime miles, and can't sneak into the CPM basis. */
+export const UNKNOWN_CARRIER = "??";
+
 export const PURPOSES = ["business", "personal", "mixed"] as const;
 export type Purpose = (typeof PURPOSES)[number];
 

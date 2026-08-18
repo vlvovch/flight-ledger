@@ -1,0 +1,6 @@
+Date,Airline,Flight,From,To,Dep Terminal,Dep Gate,Arr Terminal,Arr Gate,Canceled,Diverted To,Gate Departure (Scheduled),Gate Departure (Actual),Take off (Scheduled),Take off (Actual),Landing (Scheduled),Landing (Actual),Gate Arrival (Scheduled),Gate Arrival (Actual),Aircraft Type Name,Tail Number,PNR,Seat,Seat Type,Cabin Class,Flight Reason,Notes,Flight Flighty ID,Airline Flighty ID,Departure Airport Flighty ID,Arrival Airport Flighty ID,Diverted To Airport Flighty ID,Aircraft Type Flighty ID
+2024-05-02,UAL,1234,SFO,IAH,3,F6,C,C21,false,,2024-05-02T08:15,2024-05-02T08:22,2024-05-02T08:35,,2024-05-02T13:20,,2024-05-02T13:45,2024-05-02T13:50,Boeing 737-900,N37462,ABC123,21F,WINDOW,ECONOMY,BUSINESS,Test note,f1,a1,d1,r1,,t1
+2023-09-10,XXQ,77,FRA,VIE,,,,,false,,2023-09-10T10:00,,,,,,2023-09-10T11:30,,Airbus A320,,,,MIDDLE,PREMIUM_ECONOMY,LEISURE,,f2,a2,d2,r2,,t2
+2022-01-15,DLH,441,FRA,IAH,,,,,true,,2022-01-15T10:00,,,,,,2022-01-15T14:30,,,,,,,,BUSINESS,,f3,a3,d3,r3,,t3
+2011-06-18,,,GDN,RIX,,,,,false,,2011-06-18T00:00,,,,,,2011-06-18T00:00,,,,,,,,,,f4,a4,d4,r4,,t4
+2024-11-20,UAL,88,EWR,SFO,,,,,false,SMF,2024-11-20T17:00,,,,,,2024-11-20T20:30,,Boeing 787-10,N16009,,7A,WINDOW,BUSINESS,BUSINESS,,f5,a5,d5,r5,x5,t5

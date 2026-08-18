@@ -9,6 +9,11 @@ import type {
   ImportPreview,
   ImportPreviewRow,
 } from "@/lib/mileageplus-import";
+import { looksLikeFlightLog } from "@/lib/flightdiary-import";
+import type {
+  DiaryPreviewRow,
+  DiarySkippedRow,
+} from "@/lib/flightdiary-import";
 
 type Stage = "pick" | "loading" | "review" | "applying" | "done";
 type ConflictChoice = "csv" | "keep";
@@ -25,9 +30,16 @@ function vals(r: { pqp: number | null; pqf: number | null; award: number | null 
 export default function ImportModal({
   onClose,
   onApplied,
+  context = "activity",
 }: {
   onClose: () => void;
   onApplied: () => void;
+  /** Which page opened it. The MileagePlus tab imports postings and nothing
+   *  else — a flight diary dropped there is redirected in words, because a
+   *  page about what United credited must not quietly file flights. The
+   *  Flights tab speaks flight-first and takes both CSVs, since the United
+   *  activity file legitimately creates flights too. */
+  context?: "activity" | "flights";
 }) {
   const [stage, setStage] = useState<Stage>("pick");
   const [error, setError] = useState<string | null>(null);
@@ -45,6 +57,25 @@ export default function ImportModal({
     duplicates: number;
     errors: string[];
   } | null>(null);
+  /* A myFlightradar24 flight diary dropped on the same target: detected by
+     its header, previewed and applied through its own route. One drop zone,
+     two formats — the user shouldn't have to know which CSV they hold. */
+  const [diary, setDiary] = useState<{
+    rows: DiaryPreviewRow[];
+    skipped: DiarySkippedRow[];
+  } | null>(null);
+  const [diaryResult, setDiaryResult] = useState<{
+    created: number;
+    filled: number;
+    duplicates: number;
+    errors: string[];
+  } | null>(null);
+  /* Creates the user unticked. Flighty exports resurrect soft-deleted and
+     tracked-only flights the app itself no longer shows, so the "Flights to
+     add" list doubles as the filter: every phantom is, by definition, a row
+     the ledger doesn't have — which is exactly this list. */
+  const [excludedCreates, setExcludedCreates] = useState<Set<number>>(new Set());
+  const [excludedFills, setExcludedFills] = useState<Set<number>>(new Set());
   const fileRef = useRef<HTMLInputElement>(null);
 
   const groups = useMemo(() => {
@@ -91,6 +122,24 @@ export default function ImportModal({
     setError(null);
     try {
       const csv = await file.text();
+      if (looksLikeFlightLog(csv) && context === "activity") {
+        setError(
+          "This looks like a flight-log export (myFlightradar24 or Flighty) — import it from the Flights page, which files flights rather than postings."
+        );
+        setStage("pick");
+        return;
+      }
+      if (looksLikeFlightLog(csv)) {
+        const p = await api<{ rows: DiaryPreviewRow[]; skipped: DiarySkippedRow[] }>(
+          "/api/import/flightdiary",
+          { method: "POST", body: JSON.stringify({ mode: "preview", csv }) }
+        );
+        setDiary(p);
+        setExcludedCreates(new Set());
+        setExcludedFills(new Set());
+        setStage("review");
+        return;
+      }
       const p = await api<ImportPreview>("/api/import/mileageplus", {
         method: "POST",
         body: JSON.stringify({ mode: "preview", csv }),
@@ -102,6 +151,34 @@ export default function ImportModal({
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not read that file");
       setStage("pick");
+    }
+  };
+
+  const applyDiary = async () => {
+    if (!diary) return;
+    setStage("applying");
+    setError(null);
+    try {
+      const rows = diary.rows.filter(
+        (r) =>
+          (r.action === "fill" && !excludedFills.has(r.key)) ||
+          (r.action === "create" && !excludedCreates.has(r.key))
+      );
+      const res = await api<{
+        created: number;
+        filled: number;
+        duplicates: number;
+        errors: string[];
+      }>("/api/import/flightdiary", {
+        method: "POST",
+        body: JSON.stringify({ mode: "apply", rows }),
+      });
+      setDiaryResult(res);
+      setStage("done");
+      onApplied();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Apply failed");
+      setStage("review");
     }
   };
 
@@ -177,8 +254,20 @@ export default function ImportModal({
 
   return (
     <Modal
-      title="Import MileagePlus activity"
-      subtitle="united.com → MileagePlus → My activity → download CSV. Nothing is written until you apply."
+      title={
+        diary
+          ? "Import flight diary"
+          : context === "flights"
+            ? "Import flights"
+            : "Import MileagePlus activity"
+      }
+      subtitle={
+        diary
+          ? "A flight-log export — flights and their details, no money, no postings. Nothing is written until you apply."
+          : context === "flights"
+            ? "A myFlightradar24 or Flighty export, or the united.com activity CSV — all three create flights. Nothing is written until you apply."
+            : "united.com → MileagePlus → My activity → download CSV. Nothing is written until you apply."
+      }
       onClose={onClose}
       wide
     >
@@ -214,11 +303,14 @@ export default function ImportModal({
             <p className="text-[14px] text-ink2">
               {dragOver
                 ? "Drop to import"
-                : "Drop the United activity CSV here, or click to browse"}
+                : context === "flights"
+                  ? "Drop a myFlightradar24 or Flighty export — or the United activity CSV — here, or click to browse"
+                  : "Drop the United activity CSV here, or click to browse"}
             </p>
             <p className="mt-1 text-[12px] text-mute">
-              Every row is recorded — card, shopping and hotel earning
-              included. Flight rows also reconcile against your ledger.
+              {context === "flights"
+                ? "A flight log adds flight history and fills in seats, aircraft, tails and cabins on flights you already have. The United activity CSV creates flights with their postings attached."
+                : "Every row is recorded — card, shopping and hotel earning included. Flight rows also reconcile against your ledger."}
             </p>
           </div>
           <input
@@ -239,6 +331,156 @@ export default function ImportModal({
           {stage === "loading" ? "Parsing & matching…" : "Applying…"}
         </p>
       )}
+
+      {stage === "review" && diary && (() => {
+        const creates = diary.rows.filter((r) => r.action === "create");
+        const fills = diary.rows.filter((r) => r.action === "fill");
+        const unchanged = diary.rows.filter((r) => r.action === "unchanged");
+        const label = (r: DiaryPreviewRow) =>
+          `${r.row.date} · ${r.row.carrier ?? "??"}${r.row.flight_number ?? ""} ${r.row.origin}→${r.row.destination}`;
+        const detail = (r: DiaryPreviewRow) =>
+          [r.row.cabin, r.row.seat, r.row.tail_number ?? r.row.aircraft]
+            .filter(Boolean)
+            .join(" · ");
+        return (
+          <div className="space-y-4">
+            {creates.length > 0 && (
+              <section className="rounded-md border border-line bg-well px-3.5 py-2.5">
+                <h3 className="t-label !text-[10.5px]">
+                  Flights to add ({creates.length})
+                </h3>
+                <ul className="mt-2 max-h-64 space-y-1 overflow-y-auto">
+                  {creates.map((r) => {
+                    const off = excludedCreates.has(r.key);
+                    return (
+                      <li key={r.key} className="flex flex-wrap items-baseline gap-x-3">
+                        <label className="flex cursor-pointer items-baseline gap-x-3">
+                          <input
+                            type="checkbox"
+                            className="translate-y-[1px] accent-[var(--color-s-miles)]"
+                            checked={!off}
+                            onChange={() =>
+                              setExcludedCreates((prev) => {
+                                const next = new Set(prev);
+                                if (next.has(r.key)) next.delete(r.key);
+                                else next.add(r.key);
+                                return next;
+                              })
+                            }
+                          />
+                          <span
+                            className={`t-num text-[12.5px] ${off ? "text-mute line-through" : "text-ink"}`}
+                          >
+                            {label(r)}
+                          </span>
+                        </label>
+                        <span className="text-[11.5px] text-mute">{detail(r)}</span>
+                        {r.status === "ticketed" && (
+                          <span className="text-[11px] text-mute">not yet flown — added as ticketed</span>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+                <p className="mt-1.5 text-[11px] text-mute">
+                  Untick anything that isn&apos;t your flying — some exports
+                  carry flights that were only tracked, or synced in and never
+                  shown.
+                </p>
+              </section>
+            )}
+            {fills.length > 0 && (
+              <section className="rounded-md border border-line bg-well px-3.5 py-2.5">
+                <h3 className="t-label !text-[10.5px]">
+                  Flights already in the ledger — blanks the diary can fill ({fills.length})
+                </h3>
+                <ul className="mt-2 max-h-48 space-y-1 overflow-y-auto">
+                  {fills.map((r) => {
+                    const off = excludedFills.has(r.key);
+                    return (
+                      <li key={r.key} className="flex flex-wrap items-baseline gap-x-3">
+                        <label className="flex cursor-pointer items-baseline gap-x-3">
+                          <input
+                            type="checkbox"
+                            className="translate-y-[1px] accent-[var(--color-s-miles)]"
+                            checked={!off}
+                            onChange={() =>
+                              setExcludedFills((prev) => {
+                                const next = new Set(prev);
+                                if (next.has(r.key)) next.delete(r.key);
+                                else next.add(r.key);
+                                return next;
+                              })
+                            }
+                          />
+                          <span
+                            className={`t-num text-[12.5px] ${off ? "text-mute line-through" : "text-ink"}`}
+                          >
+                            {label(r)}
+                          </span>
+                        </label>
+                        <span className="text-[11.5px] text-mute">
+                          fills {r.fills?.join(", ")}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <p className="mt-1.5 text-[11px] text-mute">
+                  Blanks only — anything a receipt or your own hand entered
+                  stays exactly as it is.
+                </p>
+              </section>
+            )}
+            {(unchanged.length > 0 || diary.skipped.length > 0) && (
+              <p className="text-[12px] text-mute">
+                {unchanged.length > 0 &&
+                  `${unchanged.length} flight${unchanged.length === 1 ? " is" : "s are"} already complete in the ledger. `}
+                {diary.skipped.length > 0 && (
+                  <>
+                    {diary.skipped.length} row{diary.skipped.length === 1 ? "" : "s"} skipped —{" "}
+                    <button
+                      className="underline decoration-dotted hover:text-ink2"
+                      onClick={() => setShowSkipped((v) => !v)}
+                    >
+                      {showSkipped ? "hide" : "show"} why
+                    </button>
+                  </>
+                )}
+              </p>
+            )}
+            {showSkipped && diary.skipped.length > 0 && (
+              <ul className="space-y-1 rounded-md border border-line bg-well px-3.5 py-2.5">
+                {diary.skipped.map((s, i) => (
+                  <li key={i} className="text-[12px] text-mute">
+                    <span className="t-num">{s.raw}</span> — {s.reason}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className="flex justify-end gap-2 border-t border-line pt-3">
+              <button className="btn btn-ghost" onClick={onClose}>
+                Cancel
+              </button>
+              {(() => {
+                const adding = creates.filter((r) => !excludedCreates.has(r.key)).length;
+                const filling = fills.filter((r) => !excludedFills.has(r.key)).length;
+                return (
+                  <button
+                    className="btn btn-primary"
+                    disabled={adding + filling === 0}
+                    onClick={applyDiary}
+                  >
+                    {adding + filling === 0
+                      ? "Nothing to apply"
+                      : `Apply — add ${adding}, fill ${filling}`}
+                  </button>
+                );
+              })()}
+            </div>
+          </div>
+        );
+      })()}
 
       {stage === "review" && preview && (
         <div className="space-y-4">
@@ -429,6 +671,34 @@ export default function ImportModal({
               Apply
             </button>
           </div>
+        </div>
+      )}
+
+      {stage === "done" && diaryResult && (
+        <div className="py-6 text-center">
+          <p className="t-display text-[20px] text-ink">Import complete</p>
+          <p className="mt-2 text-[13px] text-ink2">
+            {diaryResult.created} flight{diaryResult.created === 1 ? "" : "s"} added
+            {diaryResult.filled > 0 ? ` · ${diaryResult.filled} filled in` : ""}
+          </p>
+          {diaryResult.duplicates > 0 && (
+            <p className="mt-1 text-[12px] text-mute">
+              {diaryResult.duplicates} row{diaryResult.duplicates === 1 ? " was" : "s were"} already
+              in the ledger and treated as fills
+            </p>
+          )}
+          {diaryResult.errors.length > 0 && (
+            <div className="mx-auto mt-3 max-w-md rounded-md border border-[color-mix(in_oklab,var(--color-warning)_40%,transparent)] bg-[var(--tint-warning)] px-3 py-2 text-left">
+              {diaryResult.errors.map((e, i) => (
+                <p key={i} className="text-[12px] text-[var(--ink-warning)]">
+                  ⚠ {e}
+                </p>
+              ))}
+            </div>
+          )}
+          <button className="btn btn-primary mt-5" onClick={onClose}>
+            Done
+          </button>
         </div>
       )}
 
