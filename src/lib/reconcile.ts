@@ -32,7 +32,6 @@ export type ExceptionKind =
   | "exchange_double_count"
   | "unlinked_exchange"
   | "broken_chain"
-  | "past_but_upcoming"
   | "ready_to_reconcile";
 
 export interface Exception {
@@ -437,33 +436,6 @@ export function buildReconcileReport(
       detail: `${ticketLabel(sources[0])} holds cost with no flights of its own${others > 0 ? ` (and ${others === 1 ? "1 other does" : `${others} others do`} too)` : ""} — the credit may have come from it, and linking keeps those dollars from being counted twice.`,
       date: t.issue_date,
       ticketId: t.id,
-    });
-  }
-
-  /* A flight whose scheduled arrival has passed but is still marked
-     upcoming. Nothing advances a status on a timer — this app never claims
-     travel happened — but a leg left in "ticketed" is missing from every
-     flown figure, and saying so is better than either guessing or silence.
-     The boundary is the same one the import uses (arrival.ts): scheduled
-     arrival plus margin where the schedule is known, the day rule where it
-     isn't — so this queue and a re-import can never disagree about whether
-     a leg should have landed by now. */
-  for (const s of data.segments) {
-    if (s.status !== "ticketed") continue;
-    if (!hasArrived(s, nowMs, today)) continue;
-    const age = daysAgo(s.flight_date, today);
-    exceptions.push({
-      kind: "past_but_upcoming",
-      severity: "warn",
-      /* "ticketed" — the word on the flight's own status chip, so the nag
-         and the row it points at describe the leg identically */
-      title: `${s.origin}→${s.destination} on ${s.flight_date} is still marked ticketed`,
-      detail:
-        age > 400
-          ? "Its date passed long ago — mark it flown, or cancelled if it never happened."
-          : "Its scheduled arrival has passed. Mark it flown, or cancelled if you didn't take it.",
-      date: s.flight_date,
-      segmentId: s.id,
     });
   }
 

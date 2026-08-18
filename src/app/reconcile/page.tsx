@@ -136,49 +136,6 @@ export default function ReconcilePage() {
                         </span>
                       )}
 
-                      {/* The blurb has promised "mark them flown, or
-                          cancelled" since this exception was born; these are
-                          those two verbs. Flown means UNRECONCILED — the
-                          activity CSV still gets to disagree. Nothing here
-                          runs on a timer: the date raised the question, and
-                          a person answers it. */}
-                      {kind === "past_but_upcoming" && e.segmentId && (
-                        <span className="flex shrink-0 gap-1.5">
-                          <button
-                            className="btn btn-ghost !px-2 !py-1 !text-[10px]"
-                            disabled={busy === e.segmentId}
-                            onClick={() =>
-                              act(
-                                () =>
-                                  api(`/api/flights/${e.segmentId}`, {
-                                    method: "PATCH",
-                                    body: JSON.stringify({ status: "flown_unreconciled" }),
-                                  }),
-                                e.segmentId!
-                              )
-                            }
-                          >
-                            <Check size={11} /> Mark flown
-                          </button>
-                          <button
-                            className="btn btn-ghost !px-2 !py-1 !text-[10px]"
-                            disabled={busy === e.segmentId}
-                            onClick={() =>
-                              act(
-                                () =>
-                                  api(`/api/flights/${e.segmentId}`, {
-                                    method: "PATCH",
-                                    body: JSON.stringify({ status: "canceled" }),
-                                  }),
-                                e.segmentId!
-                              )
-                            }
-                          >
-                            <X size={11} /> Cancelled
-                          </button>
-                        </span>
-                      )}
-
                       {kind === "ready_to_reconcile" && e.segmentId && (
                         <button
                           className="btn btn-ghost shrink-0 !px-2 !py-1 !text-[10px]"

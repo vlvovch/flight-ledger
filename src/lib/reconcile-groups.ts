@@ -51,11 +51,6 @@ const GROUP_META: Record<ExceptionKind, Omit<ExceptionGroup, "kind">> = {
     blurb: "Two tickets claim one predecessor, so its value is spent twice.",
     accent: "var(--color-serious)",
   },
-  past_but_upcoming: {
-    label: "Flights still marked ticketed",
-    blurb: "Their scheduled arrival has passed — mark them flown, or cancelled.",
-    accent: "var(--color-warning)",
-  },
   duplicate_ticket: {
     label: "One ticket, more than one row",
     blurb: "Same eTicket number twice — its cost is counted twice.",
@@ -120,7 +115,6 @@ const ORDER = [
   "missing_posting",
   "unconverted_currency",
   "broken_chain",
-  "past_but_upcoming",
   "duplicate_ticket",
   "duplicate_segment",
   "duplicate_activity",

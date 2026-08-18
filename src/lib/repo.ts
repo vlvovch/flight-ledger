@@ -1,5 +1,6 @@
 import { bindable, getDb, newId, nowIso, transaction } from "./db";
 import { getAirport } from "./airports";
+import { hasArrived } from "./arrival";
 import { realDate, realTime } from "./validate";
 import { routeDistanceMiles } from "./distance";
 import { allocateChain, allocateTicket, standaloneAllocation } from "./allocation";
@@ -727,7 +728,61 @@ export interface EnrichedData {
 
 /** Load everything and run cost allocation. Single source of truth for lists,
  *  analytics and exports — computed on read so it can never go stale. */
+/** Advance every "ticketed" leg whose scheduled arrival passed the margin
+ *  (arrival.ts: six hours where the schedule is known, the day rule where it
+ *  isn't) to flown_unreconciled. Runs on every enriched read, so a flight
+ *  becomes flown by landing, not by waiting for the next import to say so.
+ *  Only ever that one transition — cancelled stays cancelled, flown and
+ *  reconciled are never touched — and every advance is logged under its own
+ *  actor, so Recent changes answers "who marked this flown" with "it landed".
+ */
+export function advanceArrivedLegs(nowMs = Date.now()): number {
+  const d = new Date(nowMs);
+  const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const segments = listSegmentsRaw();
+  const due = segments.filter(
+    (s) => s.status === "ticketed" && hasArrived(s, nowMs, today)
+  );
+  if (due.length === 0) return 0;
+  /* The clock alone cannot tell "landed" from "reissued away before
+     departure": a leg still ticketed on a ticket that has a SUCCESSOR is
+     an exchange leftover, and calling it flown once poisoned a real
+     chain's miles and cost split. The reissue's own rule applies instead —
+     issued before the leg's date and not carried by the new itinerary
+     means the coupon died with the exchange; the boundary day stays a
+     question (the receipt re-import asks it), never a silent verdict. */
+  const successorOf = new Map<string, TicketRow>();
+  for (const t of listTickets())
+    if (t.predecessor_ticket_id) successorOf.set(t.predecessor_ticket_id, t);
+  const legKey = (x: { flight_date: string; origin: string; destination: string }) =>
+    `${x.flight_date}|${x.origin}|${x.destination}`;
+  let advanced = 0;
+  runAsActor("arrival", () =>
+    transaction(() => {
+      for (const s of due) {
+        const succ = s.ticket_id ? successorOf.get(s.ticket_id) : undefined;
+        if (!succ) {
+          updateSegment(s.id, { status: "flown_unreconciled" });
+          advanced++;
+          continue;
+        }
+        const carried = segments.some(
+          (x) => x.ticket_id === succ.id && legKey(x) === legKey(s)
+        );
+        if (carried) continue; // its coupon moved; this row is the import's to resolve
+        if (succ.issue_date && s.flight_date > succ.issue_date) {
+          updateSegment(s.id, { status: "canceled" });
+          advanced++;
+        }
+        // same-day or dateless reissue: leave the question standing
+      }
+    })
+  );
+  return advanced;
+}
+
 export function getEnrichedData(): EnrichedData {
+  advanceArrivedLegs();
   const segments = listSegmentsRaw();
   const tickets = listTickets();
   const adjustments = listAdjustments();
