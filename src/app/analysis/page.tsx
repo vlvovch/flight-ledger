@@ -6,6 +6,7 @@ import type { FareClassRow, MixBucket, TravelMix } from "@/lib/mix";
 import { flightCpmSpread, summarizeFareClasses, summarizeMix } from "@/lib/mix";
 import type { EnrichedSegment } from "@/lib/types";
 import { api, fmtCpm, fmtInt, fmtMoney, fmtMonth } from "@/lib/format";
+import { rollupCashYears, rollupYears } from "@/lib/metrics";
 import { EmptyState, MilesBasisToggle, Panel } from "@/components/ui";
 import AnnualReport from "@/components/AnnualReport";
 import FlightMap from "@/components/FlightMap";
@@ -74,10 +75,15 @@ export default function AnalysisPage() {
     return [...new Set(data.monthly.map((m) => m.month.slice(0, 4)))].sort().reverse();
   }, [data]);
 
-  const monthly = useMemo(
-    () => (data ? filterByRange(data.monthly, range) : []),
-    [data, range]
-  );
+  /* At ALL the series spans every year the ledger knows — decades, once a
+     flight diary lands — so both tables step up to year rows. Every ratio
+     is re-derived from summed bases inside the rollup, not averaged. */
+  const yearly = range === "all";
+  const monthly = useMemo(() => {
+    if (!data) return [];
+    const rows = filterByRange(data.monthly, range);
+    return yearly ? rollupYears(rows) : rows;
+  }, [data, range, yearly]);
 
   /* The flights inside the window on screen. Its first month comes from the
      already-filtered monthly series — the same construction the dashboard
@@ -96,8 +102,12 @@ export default function AnalysisPage() {
      the first flight — so they are filtered on their own months rather than
      sliced to the flown ones. */
   const cashMonths = useMemo(
-    () => (data ? filterByRange(data.cashFlow.months, range) : []),
-    [data, range]
+    () => {
+      if (!data) return [];
+      const rows = filterByRange(data.cashFlow.months, range);
+      return yearly ? rollupCashYears(rows) : rows;
+    },
+    [data, range, yearly]
   );
 
   const mix = useMemo(() => summarizeMix(windowFlights), [windowFlights]);
@@ -198,7 +208,7 @@ export default function AnalysisPage() {
 
           {/* monthly ledger */}
           <Panel
-            label="Monthly ledger"
+            label={yearly ? "Yearly ledger" : "Monthly ledger"}
             accent={C.miles}
             className="mt-3 reveal"
             /* The chip mirrors the money view's "paid, not flown" — the two
@@ -239,7 +249,7 @@ export default function AnalysisPage() {
                 </colgroup>
                 <thead>
                   <tr>
-                    <th>Month</th>
+                    <th>{yearly ? "Year" : "Month"}</th>
                     <th className="!text-right">Flights</th>
                     <th className="!text-right">
                       {ledgerMiles === "flown" ? "Miles" : "United lifetime"}
@@ -249,8 +259,18 @@ export default function AnalysisPage() {
                     <th className="!text-right">Award</th>
                     <th className="!text-right">Gross</th>
                     <th className="!text-right">Personal</th>
-                    <th className="!text-right">Gross CPM</th>
-                    <th className="!text-right">Pers. CPM</th>
+                    <th
+                      className="!text-right"
+                      title="Total cost per mile flown, over every costed, lifetime-earning mile."
+                    >
+                      Gross CPM
+                    </th>
+                    <th
+                      className="!text-right"
+                      title="Your out-of-pocket cost over the SAME miles — reimbursed flying included, which is what makes a heavily-reimbursed month read cheap. The gap to Gross is what someone else paid per mile. For what personally-paid travel itself costs, see the travel mix's Personal slice."
+                    >
+                      Pers. CPM
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -340,6 +360,7 @@ export default function AnalysisPage() {
             months={cashMonths}
             windowLabel={windowLabel}
             currency={currency}
+            yearly={yearly}
           />
           <TravelMixPanel mix={mix} windowLabel={windowLabel} />
           <FareClassPanel
@@ -374,11 +395,13 @@ function CashFlowPanel({
   months,
   windowLabel,
   currency,
+  yearly,
 }: {
   flow: CashFlow;
   months: CashMonth[];
   windowLabel: string;
   currency: string;
+  yearly: boolean;
 }) {
   if (flow.months.length === 0) return null;
   const shown = [...months].reverse();
@@ -457,7 +480,7 @@ function CashFlowPanel({
           </colgroup>
           <thead>
             <tr>
-              <th>Month paid</th>
+              <th>{yearly ? "Year paid" : "Month paid"}</th>
               <th className="!text-right">Out</th>
               <th className="!text-right">Back</th>
               <th className="!text-right">Net</th>

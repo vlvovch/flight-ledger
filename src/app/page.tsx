@@ -59,13 +59,22 @@ export default function DashboardPage() {
     () => (data ? filterByRange(data.monthly, range) : []),
     [data, range]
   );
-  /* The cumulative series is a RUNNING TOTAL, so slicing it to one year keeps
-     each point's true running value — the line starts wherever the year began
-     rather than at zero, which is the honest reading of "lifetime so far". */
-  const lifetime = useMemo(
-    () => (data ? filterByRange(data.cumulativeLifetime, range) : []),
-    [data, range]
-  );
+  /* The cumulative series is a RUNNING TOTAL, so slicing it to one window
+     keeps each point's true running value — the line starts wherever the
+     window began rather than at zero, which is the honest reading of
+     "lifetime so far". Day-resolution points, so the steps jump on the
+     dates flights actually flew; the window follows the monthly filter. */
+  const lifetime = useMemo(() => {
+    if (!data) return [];
+    const rows = data.lifetimeDaily;
+    if (range === "all") return rows;
+    if (range.startsWith("y")) {
+      const y = range.slice(1);
+      return rows.filter((r) => r.date.startsWith(y));
+    }
+    const first = monthly[0]?.month;
+    return first ? rows.filter((r) => r.date >= first) : rows;
+  }, [data, range, monthly]);
 
   const openIssueFlight = async (segmentId?: string) => {
     if (!segmentId) return;
@@ -126,7 +135,7 @@ export default function DashboardPage() {
                hand is the slowest possible start and shouldn't be the only
                door shown. */
             body={
-              'Fastest start: import your united.com "My Activity" CSV — it creates the flights and their MileagePlus postings at once. Or drop eTicket receipts on the Tickets page, log a flight by hand, or restore a backup from Settings.'
+              'Fastest start: import your united.com "My Activity" CSV — it creates the flights and their MileagePlus postings at once. A myFlightradar24 flight-diary export, dropped on the Flights page, brings any airline’s history. Or drop eTicket receipts on the Tickets page, log a flight by hand, or restore a backup from Settings.'
             }
             action={
               <div className="flex flex-wrap justify-center gap-2">
@@ -272,10 +281,10 @@ export default function DashboardPage() {
                  that doesn't was always about the assumption. */
               title={
                 cards.awardScenarios.length > 0 && cards.ytdEffectiveCpm != null
-                  ? `Same basis as gross CPM, after reimbursements and credits.\n\nEffective CPM credits award miles at a valuation you set — an assumption, so here is what it rests on:\n${cards.awardScenarios
+                  ? `Same basis as gross CPM — every costed mile, reimbursed flying included, so heavy reimbursement reads as cheap flying; the travel mix prices personal travel alone.\n\nEffective CPM credits award miles at a valuation you set — an assumption, so here is what it rests on:\n${cards.awardScenarios
                       .map((s) => `  at ${s.cpm}¢/mile → ${fmtCpm(s.effective)}`)
                       .join("\n")}`
-                  : "Same basis as gross CPM, after reimbursements/credits."
+                  : "Same basis as gross CPM — every costed mile, reimbursed flying included, so heavy reimbursement reads as cheap flying; the travel mix prices personal travel alone."
               }
             />
           </div>

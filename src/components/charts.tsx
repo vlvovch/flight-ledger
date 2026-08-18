@@ -91,6 +91,110 @@ function yearTimeAxis(year: string) {
   );
 }
 
+
+/**
+ * stepAfter with softened corners: the step SHAPE is the honest one for a
+ * balance (flat until the event, jump at its date), but hard 90° corners
+ * read as circuit-board rather than chart. Each corner gets a small
+ * quadratic ease, clamped to half the run on either side so short steps
+ * and small jumps never over-round into looking like slopes.
+ *
+ * A d3 curve factory (recharts passes it straight through). Points are
+ * buffered per line segment because rounding a corner needs the segment on
+ * BOTH sides — including the reversed baseline pass d3-area makes, which is
+ * why nothing here assumes left-to-right.
+ */
+const STEP_CORNER_R = 3.5;
+type CurveCtx = {
+  moveTo(x: number, y: number): void;
+  lineTo(x: number, y: number): void;
+  quadraticCurveTo(cx: number, cy: number, x: number, y: number): void;
+  closePath(): void;
+};
+function stepRound(context: CurveCtx) {
+  let line = NaN;
+  let pts: [number, number][] = [];
+  const sgn = (v: number) => (v > 0 ? 1 : v < 0 ? -1 : 0);
+  return {
+    areaStart() { line = 0; },
+    areaEnd() { line = NaN; },
+    lineStart() { pts = []; },
+    point(x: number, y: number) { pts.push([x, y]); },
+    lineEnd() {
+      if (pts.length > 0) {
+        const [x0, y0] = pts[0];
+        if (line) context.lineTo(x0, y0);
+        else context.moveTo(x0, y0);
+        for (let i = 1; i < pts.length; i++) {
+          const [px, py] = pts[i - 1];
+          const [x, y] = pts[i];
+          const dx = x - px;
+          const dy = y - py;
+          if (dy === 0 || dx === 0) {
+            context.lineTo(x, y);
+            continue;
+          }
+          const sx = sgn(dx);
+          const sy = sgn(dy);
+          const ra = Math.min(STEP_CORNER_R, Math.abs(dx) / 2, Math.abs(dy) / 2);
+          const dxNext = i + 1 < pts.length ? pts[i + 1][0] - x : 0;
+          const rb = Math.min(
+            STEP_CORNER_R,
+            Math.abs(dy) / 2,
+            Math.abs(dxNext) / 2
+          );
+          context.lineTo(x - sx * ra, py);
+          context.quadraticCurveTo(x, py, x, py + sy * ra);
+          if (rb > 0 && dxNext !== 0) {
+            context.lineTo(x, y - sy * rb);
+            context.quadraticCurveTo(x, y, x + sgn(dxNext) * rb, y);
+          } else {
+            context.lineTo(x, y);
+          }
+        }
+      }
+      if (line || (line === 0 && pts.length === 1)) context.closePath();
+      line = 1 - line;
+    },
+  };
+}
+
+/** A calendar axis for a multi-year span: ticks at month starts, thinned to
+ *  stay legible — a January tick every year on long spans, quarterly or
+ *  monthly as the window narrows. Points sit at their real dates. */
+function spanTimeAxis(data: { t: number }[]) {
+  const min = data[0]?.t ?? Date.UTC(2020, 0, 1);
+  const max = data[data.length - 1]?.t ?? Date.UTC(2026, 0, 1);
+  const months: number[] = [];
+  const d0 = new Date(min);
+  let y = d0.getUTCFullYear();
+  let m = d0.getUTCMonth();
+  while (Date.UTC(y, m, 1) <= max) {
+    months.push(Date.UTC(y, m, 1));
+    m += 1;
+    if (m === 12) { m = 0; y += 1; }
+  }
+  const stride = Math.max(1, Math.ceil(months.length / 8));
+  const ticks = months.filter((_, i) => i % stride === 0);
+  return (
+    <XAxis
+      dataKey="t"
+      type="number"
+      scale="time"
+      domain={[min, max]}
+      ticks={ticks}
+      tick={tickStyle}
+      tickLine={false}
+      axisLine={{ stroke: AXISLINE }}
+      tickFormatter={(t: number) => {
+        const d = new Date(t);
+        return fmtMonth(`${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`);
+      }}
+      minTickGap={20}
+    />
+  );
+}
+
 function yAxis(fmt: (v: number) => string, width = 46) {
   return (
     <YAxis
@@ -407,7 +511,7 @@ export function CpmChart({
 export function LifetimeChart({
   data,
 }: {
-  data: { month: string; posted: number; withEst: number; flown: number }[];
+  data: { date: string; t: number; withEst: number; flown: number }[];
 }) {
   return (
     <ResponsiveContainer width="100%" height={CHART_H}>
@@ -419,7 +523,7 @@ export function LifetimeChart({
           </linearGradient>
         </defs>
         <CartesianGrid stroke={GRID} vertical={false} />
-        {xAxis(data.length)}
+        {spanTimeAxis(data)}
         {yAxis(compactMiles, 54)}
         <Tooltip
           cursor={{ stroke: AXISLINE, strokeWidth: 1 }}
@@ -433,7 +537,11 @@ export function LifetimeChart({
             />
           }
         />
+        {/* stepAfter, on day-resolution points: a balance is flat until the
+            day a flight flew, then jumps AT that date — the same shape and
+            the same reason as the Premier chart. */}
         <Area
+          type={stepRound}
           dataKey="withEst"
           stroke={C.miles}
           strokeWidth={2}
@@ -441,6 +549,7 @@ export function LifetimeChart({
           isAnimationActive={false}
         />
         <Line
+          type={stepRound}
           dataKey="flown"
           stroke={C.award}
           strokeWidth={1.5}
@@ -590,7 +699,64 @@ export interface AwardPoint {
  * misreads nothing — but a bar chart here WOULD, which is why this is a line.
  */
 export function AwardBalanceChart({ data, year }: { data: AwardPoint[]; year: string }) {
-  const vals = data.map((d) => d.awardBalance).filter((v): v is number => v != null);
+  return (
+    <BalanceChart
+      data={data}
+      year={year}
+      dataKey="awardBalance"
+      color={C.award}
+      rows={[
+        { key: "awardBalance", name: "Balance", color: C.award, fmt: (v) => fmtInt(v) },
+        {
+          key: "award",
+          name: "Moved this date",
+          color: MUTE,
+          fmt: (v) => (v > 0 ? `+${fmtInt(v)}` : fmtInt(v)),
+        },
+      ]}
+    />
+  );
+}
+
+/** Lifetime miles (est.) across the year — the same balance the dashboard's
+ *  cumulative chart tracks, scoped to one qualification year. Only ever
+ *  rises, and only on flights that credit. */
+export function LifetimeBalanceChart({
+  data,
+  year,
+}: {
+  data: { t: number; lifetimeBalance: number | null }[];
+  year: string;
+}) {
+  return (
+    <BalanceChart
+      data={data}
+      year={year}
+      dataKey="lifetimeBalance"
+      color={C.miles}
+      rows={[{ key: "lifetimeBalance", name: "Lifetime (est.)", color: C.miles, fmt: (v) => fmtInt(v) }]}
+    />
+  );
+}
+
+/** One balance across one year: real dates, stepped, axis bounded by the
+ *  balance itself rather than zero (see AwardBalanceChart's rationale). */
+function BalanceChart({
+  data,
+  year,
+  dataKey,
+  color,
+  rows,
+}: {
+  data: Record<string, unknown>[] | { t: number }[];
+  year: string;
+  dataKey: string;
+  color: string;
+  rows: RowSpec[];
+}) {
+  const vals = (data as Record<string, number | null>[])
+    .map((d) => d[dataKey])
+    .filter((v): v is number => v != null);
   /* Bounded by the balance itself. Folding 0 into the range — which this did
      at first — flattens the whole year against an empty lower half: a balance
      moving 37k→81k was drawn on a -10k…95k axis, and the redemption that is
@@ -601,6 +767,11 @@ export function AwardBalanceChart({ data, year }: { data: AwardPoint[]; year: st
   const pad = Math.max((hi - lo) * 0.12, 1000);
   const round = (v: number, dir: 1 | -1) =>
     dir === 1 ? Math.ceil(v / 5000) * 5000 : Math.floor(v / 5000) * 5000;
+  /* Padding must not invent territory the balance cannot occupy: lifetime
+     only rises and award goes negative only when tracking began mid-account,
+     so with non-negative data the floor clamps to zero — a small early year
+     was drawing a -5000 gridline under a balance that could never reach it. */
+  const floor = lo >= 0 ? Math.max(0, round(lo - pad, -1)) : round(lo - pad, -1);
   return (
     <ResponsiveContainer width="100%" height={200} initialDimension={{ width: 640, height: 200 }}>
       <ComposedChart data={data} margin={YEAR_CHART_MARGIN}>
@@ -608,7 +779,7 @@ export function AwardBalanceChart({ data, year }: { data: AwardPoint[]; year: st
         {yearTimeAxis(year)}
         <YAxis
           tickFormatter={compactMiles}
-          domain={[round(lo - pad, -1), round(hi + pad, 1)]}
+          domain={[floor, round(hi + pad, 1)]}
           tick={{ fill: MUTE, fontSize: 10.5 }}
           axisLine={false}
           tickLine={false}
@@ -616,35 +787,17 @@ export function AwardBalanceChart({ data, year }: { data: AwardPoint[]; year: st
         />
         <Tooltip
           cursor={{ stroke: MUTE, strokeWidth: 1 }}
-          content={
-            <DeckTooltip
-              cumulative
-              rows={[
-                {
-                  key: "awardBalance",
-                  name: "Balance",
-                  color: C.award,
-                  fmt: (v) => fmtInt(v),
-                },
-                {
-                  key: "award",
-                  name: "Moved this date",
-                  color: MUTE,
-                  fmt: (v) => (v > 0 ? `+${fmtInt(v)}` : fmtInt(v)),
-                },
-              ]}
-            />
-          }
+          content={<DeckTooltip cumulative rows={rows} />}
         />
         <Area
-          type="monotone"
-          dataKey="awardBalance"
-          stroke={C.award}
+          type={stepRound}
+          dataKey={dataKey}
+          stroke={color}
           strokeWidth={2}
-          fill={C.award}
+          fill={color}
           fillOpacity={0.12}
           connectNulls={false}
-          dot={vals.length === 1 ? { r: 3, fill: C.award, stroke: "none" } : false}
+          dot={vals.length === 1 ? { r: 3, fill: color, stroke: "none" } : false}
           isAnimationActive={false}
         />
       </ComposedChart>
@@ -661,6 +814,9 @@ export interface PremierPoint {
   /** cumulative including booked-but-uncredited flights */
   projPqp?: number | null;
   projPqf?: number | null;
+  /** posted + flown-awaiting-credit only — the thin solid stretch */
+  flownPqp?: number | null;
+  flownPqf?: number | null;
 }
 
 /**
@@ -678,7 +834,7 @@ export function PremierChart({
   year: string;
 }) {
   const top = Math.max(
-    ...data.map((d) => Math.max(d.cumPqp ?? 0, d.projPqp ?? 0)),
+    ...data.map((d) => Math.max(d.cumPqp ?? 0, d.projPqp ?? 0, d.flownPqp ?? 0)),
     ...thresholds.map((t) => t.pqp)
   );
   /* The projection is ALWAYS drawn to 31 December — flat when nothing is
@@ -722,15 +878,20 @@ export function PremierChart({
               rows={[
                 { key: "cumPqp", name: "PQP to date", color: C.pqp, fmt: (v) => fmtInt(v), skipNull: true },
                 { key: "cumPqf", name: "Flights to date", color: MUTE, fmt: (v) => String(v), skipNull: true },
-                /* the future half of the axis: what the booked year adds up to */
-                { key: "projPqp", name: "Projected PQP", color: C.pqp, dashed: true, fmt: (v) => fmtInt(v), skipNull: true, dedupeAgainst: "cumPqp" },
+                /* three certainties, three rows: posted, flown-awaiting-credit, booked */
+                { key: "flownPqp", name: "≈ flown, awaiting credit", color: C.pqp, fmt: (v) => fmtInt(v), skipNull: true, dedupeAgainst: "cumPqp" },
+                { key: "projPqp", name: "Projected PQP", color: C.pqp, dashed: true, fmt: (v) => fmtInt(v), skipNull: true, dedupeAgainst: "flownPqp" },
                 { key: "projPqf", name: "Projected flights", color: MUTE, dashed: true, fmt: (v) => String(v), skipNull: true, dedupeAgainst: "cumPqf" },
               ]}
             />
           }
         />
+        {/* stepAfter, all three: a cumulative balance is a STEP function —
+            flat until the day a flight posts, then a jump AT that date. A
+            ramp between two flights asserts PQP that didn't exist yet, and
+            a spline additionally bows through thin air. */}
         <Line
-          type="monotone"
+          type={stepRound}
           dataKey="projPqp"
           stroke={C.pqp}
           strokeWidth={1.5}
@@ -739,8 +900,20 @@ export function PremierChart({
           dot={false}
           isAnimationActive={false}
         />
+        {/* flown but not yet credited: thinner SOLID over the dash — money
+            that is practically posted, drawn with less weight than fact but
+            more conviction than a forecast */}
+        <Line
+          type={stepRound}
+          dataKey="flownPqp"
+          stroke={C.pqp}
+          strokeWidth={1.25}
+          strokeOpacity={0.95}
+          dot={false}
+          isAnimationActive={false}
+        />
         <Area
-          type="monotone"
+          type={stepRound}
           dataKey="cumPqp"
           stroke={C.pqp}
           strokeWidth={2}

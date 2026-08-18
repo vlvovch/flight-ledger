@@ -418,6 +418,7 @@ export interface Analytics {
    *  and on award tickets that earned no lifetime credit. `posted` is kept for
    *  the tooltip but is 0 throughout: United posts a lifetime TOTAL, never a
    *  per-segment figure, so nothing ever fills it. */
+  lifetimeDaily: { date: string; t: number; withEst: number; flown: number }[];
   cumulativeLifetime: {
     month: string;
     posted: number;
@@ -540,6 +541,60 @@ function finalizeSummary(s: MonthlySummary): MonthlySummary {
   s.costPerPqp =
     s.costedPqp > 0 ? round2(s.costedGross / s.costedPqp) : null;
   return s;
+}
+
+/* ---------------------------- year altitude ----------------------------- */
+
+/** The ratio columns are re-derived, never summed or averaged — an average
+ *  of monthly CPMs would weight a one-hop month like a ten-flight one. */
+const DERIVED_SUMMARY_FIELDS = new Set([
+  "month",
+  "grossCpm",
+  "grossCpmLifetime",
+  "personalCpm",
+  "personalCpmLifetime",
+  "costPerPqp",
+]);
+
+/** The same ledger at year altitude. Once a flight diary lands, the ALL
+ *  range spans decades, and two hundred month rows answer nothing a year
+ *  row can't. Rows key on "YYYY", which fmtMonth passes through untouched.
+ */
+export function rollupYears(monthly: MonthlySummary[]): MonthlySummary[] {
+  const years = new Map<string, MonthlySummary>();
+  for (const m of monthly) {
+    const y = m.month.slice(0, 4);
+    const acc = years.get(y) ?? emptySummary(y);
+    for (const k of Object.keys(m) as (keyof MonthlySummary)[]) {
+      if (DERIVED_SUMMARY_FIELDS.has(k)) continue;
+      (acc[k] as number) += (m[k] as number | null) ?? 0;
+    }
+    years.set(y, acc);
+  }
+  return [...years.values()]
+    .sort((a, b) => a.month.localeCompare(b.month))
+    .map(finalizeSummary);
+}
+
+/** Cash flow at the same altitude: sums move, the running total is the
+ *  year's LAST month's — it already runs since the timeline began. */
+export function rollupCashYears(months: CashMonth[]): CashMonth[] {
+  const years = new Map<string, CashMonth>();
+  for (const m of [...months].sort((a, b) => a.month.localeCompare(b.month))) {
+    const y = m.month.slice(0, 4);
+    const acc =
+      years.get(y) ??
+      ({ month: y, out: 0, in: 0, inAssumed: 0, net: 0, cumulative: 0, tickets: 0, adjustments: 0 } satisfies CashMonth);
+    acc.out = round2(acc.out + m.out);
+    acc.in = round2(acc.in + m.in);
+    acc.inAssumed = round2(acc.inAssumed + m.inAssumed);
+    acc.net = round2(acc.net + m.net);
+    acc.cumulative = m.cumulative;
+    acc.tickets += m.tickets;
+    acc.adjustments += m.adjustments;
+    years.set(y, acc);
+  }
+  return [...years.values()].sort((a, b) => a.month.localeCompare(b.month));
 }
 
 export function buildAnalytics(data: EnrichedData): Analytics {
@@ -727,6 +782,30 @@ export function buildAnalytics(data: EnrichedData): Analytics {
     return { month: m.month, posted: cumPosted, withEst: cumEst, flown: cumFlown };
   });
 
+  /* The same balances at DAY resolution, for the chart: a cumulative jumps
+     the day the flight flew, not at the month tick its bucket sits on. One
+     point per date with flying, value = that day's close; cards and the
+     forecast keep reading the monthly rollup above. */
+  const lifetimeDaily = (() => {
+    let est = baseline;
+    let flown = baseline;
+    const byDate = new Map<string, { withEst: number; flown: number }>();
+    for (const s of [...data.segments]
+      .filter(isFlown)
+      .sort((a, b) => a.flight_date.localeCompare(b.flight_date))) {
+      est += estimatedLifetimeMiles(s);
+      flown += s.distance_miles ?? 0;
+      byDate.set(s.flight_date, {
+        withEst: Math.round(est),
+        flown: Math.round(flown),
+      });
+    }
+    return [...byDate.entries()].map(([date, v]) => {
+      const [yy, mm, dd] = date.split("-").map(Number);
+      return { date, t: Date.UTC(yy, mm - 1, dd), ...v };
+    });
+  })();
+
   const cur = byMonth.get(thisMonth);
   const ytdMonths = monthly.filter((m) => m.month.startsWith(thisYear));
   const sum = (f: (m: MonthlySummary) => number) =>
@@ -872,6 +951,7 @@ export function buildAnalytics(data: EnrichedData): Analytics {
     monthly,
     annual,
     cumulativeLifetime,
+    lifetimeDaily,
     lifetimeForecast: forecastLifetime(monthly, baseline, today),
     issues,
     upcoming,
