@@ -32,6 +32,7 @@ async function main() {
   const cCountry = col("iso_country");
   const cCity = col("municipality");
   const cSched = col("scheduled_service");
+  const cKeywords = col("keywords");
   const cIcao = col("ident");
   const cIata = col("iata_code");
 
@@ -39,14 +40,31 @@ async function main() {
     large_airport: "L",
     medium_airport: "M",
     small_airport: "S",
+    /* Closed airports stay in: a flight ledger is history, and history
+       departed from Tegel. Filed small so search ranking prefers the
+       living, and ranked dead last below so a reassigned IATA code always
+       resolves to the airport that currently answers to it. */
+    closed: "S",
   };
 
   const airports = [];
   const seen = new Set<string>();
   for (let i = 1; i < rows.length; i++) {
     const r = rows[i];
-    const iata = (r[cIata] || "").trim().toUpperCase();
+    let iata = (r[cIata] || "").trim().toUpperCase();
     const size = sizeMap[r[cType]];
+    /* OurAirports clears iata_code when an airport closes and parks the old
+       code in keywords ("TXL, EDDT, …"). A ledger is history, and history
+       departed from Tegel — recover the code, closed rows only. Safe
+       because closed airports rank dead last: a living airport that now
+       answers to the code always wins the dedup. */
+    if (!iata && r[cType] === "closed" && cKeywords >= 0) {
+      iata =
+        (r[cKeywords] || "")
+          .split(",")
+          .map((k) => k.trim().toUpperCase())
+          .find((k) => /^[A-Z]{3}$/.test(k)) ?? "";
+    }
     if (!iata || iata.length !== 3 || !size) continue;
     const lat = parseFloat(r[cLat]);
     const lon = parseFloat(r[cLon]);
@@ -63,6 +81,7 @@ async function main() {
       lon,
       size,
       sched: r[cSched] === "yes" ? 1 : 0,
+      closed: r[cType] === "closed" ? 1 : 0,
     });
   }
 
@@ -70,6 +89,7 @@ async function main() {
   const sizeRank: Record<string, number> = { L: 0, M: 1, S: 2 };
   airports.sort(
     (a, b) =>
+      a.closed - b.closed ||
       b.sched - a.sched ||
       sizeRank[a.size] - sizeRank[b.size] ||
       a.iata.localeCompare(b.iata)
@@ -80,6 +100,8 @@ async function main() {
     return true;
   });
   deduped.sort((a, b) => a.iata.localeCompare(b.iata));
+  // the closed flag was for ranking only — the file keeps its schema
+  for (const a of deduped) delete (a as { closed?: number }).closed;
 
   const out = {
     meta: {
