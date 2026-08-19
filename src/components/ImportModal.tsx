@@ -405,7 +405,8 @@ export default function ImportModal({
             {fills.length > 0 && (
               <section className="rounded-md border border-line bg-well px-3.5 py-2.5">
                 <h3 className="t-label !text-[10.5px]">
-                  Flights already in the ledger — blanks the diary can fill ({fills.length})
+                  Flights already in the ledger — blanks to fill, and recorded
+                  actuals that correct a schedule ({fills.length})
                 </h3>
                 <ul className="mt-2 max-h-48 space-y-1 overflow-y-auto">
                   {fills.map((r) => {

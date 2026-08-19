@@ -34,6 +34,9 @@ export interface DiaryRow {
   destination: string;
   departure_time: string | null;
   arrival_time: string | null;
+  /** where the flight was SOLD to, when it landed somewhere else — the
+   *  ledger's row carries this destination, so matching needs it too */
+  scheduled_destination?: string;
   /** true when the time is Flighty's recorded ACTUAL, not a schedule —
    *  an actual may correct a stored scheduled time; a schedule never may */
   departure_actual?: boolean;
@@ -298,6 +301,9 @@ export function parseFlightyCsv(text: string): {
       flight_number: number,
       origin: from,
       destination: /^[A-Z]{3}$/.test(diverted) ? diverted : to,
+      ...(/^[A-Z]{3}$/.test(diverted) && diverted !== to
+        ? { scheduled_destination: to }
+        : {}),
       /* the recorded actual outranks the schedule: it is what flew */
       departure_time:
         isoTime(cells[cDepActual] ?? "") ?? isoTime(cells[cDep] ?? ""),
@@ -355,7 +361,13 @@ const segField = (s: SegmentRow, f: (typeof FILLABLE)[number][0]) =>
 /** What the diary can add to a segment the ledger already has: blanks only.
  *  A receipt's cabin, a hand-entered seat, a posted anything — all outrank
  *  a diary, which the user may have back-filled years later from memory. */
-export function diaryFills(row: DiaryRow, seg: SegmentRow): string[] {
+export function diaryFills(
+  row: DiaryRow,
+  seg: SegmentRow,
+  /** fields a human wrote on this segment — an actual may correct another
+   *  import's schedule, never a person's own entry */
+  protectedFields?: Set<string>
+): string[] {
   const fills: string[] = FILLABLE.filter(
     ([f]) => row[f === "note" ? "note" : f] != null && segField(seg, f) == null
   ).map(([, label]) => label);
@@ -369,23 +381,34 @@ export function diaryFills(row: DiaryRow, seg: SegmentRow): string[] {
     row.departure_actual &&
     row.departure_time != null &&
     seg.departure_time != null &&
-    seg.departure_time !== row.departure_time
+    seg.departure_time !== row.departure_time &&
+    !protectedFields?.has("departure_time")
   )
     fills.push("departs (actual)");
   if (
     row.arrival_actual &&
     row.arrival_time != null &&
     seg.arrival_time != null &&
-    seg.arrival_time !== row.arrival_time
+    seg.arrival_time !== row.arrival_time &&
+    !protectedFields?.has("arrival_time")
   )
     fills.push("arrives (actual)");
+  /* where it actually landed outranks where it was sold to — the receipt
+     recorded the plan, the log recorded the day */
+  if (
+    row.scheduled_destination != null &&
+    seg.destination === row.scheduled_destination &&
+    seg.destination !== row.destination
+  )
+    fills.push(`diverted to ${row.destination}`);
   return fills;
 }
 
 export function buildFlightDiaryPreview(
   rows: DiaryRow[],
   segments: SegmentRow[],
-  todayOverride?: string
+  todayOverride?: string,
+  manualFields?: Map<string, Set<string>>
 ): DiaryPreview {
   const today = todayOverride ?? new Date().toISOString().slice(0, 10);
   const byIdentity = new Map<string, SegmentRow>();
@@ -433,7 +456,22 @@ export function buildFlightDiaryPreview(
 
     /* exact identity first; then the date+route pair, but only when it is
        unambiguous — two shuttle hops on one day must not merge */
-    let seg = byIdentity.get(identity) ?? null;
+    /* A diverted row looks up its SCHEDULED destination first: the receipt-
+       linked row carries the money, and correcting it makes any duplicate a
+       past import created under the diverted airport collapse into a true
+       identity-duplicate the reconcile queue already knows how to flag. */
+    let seg = row.scheduled_destination
+      ? (byIdentity.get(
+          segmentIdentityKey({
+            date: row.date,
+            carrier: row.carrier,
+            number: row.flight_number,
+            origin: row.origin,
+            destination: row.scheduled_destination,
+          })
+        ) ?? null)
+      : null;
+    seg ??= byIdentity.get(identity) ?? null;
     if (!seg) {
       const candidates =
         byDateRoute.get(`${row.date}|${row.origin}|${row.destination}`) ?? [];
@@ -443,9 +481,18 @@ export function buildFlightDiaryPreview(
       const pool = live.length > 0 ? live : candidates;
       if (pool.length === 1) seg = pool[0];
     }
+    if (!seg && row.scheduled_destination) {
+      const candidates =
+        byDateRoute.get(
+          `${row.date}|${row.origin}|${row.scheduled_destination}`
+        ) ?? [];
+      const live = candidates.filter((c) => c.status !== "canceled");
+      const pool = live.length > 0 ? live : candidates;
+      if (pool.length === 1) seg = pool[0];
+    }
 
     if (seg) {
-      const fills = diaryFills(row, seg);
+      const fills = diaryFills(row, seg, manualFields?.get(seg.id));
       out.push(
         fills.length > 0
           ? { key: row.index, action: "fill", segmentId: seg.id, row, fills }

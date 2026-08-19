@@ -702,7 +702,10 @@ the physical details of flights already recorded — seat, cabin, aircraft
 type, tail registration, purpose, scheduled times. On a known flight the
 diary fills blanks only — with one exception: a time Flighty marks as the
 recorded ACTUAL corrects a stored scheduled time, since what flew outranks
-what was booked, and the correction is listed (untickable) in the preview
+what was booked, and the correction is listed in the preview — where any
+row can be unticked. A time a person typed by hand is never corrected —
+the change log is the provenance record, and only another import's value
+is an import's to replace —
 beside the fills. Otherwise a value from a receipt or the user's own hand
 always stands.
 

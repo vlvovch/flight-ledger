@@ -219,6 +219,35 @@ export function listChanges(
     .all(...args) as unknown as ChangeRow[];
 }
 
+/**
+ * Which fields of which segments a HUMAN has written — the provenance the
+ * schema doesn't store, recovered from the change log. An import may
+ * correct what another import wrote (a schedule, say, with a recorded
+ * actual), but a value a person typed is theirs until they retype it.
+ * Only the "manual" actor counts: imports, the arrival sweep and restores
+ * are all machinery.
+ */
+export function manuallyEditedSegmentFields(): Map<string, Set<string>> {
+  const out = new Map<string, Set<string>>();
+  const rows = getDb()
+    .prepare(
+      "SELECT row_id, diff FROM changes WHERE tbl = 'segments' AND actor = 'manual'"
+    )
+    .all() as unknown as { row_id: string; diff: string }[];
+  for (const r of rows) {
+    try {
+      const d = JSON.parse(r.diff) as { fields?: Record<string, unknown> };
+      if (!d.fields) continue;
+      const set = out.get(r.row_id) ?? new Set<string>();
+      for (const f of Object.keys(d.fields)) set.add(f);
+      out.set(r.row_id, set);
+    } catch {
+      /* an unparseable diff protects nothing */
+    }
+  }
+  return out;
+}
+
 /* ------------------------------- tickets ------------------------------- */
 
 const TICKET_FIELDS = [

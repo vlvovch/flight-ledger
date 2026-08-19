@@ -13,6 +13,7 @@ import {
   listSegmentsRaw,
   runAsActor,
   updateSegment,
+  manuallyEditedSegmentFields,
 } from "@/lib/repo";
 import { prepareSegment } from "@/lib/validate";
 
@@ -33,7 +34,12 @@ export const POST = handled(async (req: Request) => {
       return jsonError("No CSV content received");
     const parsed = parseFlightLog(body.csv);
     if (parsed.error) return jsonError(parsed.error);
-    const preview = buildFlightDiaryPreview(parsed.rows, listSegmentsRaw());
+    const preview = buildFlightDiaryPreview(
+      parsed.rows,
+      listSegmentsRaw(),
+      undefined,
+      manuallyEditedSegmentFields()
+    );
     return jsonOk({
       rows: preview.rows,
       skipped: [...parsed.skipped, ...preview.skipped],
@@ -55,6 +61,7 @@ export const POST = handled(async (req: Request) => {
         // The client's "create" is a claim, not a command (same rule as the
         // MileagePlus import): re-key every row against the ledger inside
         // the transaction, so a replayed apply cannot double a flight.
+        const manualFields = manuallyEditedSegmentFields();
         const byIdentity = new Map(
           listSegmentsRaw().map((s) => [
             segmentIdentityKey({
@@ -85,6 +92,21 @@ export const POST = handled(async (req: Request) => {
             action = "fill";
             segmentId = byIdentity.get(identity)!;
             duplicates++;
+          }
+          /* a diverted row's twin lives under the SCHEDULED destination */
+          if (action === "create" && row.scheduled_destination) {
+            const schedId = segmentIdentityKey({
+              date: row.date,
+              carrier: row.carrier,
+              number: row.flight_number,
+              origin: row.origin,
+              destination: row.scheduled_destination,
+            });
+            if (byIdentity.has(schedId)) {
+              action = "fill";
+              segmentId = byIdentity.get(schedId)!;
+              duplicates++;
+            }
           }
 
           if (action === "create") {
@@ -120,23 +142,26 @@ export const POST = handled(async (req: Request) => {
             errors.push(`${label}: matched flight no longer exists`);
             continue;
           }
-          const fills = diaryFills(row, seg);
+          const fills = diaryFills(row, seg, manualFields.get(seg.id));
           if (fills.length === 0) continue;
           const patch: Record<string, string | null> = {};
           // an ACTUAL time corrects a differing stored one; a schedule only
           // ever fills a blank — mirrors diaryFills exactly
+          const hand = manualFields.get(seg.id);
           if (
             row.departure_time != null &&
             (seg.departure_time == null ||
               (row.departure_actual === true &&
-                seg.departure_time !== row.departure_time))
+                seg.departure_time !== row.departure_time &&
+                !hand?.has("departure_time")))
           )
             patch.departure_time = row.departure_time;
           if (
             row.arrival_time != null &&
             (seg.arrival_time == null ||
               (row.arrival_actual === true &&
-                seg.arrival_time !== row.arrival_time))
+                seg.arrival_time !== row.arrival_time &&
+                !hand?.has("arrival_time")))
           )
             patch.arrival_time = row.arrival_time;
           if (seg.cabin == null && row.cabin != null) patch.cabin = row.cabin;
@@ -148,6 +173,12 @@ export const POST = handled(async (req: Request) => {
           if (seg.purpose == null && row.purpose != null)
             patch.purpose = row.purpose;
           if (seg.notes == null && row.note != null) patch.notes = row.note;
+          if (
+            row.scheduled_destination != null &&
+            seg.destination === row.scheduled_destination &&
+            seg.destination !== row.destination
+          )
+            patch.destination = row.destination;
           const p = prepareSegment(patch, true);
           if (!p.ok) {
             errors.push(`${label}: ${p.error}`);
