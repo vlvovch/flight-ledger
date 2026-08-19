@@ -119,8 +119,12 @@ export function friendlyType(mfr: string, model: string): string {
   if (max) return `B737 MAX ${max[1]}`;
   const dreamliner = m.match(/^787-(8|9|10)$/);
   if (dreamliner) return `B787-${dreamliner[1]}`;
-  const boeing = m.match(/^(7[0-9]7)-([0-9])[A-Z0-9]{2}/);
-  if (boeing) return `B${boeing[1]}-${boeing[2]}00`;
+  /* the customer code collapses ("777-222" is a 777-200 United ordered),
+     but a trailing ER/LR is the airplane, not the buyer — keep it. Most
+     FAA rows omit it even for ERs (the type certificate doesn't split
+     them), so absence proves nothing; presence does. */
+  const boeing = m.match(/^(7[0-9]7)-([0-9])[A-Z0-9]{2}\s*(ER|LR)?/);
+  if (boeing) return `B${boeing[1]}-${boeing[2]}00${boeing[3] ?? ""}`;
 
   // Airbus: the family name alone on the narrowbodies, variant on the rest
   const airbus = m.match(/^A(3[0-8][0-9])-([0-9])[0-9A-Z]{2}(N|NX)?$/);
@@ -130,7 +134,8 @@ export function friendlyType(mfr: string, model: string): string {
     return neo ? `${base}neo` : base;
   }
 
-  if (maker.startsWith("BOEING")) return `B${m}`;
+  // some rows arrive with the B already on ("B777-200ER") — don't double it
+  if (maker.startsWith("BOEING")) return m.startsWith("B") ? m : `B${m}`;
   if (maker.startsWith("AIRBUS")) return m.startsWith("A") ? m : `A${m}`;
   // everything else keeps the factory's own words, one maker word for context
   return `${maker.split(/\s+/)[0]} ${m}`.trim();
