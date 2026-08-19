@@ -10,9 +10,10 @@ import {
   MINIMUM_CREDITED_MILES,
 } from "@/lib/types";
 import { api, fmtCpm, fmtInt, fmtMoney, STATUS_LABELS } from "@/lib/format";
-import { EmptyState, Panel, StatusChip } from "@/components/ui";
+import { EmptyState, Panel, SortTh, StatusChip } from "@/components/ui";
 import FlightForm from "@/components/FlightForm";
 import { learnFleet, normalizeTail } from "@/lib/fleet";
+import { flightDuration, fmtDuration, wallToUtc, zoneOf } from "@/lib/duration";
 import ImportModal from "@/components/ImportModal";
 import { C } from "@/components/charts";
 
@@ -219,6 +220,52 @@ export default function FlightsPage() {
     };
   }, []);
 
+  /* Coordinates only for airports the ledger touches — same request the
+     analysis map makes. They feed the gate-to-gate time column: each end's
+     zone comes from its coordinates. Null until they arrive; the column
+     shows the ≈ distance model in the meantime rather than a blank frame. */
+  const [coords, setCoords] = useState<Record<string, { lat: number; lon: number }> | null>(null);
+  useEffect(() => {
+    if (!flights?.length) return;
+    const codes = [...new Set(flights.flatMap((f) => [f.origin, f.destination]))];
+    api<{ airports: Record<string, { lat: number; lon: number }> }>(
+      `/api/airports?codes=${codes.join(",")}`
+    )
+      .then((r) => setCoords(r.airports))
+      .catch(() => {});
+  }, [flights]);
+  /* The departure INSTANT, for ordering. Local wall clocks cannot order a
+     multi-timezone day: an overnight's 17:51 Chicago departure is later on
+     the clock but earlier on Earth than the next morning's 08:23 Amsterdam
+     connection. Zone from coordinates where available; the naive reading is
+     the fallback and still orders same-airport days correctly. */
+  const depInstants = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const f of flights ?? []) {
+      const [y, mo, d] = f.flight_date.split("-").map(Number);
+      let t = Date.UTC(y, mo - 1, d, 12);
+      if (f.departure_time) {
+        const [h, mi] = f.departure_time.split(":").map(Number);
+        t = Date.UTC(y, mo - 1, d, h, mi);
+        const a = coords?.[f.origin];
+        const zone = a ? zoneOf(a.lat, a.lon) : null;
+        if (zone) t = wallToUtc(f.flight_date, f.departure_time, zone);
+      }
+      m.set(f.id, t);
+    }
+    return m;
+  }, [flights, coords]);
+
+  const durations = useMemo(() => {
+    const m = new Map<string, { minutes: number; estimated: boolean } | null>();
+    for (const f of flights ?? [])
+      m.set(
+        f.id,
+        flightDuration(f, coords?.[f.origin] ?? null, coords?.[f.destination] ?? null)
+      );
+    return m;
+  }, [flights, coords]);
+
   const refresh = useCallback(() => {
     api<{ flights: EnrichedSegment[] }>("/api/flights").then((r) => setFlights(r.flights));
     api<{ tickets: TicketRow[] }>("/api/tickets").then((r) => setTickets(r.tickets));
@@ -271,6 +318,74 @@ export default function FlightsPage() {
     }
     return list;
   }, [flights, year, statuses, purpose, q]);
+
+  /* Every column sorts by the value its cells DISPLAY — the estimate where
+     the cell shows an estimate, a dash sorting past everything real. Default
+     is the ledger's native order, newest first. */
+  type SortCol =
+    | "date" | "flight" | "route" | "cabin" | "dist" | "time"
+    | "award" | "pqp" | "pqf" | "gross" | "personal" | "cpm";
+  const [sort, setSort] = useState<{ col: SortCol; desc: boolean }>({
+    col: "date",
+    desc: true,
+  });
+  const clickSort = (col: string) =>
+    setSort((s) => ({
+      col: col as SortCol,
+      desc: s.col === col ? !s.desc : !["flight", "route", "cabin"].includes(col),
+    }));
+  const sorted = useMemo(() => {
+    const val = (f: EnrichedSegment): string | number => {
+      switch (sort.col) {
+        case "date":
+          return depInstants.get(f.id) ?? 0;
+        case "flight":
+          return f.marketing_carrier + (f.flight_number ?? "").padStart(4, "0");
+        case "route":
+          return f.origin + f.destination;
+        case "cabin":
+          return f.cabin ?? "";
+        case "dist":
+          return f.distance_miles ?? -1;
+        case "time":
+          return durations.get(f.id)?.minutes ?? -1;
+        case "award":
+          return expectsMileagePlusCredit(f)
+            ? (f.award_miles ?? f.projected_award_miles ?? -1)
+            : -1;
+        case "pqp":
+          return expectsMileagePlusCredit(f)
+            ? (f.pqp ?? f.projected_pqp ?? -1)
+            : -1;
+        case "pqf":
+          return expectsMileagePlusCredit(f)
+            ? (f.pqf ?? f.projected_pqf ?? -1)
+            : -1;
+        case "gross":
+          return f.gross_cost || f.estimated_gross || 0;
+        case "personal":
+          return f.personal_cost;
+        case "cpm": {
+          const milesSpent = f.award_miles_spent ?? 0;
+          const fullCost = f.gross_cost + (milesSpent * mileValue) / 100;
+          if (f.distance_miles && f.distance_miles > 0 && fullCost > 0)
+            return (100 * fullCost) / f.distance_miles;
+          if (f.estimated_gross != null && f.distance_miles && f.distance_miles > 0)
+            return (100 * f.estimated_gross) / f.distance_miles;
+          return -1;
+        }
+      }
+    };
+    return [...filtered].sort((a, b) => {
+      const x = val(a);
+      const y = val(b);
+      const cmp =
+        typeof x === "string"
+          ? x.localeCompare(y as string)
+          : (x as number) - (y as number);
+      return (sort.desc ? -cmp : cmp) || a.flight_date.localeCompare(b.flight_date);
+    });
+  }, [filtered, sort, mileValue, durations, depInstants]);
 
   const totals = useMemo(() => {
     const isFlown = (f: EnrichedSegment) =>
@@ -413,22 +528,22 @@ export default function FlightsPage() {
             <table className="ledger">
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Flight</th>
-                  <th>Route</th>
-                  <th>Cabin</th>
-                  <th className="!text-right">Dist mi</th>
-                  <th className="!text-right">Lifetime</th>
-                  <th className="!text-right">Award</th>
-                  <th className="!text-right">PQP</th>
-                  <th className="!text-right">PQF</th>
-                  <th className="!text-right">Gross</th>
-                  <th className="!text-right">Personal</th>
-                  <th className="!text-right">CPM</th>
+                  <SortTh col="date" sort={sort} onSort={clickSort} num={false}>Date</SortTh>
+                  <SortTh col="flight" sort={sort} onSort={clickSort} num={false}>Flight</SortTh>
+                  <SortTh col="route" sort={sort} onSort={clickSort} num={false}>Route</SortTh>
+                  <SortTh col="cabin" sort={sort} onSort={clickSort} num={false}>Cabin</SortTh>
+                  <SortTh col="time" sort={sort} onSort={clickSort}>Time</SortTh>
+                  <SortTh col="dist" sort={sort} onSort={clickSort}>Dist mi</SortTh>
+                  <SortTh col="award" sort={sort} onSort={clickSort}>Award</SortTh>
+                  <SortTh col="pqp" sort={sort} onSort={clickSort}>PQP</SortTh>
+                  <SortTh col="pqf" sort={sort} onSort={clickSort}>PQF</SortTh>
+                  <SortTh col="gross" sort={sort} onSort={clickSort}>Gross</SortTh>
+                  <SortTh col="personal" sort={sort} onSort={clickSort}>Personal</SortTh>
+                  <SortTh col="cpm" sort={sort} onSort={clickSort}>CPM</SortTh>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((f) => {
+                {sorted.map((f) => {
                   /* A flight that earns nothing in MileagePlus can never be
                      reconciled — there is no statement line to match it to —
                      so "Flown" on one is a permanent false alarm, not a task.
@@ -542,55 +657,68 @@ export default function FlightsPage() {
                           </span>
                         )}
                       </td>
+                      {/* gate-to-gate, from the clocks pinned to each
+                          airport's zone; the ≈ distance model when a clock or
+                          coordinate is missing */}
                       <td className="num text-ink2">
-                        {f.distance_miles != null ? fmtInt(f.distance_miles) : "?"}
-                      </td>
-                      <td className={`num ${earn}`}>
-                        {noEarnReason ? (
-                          <span
-                            className="text-[10.5px] uppercase tracking-wider text-mute"
-                            title={
-                              noEarnReason === "Non-United"
-                                ? "Flown on another airline's metal — earns nothing toward United lifetime miles"
-                                : noEarnReason === "Award"
-                                  ? "Award ticket — redeemed with miles, so it earns no lifetime miles"
-                                  : "United metal, but this ticket doesn't credit to MileagePlus — another programme earned it"
-                            }
-                          >
-                            {noEarnReason}
-                          </span>
-                        ) : f.lifetime_miles != null ? (
-                          fmtInt(f.lifetime_miles)
-                        ) : (f.status === "flown_unreconciled" ||
-                            f.status === "flown_reconciled") &&
-                          f.distance_miles != null ? (
-                          estimatedLifetimeMiles(f) > 0 ? (
+                        {(() => {
+                          const t = durations.get(f.id);
+                          if (!t) return "—";
+                          return (
                             <span
-                              className="text-mute"
+                              className={t.estimated ? "text-mute" : undefined}
                               title={
-                                estimatedLifetimeMiles(f) > (f.distance_miles ?? 0)
-                                  ? `${fmtInt(f.distance_miles)} mi flown, credited at United's ${fmtInt(MINIMUM_CREDITED_MILES)}-mile segment minimum. United hasn’t posted yet; enter the posted value to override.`
-                                  : "Estimated from the flown distance — United hasn’t posted yet. Enter the posted value to override."
+                                t.estimated
+                                  ? "Estimated from the distance — no usable clocks for this flight"
+                                  : "Gate to gate from the scheduled clocks, each in its airport's timezone — not airborne time"
                               }
                             >
-                              {/* the ESTIMATE, not the distance: they are the
-                                  same number until the 500-mile minimum bites */}
-                              ≈{fmtInt(estimatedLifetimeMiles(f))}
+                              {t.estimated ? "≈" : ""}
+                              {fmtDuration(t.minutes)}
                             </span>
-                          ) : (
-                            <span
-                              className="text-mute"
-                              title={`${
-                                f.award_miles === 0
-                                  ? "Award travel (0 award miles)"
-                                  : "Non-UA operated"
-                              } — no lifetime miles accrue. Enter a posted value to override.`}
-                            >
-                              ≈0
-                            </span>
-                          )
+                          );
+                        })()}
+                      </td>
+                      {/* One column, two facts. The old Lifetime column was
+                          this column's number again, or a label — on United
+                          metal the estimate IS the distance until the 500-mile
+                          minimum bites, and posted values only ever differed
+                          as an award's zero. So the distance stays, a leading
+                          * marks the flights that earn no lifetime miles (the
+                          marker position ≈ and * already own), and the
+                          tooltip carries what the second column used to say. */}
+                      <td className="num text-ink2">
+                        {f.distance_miles == null ? (
+                          "?"
+                        ) : noEarnReason ? (
+                          <span
+                            title={`Earns no United lifetime miles — ${
+                              noEarnReason === "Non-United"
+                                ? "flown on another airline's metal."
+                                : noEarnReason === "Award"
+                                  ? "an award ticket, redeemed with miles."
+                                  : "United metal, but this ticket credits another programme."
+                            }`}
+                          >
+                            <span className="text-mute">*</span>
+                            {fmtInt(f.distance_miles)}
+                          </span>
+                        ) : f.lifetime_miles != null &&
+                          f.lifetime_miles !== Math.round(f.distance_miles) ? (
+                          <span
+                            title={`United posted ${fmtInt(f.lifetime_miles)} lifetime miles for this flight`}
+                          >
+                            {fmtInt(f.distance_miles)}
+                          </span>
+                        ) : f.lifetime_miles == null &&
+                          estimatedLifetimeMiles(f) > f.distance_miles ? (
+                          <span
+                            title={`Credits at United's ${fmtInt(MINIMUM_CREDITED_MILES)}-mile segment minimum — ≈${fmtInt(estimatedLifetimeMiles(f))} lifetime miles expected`}
+                          >
+                            {fmtInt(f.distance_miles)}
+                          </span>
                         ) : (
-                          "—"
+                          fmtInt(f.distance_miles)
                         )}
                       </td>
                       <td className={`num ${earn}`}>
@@ -724,17 +852,35 @@ export default function FlightsPage() {
                   <td colSpan={4} className="t-num text-[11.5px] uppercase tracking-wider text-mute">
                     {totals.flownCount} flown of {totals.count}
                   </td>
-                  <td className="num">{fmtInt(totals.dist)}</td>
-                  <td className="num">
-                    {totals.lifetimeEst > totals.lifetime ? (
-                      <span title={`United-posted: ${fmtInt(totals.lifetime)}`}>
-                        ≈{fmtInt(totals.lifetimeEst)}
-                      </span>
-                    ) : totals.lifetime ? (
-                      fmtInt(totals.lifetime)
-                    ) : (
-                      "—"
-                    )}
+                  {(() => {
+                    let min = 0;
+                    let est = false;
+                    let covered = 0;
+                    let flown = 0;
+                    for (const f of filtered) {
+                      if (f.status !== "flown_unreconciled" && f.status !== "flown_reconciled")
+                        continue;
+                      flown++;
+                      const t = durations.get(f.id);
+                      if (!t) continue;
+                      covered++;
+                      min += t.minutes;
+                      if (t.estimated) est = true;
+                    }
+                    return (
+                      <td
+                        className="num"
+                        title={`Gate-to-gate time of the flown flights on screen — scheduled blocks, not airborne; ${covered} of ${flown} carry a figure`}
+                      >
+                        {min > 0 ? `${est || covered < flown ? "≈" : ""}${fmtDuration(min)}` : "—"}
+                      </td>
+                    );
+                  })()}
+                  <td
+                    className="num"
+                    title={`≈${fmtInt(totals.lifetimeEst)} of these miles count toward United lifetime status (posted so far: ${fmtInt(totals.lifetime)}); * marks flights earning none`}
+                  >
+                    {fmtInt(totals.dist)}
                   </td>
                   <td className="num">{totals.award ? fmtInt(totals.award) : "—"}</td>
                   <td className="num">{totals.pqp ? fmtInt(totals.pqp) : "—"}</td>

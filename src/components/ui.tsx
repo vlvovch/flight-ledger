@@ -331,6 +331,69 @@ export function ErrorNote({ error }: { error: string | null }) {
   );
 }
 
+/* ------------------------------ SortTh --------------------------------- */
+
+/**
+ * A sortable column header. The arrow slot is always rendered so hovering
+ * never shifts the column: the active column shows its direction, the rest
+ * fade in a ↕ hint on hover — how the header says "I sort" without a legend.
+ */
+export function SortTh({
+  col,
+  sort,
+  onSort,
+  num = true,
+  children,
+}: {
+  col: string;
+  sort: { col: string; desc: boolean };
+  onSort: (col: string) => void;
+  num?: boolean;
+  children: React.ReactNode;
+}) {
+  const active = sort.col === col;
+  return (
+    <th
+      className={num ? "!text-right" : undefined}
+      aria-sort={active ? (sort.desc ? "descending" : "ascending") : undefined}
+    >
+      <button
+        className="group t-label !text-[10px] transition-colors hover:text-ink pointer-coarse:py-1.5"
+        onClick={() => onSort(col)}
+      >
+        {/* The arrow slot is always rendered so hovering never shifts the
+            column — which means it reserves width. On a right-aligned column
+            that reservation must sit on the LEFT, or the label floats two
+            characters off the numbers it heads. Same side the app's other
+            markers (≈, *) live on. */}
+        {num && (
+          <span
+            className={
+              active
+                ? undefined
+                : "opacity-0 transition-opacity group-hover:opacity-60"
+            }
+          >
+            {active ? (sort.desc ? "\u2193 " : "\u2191 ") : "\u2195 "}
+          </span>
+        )}
+        {children}
+        {!num && (
+          <span
+            className={
+              active
+                ? undefined
+                : "opacity-0 transition-opacity group-hover:opacity-60"
+            }
+          >
+            {active ? (sort.desc ? " \u2193" : " \u2191") : " \u2195"}
+          </span>
+        )}
+      </button>
+    </th>
+  );
+}
+
 /* -------------------------- MilesBasisToggle --------------------------- */
 
 /**
