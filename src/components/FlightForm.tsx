@@ -13,6 +13,7 @@ import {
   type LearnedFleet,
 } from "@/lib/fleet";
 import { expectsMileagePlusCredit } from "@/lib/types";
+import { canonicalAircraft } from "@/lib/fleet-stats";
 import type { EnrichedSegment, SegmentRow, TicketRow } from "@/lib/types";
 
 /* Roughly cheapest first — a picker's order, not a ranking. It used to claim a
@@ -545,9 +546,17 @@ export default function FlightForm({
                     learned: fleet,
                   })
                 : null;
-              return known
-                ? `${form.tail_number.toUpperCase()} was a ${known} on this date.`
-                : "Filled from the tail number — the FAA registry, or your own earlier flights.";
+              if (!known)
+                return "Filled from the tail number — the FAA registry, or your own earlier flights.";
+              /* The FAA doesn't record ER-class weight variants, so a typed
+                 "777-200ER" over a registry "777-200" is a refinement, not a
+                 disagreement — the hint must not argue with knowledge finer
+                 than its own. */
+              const typed = canonicalAircraft(form.aircraft.trim());
+              const reg = canonicalAircraft(known);
+              if (form.aircraft.trim() && (typed === reg || typed.startsWith(reg)))
+                return `${form.tail_number.toUpperCase()} matches the registry (${known}) for this date.`;
+              return `${form.tail_number.toUpperCase()} was a ${known} on this date.`;
             })()}
           </p>
         </Field>
