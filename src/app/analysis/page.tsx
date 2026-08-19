@@ -3,7 +3,14 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Analytics, CashFlow, CashMonth } from "@/lib/metrics";
 import type { FareClassRow, MixBucket, TravelMix } from "@/lib/mix";
-import { flightCpmSpread, summarizeFareClasses, summarizeMix } from "@/lib/mix";
+import {
+  flightCpmSpread,
+  summarizeFareClasses,
+  summarizeMix,
+  summarizeRouteTable,
+  type RouteTableRow,
+} from "@/lib/mix";
+import { summarizeFleet, type FleetStats } from "@/lib/fleet-stats";
 import type { EnrichedSegment } from "@/lib/types";
 import { api, fmtCpm, fmtInt, fmtMoney, fmtMonth } from "@/lib/format";
 import { rollupCashYears, rollupYears } from "@/lib/metrics";
@@ -21,6 +28,8 @@ import {
 /* The same series tokens charts.tsx exports as C, inlined rather than
    imported: pulling anything from charts.tsx drags Recharts into a page that
    draws no charts. The names match so the panels moved here verbatim. */
+type AnalysisTab = "map" | "ledger" | "cash" | "mix" | "routes" | "fleet" | "fares";
+
 const C = {
   miles: "var(--color-s-miles)",
   gross: "var(--color-s-gross)",
@@ -46,6 +55,10 @@ export default function AnalysisPage() {
   const [ledgerMiles, setLedgerMiles] = useState<"flown" | "lifetime">("flown");
   const [reportOpen, setReportOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /* One panel at a time. The page grew to six panels, and "scroll until you
+     find it" stopped being navigation; the range control stays global, so
+     switching tabs never changes the window being described. */
+  const [tab, setTab] = useState<AnalysisTab>("map");
 
   useEffect(() => {
     api<Analytics>("/api/analytics")
@@ -111,6 +124,7 @@ export default function AnalysisPage() {
   );
 
   const mix = useMemo(() => summarizeMix(windowFlights), [windowFlights]);
+  const fleet = useMemo(() => summarizeFleet(windowFlights), [windowFlights]);
   const mapData = useMemo(
     () => (coords ? buildMapData(windowFlights, coords) : null),
     [windowFlights, coords]
@@ -158,6 +172,18 @@ export default function AnalysisPage() {
       cpmMiles: 0, cpmGross: 0, cpmPersonal: 0 }
   );
   const hasData = flights.length > 0 || data.cashFlow.months.length > 0;
+  const showMap = mapData != null && mapData.flights > 0;
+  const tabs = ([
+    ...(showMap ? ([["map", "Map"]] as const) : []),
+    ["ledger", yearly ? "Yearly ledger" : "Monthly ledger"],
+    ["cash", "Cash flow"],
+    ["mix", "Travel mix"],
+    ["routes", "Routes"],
+    ["fleet", "Fleet"],
+    ["fares", "Fare classes"],
+  ] as const) satisfies readonly (readonly [AnalysisTab, string])[];
+  /* the map tab can vanish when a window has no mappable flights */
+  const activeTab = tabs.some(([k]) => k === tab) ? tab : tabs[0][0];
 
   return (
     <div className="mx-auto max-w-[1440px]">
@@ -188,10 +214,29 @@ export default function AnalysisPage() {
         />
       ) : (
         <>
+          {/* Same tab idiom as the MileagePlus page: underline on a shared
+              baseline, not a boxed segment control — two pages switching
+              their content the same way should look like the same control. */}
+          <div className="reveal flex flex-wrap gap-1 border-b border-line">
+            {tabs.map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                aria-pressed={activeTab === key}
+                className={`t-display -mb-px border-b-2 px-3.5 py-2 text-[13px] tracking-[0.06em] transition-colors pointer-coarse:py-3 ${
+                  activeTab === key
+                    ? "border-s-pqp text-ink"
+                    : "border-transparent text-mute hover:text-ink2"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
           {/* The map leads the page — the one panel that orients before the
               tables answer. It follows the same range control as everything
               beneath it, so the picture and the numbers describe one window. */}
-          {mapData && mapData.flights > 0 && (
+          {activeTab === "map" && mapData && mapData.flights > 0 && (
             <Panel
               label="Map"
               accent={C.miles}
@@ -207,6 +252,7 @@ export default function AnalysisPage() {
           )}
 
           {/* monthly ledger */}
+          {activeTab === "ledger" && (
           <Panel
             label={yearly ? "Yearly ledger" : "Monthly ledger"}
             accent={C.miles}
@@ -354,20 +400,37 @@ export default function AnalysisPage() {
               )}
             </div>
           </Panel>
+          )}
 
-          <CashFlowPanel
-            flow={data.cashFlow}
-            months={cashMonths}
-            windowLabel={windowLabel}
-            currency={currency}
-            yearly={yearly}
-          />
-          <TravelMixPanel mix={mix} windowLabel={windowLabel} />
-          <FareClassPanel
-            rows={fareClasses}
-            windowLabel={windowLabel}
-            currency={currency}
-          />
+          {activeTab === "cash" && (
+            <CashFlowPanel
+              flow={data.cashFlow}
+              months={cashMonths}
+              windowLabel={windowLabel}
+              currency={currency}
+              yearly={yearly}
+            />
+          )}
+          {activeTab === "mix" && (
+            <TravelMixPanel mix={mix} windowLabel={windowLabel} />
+          )}
+          {activeTab === "routes" && (
+            <RoutesPanel
+              flights={windowFlights}
+              windowLabel={windowLabel}
+              currency={currency}
+            />
+          )}
+          {activeTab === "fleet" && (
+            <FleetPanel fleet={fleet} windowLabel={windowLabel} />
+          )}
+          {activeTab === "fares" && (
+            <FareClassPanel
+              rows={fareClasses}
+              windowLabel={windowLabel}
+              currency={currency}
+            />
+          )}
         </>
       )}
       {reportOpen && range.startsWith("y") && data && (
@@ -689,6 +752,367 @@ function FareClassPanel({
               : `Top ${SHOWN} of ${rows.length} fare classes, by flights flown — show all`}
           </button>
         )}
+      </div>
+    </Panel>
+  );
+}
+
+/**
+ * What the flying happened ON. Two ledgers of the same window: aircraft
+ * types (spelling-normalized, so "B739" and "Boeing 737-900" are one row)
+ * and individual airframes by registration. The coverage line at the bottom
+ * is the honesty clause — "37 types" reads authoritative until you know how
+ * many flights carry no type at all, so the basis is stated where the
+ * numbers are.
+ */
+function FleetPanel({
+  fleet,
+  windowLabel,
+}: {
+  fleet: FleetStats;
+  windowLabel: string;
+}) {
+  const [allTypes, setAllTypes] = useState(false);
+  const [allTails, setAllTails] = useState(false);
+  if (fleet.withType === 0 && fleet.withTail === 0) return null;
+
+  const TYPE_CUT = 12;
+  const TAIL_CUT = 12;
+  const types = allTypes ? fleet.types : fleet.types.slice(0, TYPE_CUT);
+  const tails = allTails ? fleet.tails : fleet.tails.slice(0, TAIL_CUT);
+  const yearsOf = (r: { first: string; last: string }) => {
+    const a = r.first.slice(0, 4);
+    const b = r.last.slice(0, 4);
+    return a === b ? a : `${a}–${b}`;
+  };
+
+  return (
+    <Panel
+      label="Fleet"
+      accent={C.gross}
+      className="mt-3 reveal"
+      right={<span className="t-label !text-[10px] text-mute">{windowLabel}</span>}
+    >
+      <div className="grid grid-cols-1 gap-x-8 gap-y-4 px-4 pt-1 pb-2 lg:grid-cols-2">
+        <div>
+          <div
+            className="t-label !text-[10px] mb-2"
+            title="Labels are normalized before counting, so a hand-typed B739, an import's Boeing 737-900 and the FAA's 737-924ER are one row. Distinctions the sources genuinely make (-900 vs -900ER) stay separate."
+          >
+            Aircraft types <span className="text-mute">{fleet.types.length}</span>
+          </div>
+          {types.map((t) => (
+            <div key={t.name} className="mb-2.5 last:mb-0">
+              <div className="flex items-baseline gap-2">
+                <span className="text-[12.5px] text-ink">{t.name}</span>
+                <span className="t-num ml-auto text-[12.5px] text-ink">
+                  {Math.round(t.share * 100)}%
+                </span>
+              </div>
+              <div className="mt-1 h-[3px] overflow-hidden rounded-full bg-well">
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${Math.max(2, Math.round(t.share * 100))}%`,
+                    background: C.gross,
+                  }}
+                />
+              </div>
+              <div
+                className="mt-1 flex items-baseline gap-2 text-[11px] text-mute"
+                title={`${yearsOf(t)}${t.topAirline ? ` · mostly ${t.topAirline}` : ""}${t.topRoute ? ` on ${t.topRoute}` : ""}${
+                  t.tails > 0
+                    ? ` · ${t.tails} distinct ${t.tails === 1 ? "airframe" : "airframes"} identified`
+                    : ""
+                }`}
+              >
+                <span>
+                  {t.flights}× · {fmtInt(t.miles)} mi
+                </span>
+                {t.tails > 0 && (
+                  <span className="ml-auto">
+                    {t.tails} {t.tails === 1 ? "tail" : "tails"}
+                  </span>
+                )}
+              </div>
+            </div>
+          ))}
+          {fleet.types.length > TYPE_CUT && (
+            <button
+              className="mt-2 text-[11px] text-mute underline decoration-[var(--color-line2)] underline-offset-2 hover:text-ink2"
+              onClick={() => setAllTypes(!allTypes)}
+            >
+              {allTypes
+                ? "Show fewer"
+                : `Show all ${fleet.types.length} types`}
+            </button>
+          )}
+        </div>
+
+        <div>
+          <div
+            className="t-label !text-[10px] mb-2"
+            title="Individual aircraft, by registration. Click one to see its flights. Two types on one registration is not a contradiction — registrations get reused on different airframes over time."
+          >
+            Airframes <span className="text-mute">{fleet.tails.length}</span>
+          </div>
+          <div className="@container">
+          {tails.map((t) => (
+            <a
+              key={t.tail}
+              href={`/flights?q=${encodeURIComponent(t.tail)}`}
+              /* Columns, not a flowed line: registrations, counts, miles and
+                 year spans all vary in width, and a ragged list of numbers
+                 can't be scanned down. */
+              className="flex items-baseline gap-2 border-b border-[color-mix(in_oklab,var(--color-line)_55%,transparent)] py-1 text-[12px] last:border-0 hover:bg-[var(--tint-accent)]"
+              title={`${t.airlines.join(", ")} · ${t.routes.slice(0, 8).join(" · ")}${t.routes.length > 8 ? " …" : ""}`}
+            >
+              <span className="t-num w-[72px] shrink-0 text-ink">{t.tail}</span>
+              <span className="min-w-0 flex-1 truncate text-[11px] text-ink2">
+                {t.types[0] ?? "type unknown"}
+                {t.types.length > 1 && (
+                  <span className="text-mute"> +{t.types.length - 1}</span>
+                )}
+              </span>
+              {/* Numeric columns yield by CONTAINER width, not viewport:
+                  this list lives in a half-width grid cell, so the viewport
+                  is the wrong thing to ask. The type keeps its room; miles
+                  and years return as the container affords them. */}
+              <span className="t-num w-[36px] shrink-0 text-right text-[11px] text-mute">
+                {t.flights}×
+              </span>
+              <span className="t-num hidden w-[76px] shrink-0 text-right text-[11px] text-mute @xs:inline">
+                {fmtInt(t.miles)} mi
+              </span>
+              <span className="t-num hidden w-[78px] shrink-0 text-right text-[11px] text-mute @md:inline">
+                {yearsOf(t)}
+              </span>
+            </a>
+          ))}
+          </div>
+          {fleet.tails.length > TAIL_CUT && (
+            <button
+              className="mt-2 text-[11px] text-mute underline decoration-[var(--color-line2)] underline-offset-2 hover:text-ink2"
+              onClick={() => setAllTails(!allTails)}
+            >
+              {allTails
+                ? "Show fewer"
+                : `Show all ${fleet.tails.length} airframes`}
+            </button>
+          )}
+        </div>
+      </div>
+      <p className="px-4 pb-3 pt-1 text-[11px] text-mute">
+        Aircraft type on record for {fmtInt(fleet.withType)} of{" "}
+        {fmtInt(fleet.flown)} flights, registration for {fmtInt(fleet.withTail)}{" "}
+        — the counts above cover only what&apos;s known.
+      </p>
+    </Panel>
+  );
+}
+
+type RouteSortCol =
+  | "key"
+  | "flights"
+  | "distance"
+  | "miles"
+  | "gross"
+  | "personal"
+  | "cpm";
+
+/**
+ * Every route as a sortable row. Two-way by default, because a round trip is
+ * one fare and the app reads city pairs undirected everywhere else; one-way
+ * splits the directions for anyone asking "do I only ever fly this eastbound".
+ * Money columns sum every flown flight on the pair — award taxes included —
+ * while ¢/mi keeps the cash-priced basis and each row's tooltip states it.
+ */
+function RoutesPanel({
+  flights,
+  windowLabel,
+  currency,
+}: {
+  flights: EnrichedSegment[];
+  windowLabel: string;
+  currency: string;
+}) {
+  const [directed, setDirected] = useState(false);
+  const [sort, setSort] = useState<{ col: RouteSortCol; desc: boolean }>({
+    col: "flights",
+    desc: true,
+  });
+  const rows = useMemo(
+    () => summarizeRouteTable(flights, directed),
+    [flights, directed]
+  );
+  const sorted = useMemo(() => {
+    const val = (r: RouteTableRow): number | string =>
+      sort.col === "key" ? r.key
+      : sort.col === "flights" ? r.flights
+      : sort.col === "distance" ? (r.distance ?? -1)
+      : sort.col === "miles" ? r.miles
+      : sort.col === "gross" ? r.gross
+      : sort.col === "personal" ? r.personal
+      : (r.grossCpm ?? -1); // routes with no priceable flight sort past the priced ones
+    return [...rows].sort((a, b) => {
+      const x = val(a);
+      const y = val(b);
+      const cmp =
+        typeof x === "string"
+          ? x.localeCompare(y as string)
+          : (x as number) - (y as number);
+      return (sort.desc ? -cmp : cmp) || a.key.localeCompare(b.key);
+    });
+  }, [rows, sort]);
+
+  const totals = useMemo(
+    () =>
+      rows.reduce(
+        (a, r) => ({
+          flights: a.flights + r.flights,
+          miles: a.miles + r.miles,
+          gross: a.gross + r.gross,
+          personal: a.personal + r.personal,
+          cpmMiles: a.cpmMiles + r.cpmMiles,
+          cpmGross: a.cpmGross + r.cpmGross,
+        }),
+        { flights: 0, miles: 0, gross: 0, personal: 0, cpmMiles: 0, cpmGross: 0 }
+      ),
+    [rows]
+  );
+  if (rows.length === 0) return null;
+
+  const clickSort = (col: RouteSortCol) =>
+    setSort((s) => ({ col, desc: s.col === col ? !s.desc : col !== "key" }));
+  const TH = ({
+    col,
+    children,
+    num = true,
+  }: {
+    col: RouteSortCol;
+    children: React.ReactNode;
+    num?: boolean;
+  }) => (
+    <th
+      className={num ? "!text-right" : undefined}
+      aria-sort={
+        sort.col === col ? (sort.desc ? "descending" : "ascending") : undefined
+      }
+    >
+      <button
+        className="group t-label !text-[10px] transition-colors hover:text-ink pointer-coarse:py-1.5"
+        onClick={() => clickSort(col)}
+      >
+        {children}
+        {/* the arrow slot is always rendered so hovering never shifts the
+            column; on inactive columns it fades in as the "sortable" hint */}
+        <span
+          className={
+            sort.col === col
+              ? undefined
+              : "opacity-0 transition-opacity group-hover:opacity-60"
+          }
+        >
+          {sort.col === col ? (sort.desc ? " ↓" : " ↑") : " ↕"}
+        </span>
+      </button>
+    </th>
+  );
+
+  return (
+    <Panel
+      label="Routes"
+      accent={C.miles}
+      className="mt-3 reveal"
+      right={
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="t-label !text-[10px] text-mute">
+            {windowLabel} · {rows.length} {directed ? "directions" : "pairs"}
+          </span>
+          <div className="flex overflow-hidden rounded-md border border-line">
+            {(
+              [
+                [false, "Two-way"],
+                [true, "One-way"],
+              ] as const
+            ).map(([mode, text]) => (
+              <button
+                key={text}
+                onClick={() => setDirected(mode)}
+                title={
+                  mode
+                    ? "Each direction its own row"
+                    : "Both directions as one city pair — a round trip is one fare"
+                }
+                className={`t-display px-2.5 py-1 text-[10.5px] tracking-[0.1em] transition-colors pointer-coarse:py-2.5 ${
+                  directed === mode
+                    ? "bg-[var(--tint-accent-strong)] text-ink"
+                    : "text-mute hover:text-ink2"
+                }`}
+              >
+                {text}
+              </button>
+            ))}
+          </div>
+        </div>
+      }
+    >
+      <div className="overflow-x-auto px-1 pb-1 pt-1">
+        <table className="ledger w-full">
+          <thead>
+            <tr>
+              <TH col="key" num={false}>Route</TH>
+              <TH col="flights">Flights</TH>
+              <TH col="distance">Distance</TH>
+              <TH col="miles">Miles</TH>
+              <TH col="gross">Gross</TH>
+              <TH col="personal">Personal</TH>
+              <TH col="cpm">¢/mi</TH>
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((r) => (
+              <tr
+                key={r.key}
+                title={`${r.airlines.join(", ")} · ${r.first.slice(0, 4)}–${r.last.slice(0, 4)}${
+                  r.grossCpm != null
+                    ? ` · ¢/mi over ${r.cpmFlights} of ${r.flights} flights (${fmtInt(r.cpmMiles)} mi) — the cash-priced ones; award taxes count as money spent but price no mile`
+                    : " · no flight on this route was paid in cash, so there is no ¢/mi to report"
+                }`}
+              >
+                <td className="t-num text-ink">{r.key}</td>
+                <td className="num">{r.flights}</td>
+                <td className="num">
+                  {r.distance != null ? fmtInt(r.distance) : "—"}
+                </td>
+                <td className="num">{fmtInt(r.miles)}</td>
+                <td className="num">{r.gross ? fmtMoney(r.gross, currency) : "—"}</td>
+                <td className="num">
+                  {r.personal ? fmtMoney(r.personal, currency) : r.gross ? fmtMoney(0, currency) : "—"}
+                </td>
+                <td className="num">{r.grossCpm != null ? fmtCpm(r.grossCpm) : "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td className="t-label !text-[10px]">All routes</td>
+              <td className="num">{totals.flights}</td>
+              <td className="num">—</td>
+              <td className="num">{fmtInt(Math.round(totals.miles))}</td>
+              <td className="num">{fmtMoney(totals.gross, currency)}</td>
+              <td className="num">{fmtMoney(totals.personal, currency)}</td>
+              <td
+                className="num"
+                title={`Over the cash-priced basis: ${fmtInt(Math.round(totals.cpmMiles))} mi`}
+              >
+                {totals.cpmMiles > 0
+                  ? fmtCpm((100 * totals.cpmGross) / Math.round(totals.cpmMiles))
+                  : "—"}
+              </td>
+            </tr>
+          </tfoot>
+        </table>
       </div>
     </Panel>
   );
