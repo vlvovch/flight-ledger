@@ -723,7 +723,17 @@ export default function FlightForm({
           <input
             className="field t-num"
             inputMode="decimal"
-            placeholder="Auto from ticket"
+            /* The placeholder shows the share being overridden — you can't
+               judge an override against a number you can't see. Only while
+               no override is saved: once one is in effect, gross_cost IS the
+               override, and presenting it as "auto" would be circular. */
+            placeholder={
+              segment &&
+              segment.manual_cost == null &&
+              segment.allocation_method !== "none"
+                ? `Auto from ticket — ${fmtMoney(segment.gross_cost, currency)}`
+                : "Auto from ticket"
+            }
             value={form.manual_cost}
             onChange={(e) => set("manual_cost", e.target.value)}
           />
