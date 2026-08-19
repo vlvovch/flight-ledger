@@ -11,6 +11,14 @@
  * commit or the policy is a lie.
  */
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy policy — Flight Ledger",
+  description:
+    "Where Flight Ledger keeps your data (on your device), what ever leaves it (nothing, unless you turn on Drive sync), and what the public site counts.",
+};
+
 const ACCENT = {
   miles: "var(--color-s-miles)",
   gross: "var(--color-s-gross)",

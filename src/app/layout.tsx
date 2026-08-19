@@ -50,6 +50,11 @@ export const metadata: Metadata = {
      origin the hosted app lives at. A local or self-hosted copy still works
      — the image URL just points here, which only matters to link previews. */
   metadataBase: new URL("https://app.flightledger.net"),
+  /* "./" resolves per-route against metadataBase, so every page carries a
+     rel=canonical naming the hosted deployment — exported and self-hosted
+     copies then point search engines at the original instead of competing
+     with it. metadataBase alone does NOT emit canonicals; this does. */
+  alternates: { canonical: "./" },
 };
 
 export default function RootLayout({

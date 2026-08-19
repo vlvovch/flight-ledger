@@ -15,6 +15,13 @@
  */
 
 import { ChevronRight } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "FAQ — Flight Ledger",
+  description:
+    "What Flight Ledger is, where your data lives, and how to start from a MileagePlus CSV, email receipts, or a Flighty / myFlightradar24 export.",
+};
 
 const ACCENT = {
   miles: "var(--color-s-miles)",
