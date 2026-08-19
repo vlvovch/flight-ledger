@@ -50,7 +50,8 @@ npm run seed:demo
   receipt's cabin or a hand-entered seat always outranks it — with one
   exception the rule's own logic demands: Flighty's recorded *actual* gate
   times correct a stored schedule, because what flew outranks what was
-  booked (each correction is shown, and untickable, in the preview). A
+  booked (each correction is listed in the preview, where any row can be
+  unticked). A
   flight logged
   with no airline is filed under an honest `??` rather than refused.
 
@@ -215,7 +216,7 @@ when you press sync.
 |---|---|
 | `npm run dev` | Start the dashboard |
 | `npm run build && npm start` | Production build and serve (uses `.next-build/`, so it won't disturb a running dev server) |
-| `npm run selftest` | 920 checks over distance, cost allocation, parsing and status math, plus a 500-case fuzz |
+| `npm run selftest` | 924 checks over distance, cost allocation, parsing and status math, plus a 500-case fuzz |
 | `npm run typecheck` | TypeScript check |
 | `npm run lint` | ESLint over `src/` and `scripts/` (Next's recommended rules, flat config) |
 | `npm run seed:demo` | Populate sample data (needs a running server) |

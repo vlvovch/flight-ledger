@@ -4825,6 +4825,28 @@ console.log("flight diary import:");
   const pv = buildFlightDiaryPreview(parsed.rows, [known], "2026-08-17");
   const filled = pv.rows.find((r) => r.segmentId === "S-ua100");
 
+  /* A diverted flight landed somewhere the ticket never named: the ledger
+     row carries the scheduled destination, and matching only on the actual
+     landing place would file the same flight twice. */
+  {
+    const scheduled = mkSeg("S-sched", {
+      marketing_carrier: "UA", flight_number: "100", origin: "SFO",
+      destination: "IAH", flight_date: "2024-03-01", status: "flown_reconciled",
+    });
+    const diverted = {
+      ...parsed.rows.find((r) => r.flight_number === "100")!,
+      destination: "AUS",
+      scheduled_destination: "IAH",
+    };
+    const pv2 = buildFlightDiaryPreview([diverted], [scheduled], "2026-08-17");
+    check(
+      "diary: a diverted row matches its scheduled-destination twin and corrects it",
+      pv2.rows[0]?.action === "fill" &&
+        pv2.rows[0]?.segmentId === "S-sched" &&
+        (pv2.rows[0]?.fills ?? []).includes("diverted to AUS")
+    );
+  }
+
   /* A reissue chain files one flight twice: canceled leg on the old ticket,
      flown leg on the new. The log's details must land on the leg that FLEW,
      whichever order the rows come out of the database. */
@@ -4953,6 +4975,13 @@ console.log("flighty import:");
     check(
       "flighty: an actual corrects a differing stored time — an equal one stays quiet",
       fills.includes("departs (actual)") && !fills.includes("arrives (actual)")
+    );
+    /* the change log is the provenance the schema doesn't store: a time a
+       person typed is theirs, whatever the log recorded */
+    const guarded = diaryFills(ua, seg, new Set(["departure_time"]));
+    check(
+      "flighty: a hand-written time is never corrected, only another import's",
+      !guarded.includes("departs (actual)")
     );
   }
   check(
@@ -7086,6 +7115,26 @@ console.log("flight duration:");
       ) === null
   );
   check(
+    "duration: an eastbound date-line hop lands the previous local date",
+    /* APW 17:00 (UTC+13) to PPG 17:40 (UTC-11) is a 40-minute flight whose
+       arrival wall clock belongs to the day BEFORE its departure's */
+    (() => {
+      const APW = { lat: -13.83, lon: -172.008 };
+      const PPG = { lat: -14.331, lon: -170.7105 };
+      const d = flightDuration(leg("2025-03-01", "17:00", "17:40", 76), APW, PPG);
+      return d?.estimated === false && d.minutes === 40;
+    })()
+  );
+  check(
+    "duration: a memorably delayed day is a bad day, not bad data",
+    /* three hours gate-to-gate on SFO–LAX is a ground stop, and the clocks
+       that recorded it deserve to be believed */
+    flightDuration(leg("2025-03-01", "08:00", "11:00", 337), SFO, LAX)
+      ?.estimated === false &&
+      flightDuration(leg("2025-03-01", "08:00", "11:00", 337), SFO, LAX)
+        ?.minutes === 180
+  );
+  check(
     "duration: clocks the distance can't support are bad data, not information",
     /* SFO–LAX entered as 08:00–18:00 passes the raw envelope; only the
        distance knows it's nonsense */
@@ -7346,9 +7395,11 @@ function runFleetChecks() {
      else. These are the translations, and they are guesses about vocabulary
      rather than facts about data — so they are pinned. */
   check(
-    "Boeing customer codes collapse, and a bare variant is a MAX",
+    "Boeing customer codes collapse — but ER stays, and a bare variant is a MAX",
     friendlyType("BOEING", "737-824") === "B737-800" &&
-      friendlyType("BOEING", "737-924ER") === "B737-900" &&
+      friendlyType("BOEING", "737-924ER") === "B737-900ER" &&
+      friendlyType("BOEING", "777-222ER") === "B777-200ER" &&
+      friendlyType("BOEING", "B777-200ER") === "B777-200ER" &&
       friendlyType("BOEING", "737-7H4") === "B737-700" &&
       friendlyType("BOEING", "777-224") === "B777-200" &&
       friendlyType("BOEING", "747-41R") === "B747-400" &&

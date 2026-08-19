@@ -1228,7 +1228,8 @@ The flight map, monthly ledger (§5.4), cash flow (§7.3), travel mix and fare
 classes (§5.5), under one range control shared with the dashboard as a
 component so the two pages cannot drift. The map leads the page — it orients
 before the tables answer. The two accounting views sit adjacent on purpose —
-"flown, not paid" over one header, "paid, not flown" over the other — so the
+"costs by flight date" over one header, "money by payment date" over the
+other — so the
 distinction §7.3 insists on can be read straight off the page.
 
 The **flight map** is a rendering of numbers the page already computes:
@@ -1566,7 +1567,7 @@ notices and are treated as such.
 
 ## 19. Testing strategy
 
-`npm run selftest` — **920 checks plus a 500-case fuzz**, run against pure
+`npm run selftest` — **924 checks plus a 500-case fuzz**, run against pure
 functions with no server. `npm run typecheck` for types.
 
 ## 19.1 Unit tests
