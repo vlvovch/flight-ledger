@@ -145,6 +145,105 @@ export interface RouteSummary {
   directions: { route: string; count: number }[];
 }
 
+export interface RouteTableRow {
+  key: string;
+  flights: number;
+  miles: number;
+  /** allocated cost of EVERY flown flight on the pair — an award ticket's
+   *  taxes are money spent even though they price no mile */
+  gross: number;
+  personal: number;
+  /** the pair's one-leg distance — the most common value the segments
+   *  carry, since a great-circle doesn't change between visits */
+  distance: number | null;
+  /** cash-priced flights behind the ¢/mi — see pricesInCash */
+  cpmFlights: number;
+  cpmMiles: number;
+  cpmGross: number;
+  grossCpm: number | null;
+  airlines: string[];
+  first: string;
+  last: string;
+}
+
+/**
+ * The routes table: every pair (or direction) with its traffic and its money.
+ * Unlike summarizeRoutes' dashboard rows, the money columns sum every flown
+ * flight — "what did this route cost me" includes the award taxes and the
+ * uncosted history contributes its zero honestly — while ¢/mi keeps the
+ * cash-priced basis and states it, exactly like the travel mix slices.
+ */
+export function summarizeRouteTable(
+  segments: EnrichedSegment[],
+  directed: boolean
+): RouteTableRow[] {
+  type Acc = {
+    flights: number; miles: number; gross: number; personal: number;
+    cpmFlights: number; cpmMiles: number; cpmGross: number;
+    dists: Map<number, number>;
+    airlines: Set<string>; first: string; last: string;
+  };
+  const acc = new Map<string, Acc>();
+  for (const s of segments) {
+    if (!FLOWN_STATUSES.includes(s.status)) continue;
+    const key = directed ? `${s.origin} → ${s.destination}` : routeLabel(s);
+    const r =
+      acc.get(key) ??
+      {
+        flights: 0, miles: 0, gross: 0, personal: 0,
+        cpmFlights: 0, cpmMiles: 0, cpmGross: 0,
+        dists: new Map<number, number>(),
+        airlines: new Set<string>(), first: s.flight_date, last: s.flight_date,
+      };
+    const dist = s.distance_miles ?? 0;
+    r.flights += 1;
+    r.miles += dist;
+    r.gross += s.gross_cost;
+    r.personal += s.personal_cost;
+    if (pricesInCash(s)) {
+      r.cpmFlights += 1;
+      r.cpmMiles += dist;
+      r.cpmGross += s.gross_cost;
+    }
+    if (s.distance_miles != null) {
+      const d = Math.round(s.distance_miles);
+      r.dists.set(d, (r.dists.get(d) ?? 0) + 1);
+    }
+    r.airlines.add(s.marketing_carrier);
+    if (s.flight_date < r.first) r.first = s.flight_date;
+    if (s.flight_date > r.last) r.last = s.flight_date;
+    acc.set(key, r);
+  }
+  return [...acc.entries()].map(([key, v]) => {
+    /* basis rounded before dividing — the printed figures must divide into
+       each other, same rule as finalizeSummary and summarizeRoutes */
+    const cpmMiles = Math.round(v.cpmMiles);
+    const cpmGross = round2(v.cpmGross);
+    let distance: number | null = null;
+    let dn = 0;
+    for (const [d, n] of v.dists)
+      if (n > dn || (n === dn && distance != null && d < distance)) {
+        distance = d;
+        dn = n;
+      }
+    return {
+      key,
+      flights: v.flights,
+      miles: Math.round(v.miles),
+      distance,
+      gross: round2(v.gross),
+      personal: round2(v.personal),
+      cpmFlights: v.cpmFlights,
+      cpmMiles,
+      cpmGross,
+      grossCpm: cpmMiles > 0 ? (100 * cpmGross) / cpmMiles : null,
+      airlines: [...v.airlines].sort(),
+      first: v.first,
+      last: v.last,
+    };
+  });
+}
+
 /** Endpoints sorted — the undirected key both directions share. */
 export const routeLabel = (s: { origin: string; destination: string }) =>
   [s.origin, s.destination].sort().join(" ⇄ ");
