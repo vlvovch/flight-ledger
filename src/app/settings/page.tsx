@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import { ChevronDown, ChevronRight, Download, Upload } from "lucide-react";
+import { CheckCircle2, ChevronDown, ChevronRight, Download, Upload } from "lucide-react";
 import type { Settings } from "@/lib/types";
 import { DEFAULT_PREMIER_PROGRAMS } from "@/lib/premier";
 import {
@@ -165,10 +165,13 @@ export default function SettingsPage() {
         method: "POST",
         body: JSON.stringify(payload),
       });
-      const summary = `Restored ${r.restored.segments} flights, ${r.restored.tickets} tickets, ${r.restored.adjustments} adjustments.`;
+      const summary = `Backup restored — ${r.restored.segments} flights, ${r.restored.tickets} tickets and ${r.restored.adjustments} adjustments are now the ledger.`;
       setRestoreMsg(summary);
       toast(summary);
       refresh();
+      /* The Restore button lives mid-page; a confirmation that mounts at the
+         top of a scrolled page is a confirmation nobody sees. */
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Restore failed");
     }
@@ -180,6 +183,7 @@ export default function SettingsPage() {
     try {
       await api("/api/backup?confirm=wipe", { method: "DELETE" });
       setRestoreMsg("All flight and ticket data erased.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Wipe failed");
     }
@@ -207,8 +211,9 @@ export default function SettingsPage() {
 
       <ErrorNote error={error} />
       {restoreMsg && (
-        <div className="mb-3 rounded-md border border-[color-mix(in_oklab,var(--color-good)_45%,transparent)] bg-[var(--tint-good)] px-3 py-2 text-[12.5px] text-[var(--ink-good)]">
-          {restoreMsg}
+        <div className="mb-3 flex items-center gap-2.5 rounded-md border border-[color-mix(in_oklab,var(--color-good)_45%,transparent)] bg-[var(--tint-good)] px-3 py-2.5 text-[13px] text-[var(--ink-good)]">
+          <CheckCircle2 size={17} className="shrink-0" />
+          <span>{restoreMsg}</span>
         </div>
       )}
 
