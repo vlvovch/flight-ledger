@@ -26,6 +26,7 @@
     "fixtures:scan": "python3 scripts/sanitize-fixtures.py --scan"
   },
   "dependencies": {
+    "@photostructure/tz-lookup": "^11.6.1",
     "@sqlite.org/sqlite-wasm": "^3.53.0-build1",
     "d3-geo": "^3.1.1",
     "lucide-react": "^1.28.0",
