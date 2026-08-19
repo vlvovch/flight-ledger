@@ -12,7 +12,7 @@ import {
 import { api, fmtCpm, fmtInt, fmtMoney, STATUS_LABELS } from "@/lib/format";
 import { EmptyState, Panel, StatusChip } from "@/components/ui";
 import FlightForm from "@/components/FlightForm";
-import { learnFleet } from "@/lib/fleet";
+import { learnFleet, normalizeTail } from "@/lib/fleet";
 import ImportModal from "@/components/ImportModal";
 import { C } from "@/components/charts";
 
@@ -147,7 +147,15 @@ export default function FlightsPage() {
     () => new Set(Object.keys(STATUS_LABELS).filter((s) => s !== "canceled"))
   );
   const [purpose, setPurpose] = useState<string>("all");
+  /* ?q= seeds the search box, so the Analysis fleet panel can link straight
+     to one airframe's flights. Read in an effect, not the initializer: the
+     page is prerendered with an empty box, and a first client render that
+     disagrees with it is a hydration mismatch. */
   const [q, setQ] = useState("");
+  useEffect(() => {
+    const v = new URLSearchParams(window.location.search).get("q");
+    if (v) setQ(v);
+  }, []);
 
   const [showForm, setShowForm] = useState(false);
   const [showImport, setShowImport] = useState(false);
@@ -246,10 +254,19 @@ export default function FlightsPage() {
           f.origin_city,
           f.destination_city,
           f.marketing_carrier + (f.flight_number ?? ""),
+          f.tail_number,
+          f.aircraft,
           f.notes,
         ]
           .filter(Boolean)
-          .some((v) => String(v).toUpperCase().includes(needle))
+          .some((v) => String(v).toUpperCase().includes(needle)) ||
+        /* Registrations also match spelling-blind, the way the fleet panel
+           groups them — a search for N37462 must find the flight logged as
+           N-37462, or the panel's link undercounts the very airframe it
+           names. */
+        (f.tail_number != null &&
+          normalizeTail(needle).length > 0 &&
+          normalizeTail(f.tail_number).includes(normalizeTail(needle)))
       );
     }
     return list;
@@ -348,7 +365,7 @@ export default function FlightsPage() {
           <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-mute" />
           <input
             className="field !w-[220px] !py-1.5 !pl-8 text-[12.5px]"
-            placeholder="Search route, city, flight…"
+            placeholder="Search route, city, flight, tail…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
