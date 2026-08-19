@@ -101,6 +101,13 @@ npm run seed:demo
   find out whether the half somebody else paid for costs more than the half you
   did. Follows the range control, so you can ask it per year.
 
+- **Fleet** — what the flying happened on: aircraft types with spelling
+  normalized (a hand-typed "B739", an import's "Boeing 737-900" and the FAA's
+  "737-924ER" are one row), and individual airframes by registration, each
+  linking to its flights. The panel states how many flights carry a type or
+  tail at all, so a "240 airframes" can't read more authoritative than the
+  data under it.
+
 - **Fare classes** — what each booking class costs per mile and what a dollar of
   it bought in status, per airline: a booking class is the airline's own
   namespace, and United's `V` and Lufthansa's `V` are different fares. The class
@@ -204,7 +211,7 @@ when you press sync.
 |---|---|
 | `npm run dev` | Start the dashboard |
 | `npm run build && npm start` | Production build and serve (uses `.next-build/`, so it won't disturb a running dev server) |
-| `npm run selftest` | 885 checks over distance, cost allocation, parsing and status math, plus a 500-case fuzz |
+| `npm run selftest` | 907 checks over distance, cost allocation, parsing and status math, plus a 500-case fuzz |
 | `npm run typecheck` | TypeScript check |
 | `npm run lint` | ESLint over `src/` and `scripts/` (Next's recommended rules, flat config) |
 | `npm run seed:demo` | Populate sample data (needs a running server) |

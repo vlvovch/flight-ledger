@@ -19,7 +19,13 @@ import {
   summarizeRoutes,
   type MonthlySummary,
 } from "../src/lib/metrics";
-import { flightCpmSpread, summarizeFareClasses, summarizeMix } from "../src/lib/mix";
+import {
+  flightCpmSpread,
+  summarizeFareClasses,
+  summarizeMix,
+  summarizeRouteTable,
+} from "../src/lib/mix";
+import { canonicalAircraft, summarizeFleet } from "../src/lib/fleet-stats";
 import { buildMapData, dominantCategory } from "../src/lib/map";
 import { splitMbox } from "../src/lib/mbox";
 import { rollingCpm } from "../src/lib/rolling";
@@ -4816,6 +4822,37 @@ console.log("flight diary import:");
   });
   const pv = buildFlightDiaryPreview(parsed.rows, [known], "2026-08-17");
   const filled = pv.rows.find((r) => r.segmentId === "S-ua100");
+
+  /* A reissue chain files one flight twice: canceled leg on the old ticket,
+     flown leg on the new. The log's details must land on the leg that FLEW,
+     whichever order the rows come out of the database. */
+  {
+    const flown = known;
+    const twin = mkSeg("S-ua100-canceled", {
+      marketing_carrier: "UA", flight_number: "100", origin: "SFO",
+      destination: "IAH", flight_date: "2024-03-01", status: "canceled",
+      seat: null, cabin: null, tail_number: null, aircraft: null,
+      departure_time: null, arrival_time: null,
+    });
+    const a = buildFlightDiaryPreview(parsed.rows, [twin, flown], "2026-08-17");
+    const b = buildFlightDiaryPreview(parsed.rows, [flown, twin], "2026-08-17");
+    check(
+      "diary: a canceled reissue twin never receives the fills — the flown leg does, in either row order",
+      a.rows.find((r) => r.action === "fill")?.segmentId === "S-ua100" &&
+        b.rows.find((r) => r.action === "fill")?.segmentId === "S-ua100"
+    );
+    /* the date+route fallback applies the same preference: with the flight
+       number gone, a flown leg beside its canceled twin is one flight, not
+       an ambiguity */
+    const numberless = parsed.rows.map((r) =>
+      r.flight_number === "100" ? { ...r, carrier: null, flight_number: null } : r
+    );
+    const c = buildFlightDiaryPreview(numberless, [twin, flown], "2026-08-17");
+    check(
+      "diary: the date+route fallback also prefers the flown leg",
+      c.rows.find((r) => r.action === "fill")?.segmentId === "S-ua100"
+    );
+  }
   check(
     "diary: a known flight becomes fills for exactly its blanks — the receipt's cabin stays",
     filled?.action === "fill" &&
@@ -6934,6 +6971,190 @@ console.log("audit follow-ups:");
 }
 
 /* ---------------------- tail numbers & the fleet ------------------------ */
+console.log("route table:");
+{
+  const rseg = (
+    id: string,
+    o: Partial<EnrichedSegment> = {}
+  ) =>
+    ({
+      id,
+      origin: "IAH",
+      destination: "SFO",
+      flight_date: "2025-03-01",
+      status: "flown_reconciled",
+      marketing_carrier: "UA",
+      operating_carrier: "UA",
+      distance_miles: 1000,
+      lifetime_miles: null,
+      award_miles: 1000,
+      ticket_id: "t1",
+      allocation_method: "distance",
+      gross_cost: 100,
+      personal_cost: 50,
+      ticket_is_award: false,
+      ...o,
+    }) as unknown as EnrichedSegment;
+
+  const segs = [
+    rseg("a"),
+    rseg("b", { origin: "SFO", destination: "IAH", flight_date: "2024-01-01" }),
+    /* award ticket: $5.60 of taxes is money spent, but prices no mile */
+    rseg("c", { ticket_is_award: true, gross_cost: 5.6, personal_cost: 5.6 }),
+    /* uncosted history: flies miles, contributes zero dollars honestly */
+    rseg("d", { allocation_method: "none", gross_cost: 0, personal_cost: 0 }),
+    rseg("e", { status: "ticketed" }), // booked, not flown
+  ];
+  const two = summarizeRouteTable(segs, false);
+  const one = summarizeRouteTable(segs, true);
+  check(
+    "route table: two-way folds directions, one-way splits them",
+    two.length === 1 && two[0].flights === 4 &&
+      one.length === 2 &&
+      one.find((r) => r.key === "IAH → SFO")?.flights === 3
+  );
+  check(
+    "route table: money counts every flown flight, the ¢/mi basis only the cash-priced",
+    two[0].distance === 1000 &&
+      two[0].gross === 205.6 &&
+      two[0].personal === 105.6 &&
+      two[0].cpmFlights === 2 &&
+      two[0].cpmMiles === 2000 &&
+      two[0].grossCpm === 10
+  );
+  check(
+    "route table: the window's edges come from the flights, booked ones outside",
+    two[0].first === "2024-01-01" && two[0].last === "2025-03-01"
+  );
+}
+
+console.log("fleet stats:");
+{
+  const ca = canonicalAircraft;
+  check(
+    "aircraft labels fold across their spellings",
+    ca("B737-900") === "Boeing 737-900" &&
+      ca("Boeing 737-900") === "Boeing 737-900" &&
+      ca("B737 MAX 9") === "Boeing 737 MAX 9" &&
+      ca("Boeing 737 MAX 9") === "Boeing 737 MAX 9" &&
+      ca("A320") === "Airbus A320" &&
+      ca("Airbus A320-200") === "Airbus A320"
+  );
+  check(
+    "Boeing customer codes name the buyer, not the airplane",
+    ca("737-924ER") === "Boeing 737-900ER" && ca("737-824") === "Boeing 737-800"
+  );
+  check(
+    "distinctions the sources genuinely make survive",
+    ca("Boeing 737-900") !== ca("Boeing 737-900ER") &&
+      ca("Boeing 777-200 ER") === "Boeing 777-200ER" &&
+      ca("Airbus A321neo") !== ca("Airbus A321-200") &&
+      ca("Airbus A220-300") === "Airbus A220-300"
+  );
+  check(
+    "regional families meet under one name",
+    ca("Embraer ERJ-175") === "Embraer 175" &&
+      ca("Embraer 175") === "Embraer 175" &&
+      ca("ERJ-145") === "Embraer ERJ-145" &&
+      ca("Bombardier CRJ1000") === "Bombardier CRJ-1000" &&
+      ca("DHC-8-400 Dash 8Q") === ca("Bombardier Dash 8-400")
+  );
+  check(
+    "short variants and lone-variant families",
+    ca("Boeing 787-10") === "Boeing 787-10" &&
+      ca("Boeing 747-8") === "Boeing 747-8" &&
+      ca("Airbus A380-800") === "Airbus A380"
+  );
+  check(
+    "a label no rule recognizes passes through untouched",
+    ca("Yakovlev Yak-40") === "Yakovlev Yak-40" && ca("  An-148 ") === "An-148"
+  );
+  check(
+    "a four-digit variant survives whole",
+    ca("Airbus A350-1000") === "Airbus A350-1000" &&
+      ca("A35K") === "Airbus A350-1000"
+  );
+  check(
+    "bare equipment codes name the airplane exactly",
+    ca("B739") === "Boeing 737-900" &&
+      ca("73G") === "Boeing 737-700" &&
+      ca("77W") === "Boeing 777-300ER" &&
+      ca("32Q") === "Airbus A321neo" &&
+      ca("E75") === "Embraer 175" &&
+      ca("CR9") === "Bombardier CRJ-900" &&
+      ca("DH4") === "De Havilland Dash 8-400" &&
+      ca("BCS3") === "Airbus A220-300"
+  );
+  check(
+    "codes whose hand-typed reading disagrees with ICAO stay prose",
+    ca("B737") === "Boeing 737" && ca("A320") === "Airbus A320"
+  );
+
+  const fseg = (
+    id: string,
+    o: Partial<EnrichedSegment> = {}
+  ) =>
+    ({
+      id,
+      origin: "IAH",
+      destination: "SFO",
+      flight_date: "2025-03-01",
+      status: "flown_reconciled",
+      marketing_carrier: "UA",
+      operating_carrier: "UA",
+      distance_miles: 1000,
+      aircraft: "B737-900",
+      tail_number: "N37462",
+      ...o,
+    }) as unknown as EnrichedSegment;
+
+  const st = summarizeFleet([
+    fseg("a"),
+    fseg("b", { aircraft: "Boeing 737-900", tail_number: "N66848", flight_date: "2019-05-01" }),
+    fseg("c", { aircraft: "Airbus A320", tail_number: null, marketing_carrier: "LH", origin: "FRA", destination: "MUC", distance_miles: 200 }),
+    fseg("d", { aircraft: null, tail_number: "n-37462" }),
+    fseg("e", { status: "ticketed" }), // booked, not flown — outside every count
+    fseg("f", { aircraft: "737-924ER", tail_number: "N66848", flight_date: "2026-02-01" }),
+  ]);
+  check(
+    "coverage counts flown flights only, and separately per field",
+    st.flown === 5 && st.withType === 4 && st.withTail === 4
+  );
+  check(
+    "spelling variants of one type are one row",
+    st.types.length === 3 &&
+      st.types[0].name === "Boeing 737-900" &&
+      st.types[0].flights === 2
+  );
+  check(
+    "share is a share of flights WITH a type, and says so",
+    approx(st.types[0].share, 2 / 4, 1e-9) &&
+      approx(st.types.reduce((a, t) => a + t.share, 0), 1, 1e-9)
+  );
+  check(
+    "a type's tail count is distinct registrations, spelling-blind",
+    st.types[0].tails === 2 && st.types[0].first === "2019-05-01"
+  );
+  check(
+    "registrations group across the ways people write them",
+    st.tails.length === 2 &&
+      st.tails.find((t) => t.tail === "N37462")?.flights === 2
+  );
+  check(
+    "a reused registration lists each type, most-flown first",
+    (st.tails.find((t) => t.tail === "N66848")?.types.length ?? 0) === 2
+  );
+  check(
+    "a tail flight with no type still counts for the tail",
+    (st.tails.find((t) => t.tail === "N37462")?.types ?? []).join() ===
+      "Boeing 737-900"
+  );
+  check(
+    "empty window keeps its zeroes honest",
+    summarizeFleet([]).types.length === 0 && summarizeFleet([]).flown === 0
+  );
+}
+
 console.log("tail numbers:");
 /* The registry is loaded on demand in the app; these checks need it in
    memory. The selftest is compiled as CJS, so no top-level await — the
