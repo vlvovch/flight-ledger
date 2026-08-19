@@ -258,16 +258,16 @@ export default function FlightMap({
        viewport. The report keeps the full width — paper has no scroll. */
     <div className={report ? undefined : "mx-auto max-w-[940px]"}>
       {!report && (
-        <div className="mb-2 flex items-center gap-2">
+        <div className="mb-2 flex flex-wrap items-center gap-2">
           <span className="t-display text-[11px] tracking-[0.1em] text-mute">
             COLOR BY
           </span>
-          <div className="flex overflow-hidden rounded-md border border-line">
+          <div className="flex flex-wrap overflow-hidden rounded-md border border-line">
             {(Object.keys(MODE_LABEL) as ColorMode[]).map((m) => (
               <button
                 key={m}
                 onClick={() => setMode(m)}
-                className={`t-display px-3 py-1 text-[11.5px] tracking-[0.1em] transition-colors ${
+                className={`t-display px-3 py-1 text-[11.5px] tracking-[0.1em] transition-colors pointer-coarse:py-2.5 ${
                   mode === m
                     ? "bg-[var(--tint-accent-strong)] text-ink"
                     : "text-mute hover:text-ink2"
@@ -287,7 +287,7 @@ export default function FlightMap({
             type="button"
             title="Zoom in (or double-click the map)"
             aria-label="Zoom in"
-            className="p-1.5 text-mute transition-colors hover:text-ink disabled:opacity-40"
+            className="p-1.5 text-mute transition-colors hover:text-ink disabled:opacity-40 pointer-coarse:p-3.5"
             disabled={z >= MAX_Z}
             onClick={() => animateTo(computeZoom(viewRef.current, 2))}
           >
@@ -297,7 +297,7 @@ export default function FlightMap({
             type="button"
             title="Zoom out"
             aria-label="Zoom out"
-            className="border-t border-line p-1.5 text-mute transition-colors hover:text-ink disabled:opacity-40"
+            className="border-t border-line p-1.5 text-mute transition-colors hover:text-ink disabled:opacity-40 pointer-coarse:p-3.5"
             disabled={view == null}
             onClick={() => animateTo(computeZoom(viewRef.current, 0.5))}
           >
@@ -308,7 +308,7 @@ export default function FlightMap({
               type="button"
               title="Whole world"
               aria-label="Reset zoom"
-              className="border-t border-line p-1.5 text-mute transition-colors hover:text-ink"
+              className="border-t border-line p-1.5 text-mute transition-colors hover:text-ink pointer-coarse:p-3.5"
               onClick={() => animateTo(null)}
             >
               <Maximize2 size={14} />
@@ -324,6 +324,7 @@ export default function FlightMap({
             : `0 0 ${W} ${height}`
         }
         className={`w-full ${view ? "cursor-grab" : ""}`}
+        style={{ touchAction: view ? "none" : "auto" }}
         role="img"
         aria-label="Map of flown routes"
         onMouseLeave={() => setHovered(null)}
@@ -411,6 +412,8 @@ export default function FlightMap({
                     stroke="transparent"
                     strokeWidth={Math.max(11, widthOf(r.count) + 6) / z}
                     onMouseEnter={() => setHovered(r.key)}
+                    /* touch has no hover: a tap selects, a second tap clears */
+                    onClick={() => setHovered(hovered === r.key ? null : r.key)}
                   />
                 )}
               </g>
@@ -503,7 +506,7 @@ export default function FlightMap({
             <span className="text-mute">
               {fmtInt(data.routes.length)} routes · {fmtInt(data.airports.length)} airports
               {data.countries > 1 ? ` · ${data.countries} countries` : ""} ·{" "}
-              {fmtInt(data.flights)} flights · {fmtInt(data.totalMiles)} mi — hover a
+              {fmtInt(data.flights)} flights · {fmtInt(data.totalMiles)} mi — hover or tap a
               route for its numbers
             </span>
           )}

@@ -536,3 +536,27 @@ input[type="date"].field::-webkit-calendar-picker-indicator {
     white-space: nowrap;
   }
 }
+
+/* Touch screens: a sideways-scrolling table needs to SAY so. The right edge
+   fades the content out — the oldest "there is more this way" sign print
+   ever invented — and the first column holds still so a row keeps its label
+   while the numbers slide. Both only under a coarse pointer: a mouse user
+   has a visible scrollbar and hover, and the sticky cells' opaque background
+   would cost desktop nothing but risk for no gain. */
+@media (pointer: coarse) and (max-width: 1023px) {
+  table.ledger {
+    mask-image: linear-gradient(
+      90deg,
+      #000 0,
+      #000 calc(100% - 28px),
+      rgba(0, 0, 0, 0.25) 100%
+    );
+  }
+  table.ledger th:first-child,
+  table.ledger td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--color-panel);
+  }
+}

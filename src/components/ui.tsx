@@ -359,7 +359,7 @@ export function MilesBasisToggle({
         <button
           key={mode}
           onClick={() => onChange(mode)}
-          className={`t-display px-2.5 py-1 text-[10.5px] tracking-[0.1em] transition-colors ${
+          className={`t-display px-2.5 py-1 text-[10.5px] tracking-[0.1em] transition-colors pointer-coarse:py-2.5 ${
             value === mode
               ? "bg-[var(--tint-accent-strong)] text-ink"
               : "text-mute hover:text-ink2"

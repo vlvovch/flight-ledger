@@ -294,7 +294,7 @@ export default function Sidebar() {
         <button
           aria-label="Open navigation"
           onClick={() => setOpen(true)}
-          className="rounded-md p-1.5 text-ink2 transition-colors hover:text-ink"
+          className="rounded-md p-1.5 text-ink2 transition-colors hover:text-ink pointer-coarse:p-3"
         >
           <Menu size={20} />
         </button>
@@ -309,7 +309,7 @@ export default function Sidebar() {
           href="/faq"
           title="FAQ"
           aria-label="FAQ"
-          className="ml-auto rounded-md p-1.5 text-ink2 transition-colors hover:text-ink"
+          className="ml-auto rounded-md p-1.5 text-ink2 transition-colors hover:text-ink pointer-coarse:p-3"
         >
           <CircleHelp size={18} />
         </Link>
@@ -372,7 +372,7 @@ export default function Sidebar() {
             <Link
               key={href}
               href={href}
-              className={`group mb-1 flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${
+              className={`group mb-1 flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors pointer-coarse:py-3 ${
                 active
                   ? "bg-[var(--tint-accent)] text-ink shadow-[inset_2px_0_0_var(--color-s-miles)]"
                   : "text-ink2 hover:bg-[var(--tint-accent-weak)] hover:text-ink"

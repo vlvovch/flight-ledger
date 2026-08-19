@@ -31,7 +31,7 @@ const ACCENT = {
 function QA({ q, open, children }: { q: string; open?: boolean; children: React.ReactNode }) {
   return (
     <details open={open} className="group border-t border-line px-4 first-of-type:border-t-0">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-3.5 text-[15px] font-medium text-ink [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-3.5 pointer-coarse:py-4 text-[15px] font-medium text-ink [&::-webkit-details-marker]:hidden">
         {q}
         <ChevronRight
           size={16}
