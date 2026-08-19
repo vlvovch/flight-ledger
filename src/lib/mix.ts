@@ -161,6 +161,12 @@ export interface RouteTableRow {
   cpmMiles: number;
   cpmGross: number;
   grossCpm: number | null;
+  /** summed gate-to-gate time, when the caller supplied a duration source */
+  timeMin: number | null;
+  /** legs actually behind timeMin — fewer than flights means partial */
+  timeFlights: number;
+  /** true when any leg's time is the distance model, not the clocks */
+  timeEstimated: boolean;
   airlines: string[];
   first: string;
   last: string;
@@ -175,12 +181,16 @@ export interface RouteTableRow {
  */
 export function summarizeRouteTable(
   segments: EnrichedSegment[],
-  directed: boolean
+  directed: boolean,
+  durationOf?: (
+    s: EnrichedSegment
+  ) => { minutes: number; estimated: boolean } | null
 ): RouteTableRow[] {
   type Acc = {
     flights: number; miles: number; gross: number; personal: number;
     cpmFlights: number; cpmMiles: number; cpmGross: number;
     dists: Map<number, number>;
+    timeMin: number; timeKnown: number; timeEstimated: boolean;
     airlines: Set<string>; first: string; last: string;
   };
   const acc = new Map<string, Acc>();
@@ -193,6 +203,7 @@ export function summarizeRouteTable(
         flights: 0, miles: 0, gross: 0, personal: 0,
         cpmFlights: 0, cpmMiles: 0, cpmGross: 0,
         dists: new Map<number, number>(),
+        timeMin: 0, timeKnown: 0, timeEstimated: false,
         airlines: new Set<string>(), first: s.flight_date, last: s.flight_date,
       };
     const dist = s.distance_miles ?? 0;
@@ -208,6 +219,12 @@ export function summarizeRouteTable(
     if (s.distance_miles != null) {
       const d = Math.round(s.distance_miles);
       r.dists.set(d, (r.dists.get(d) ?? 0) + 1);
+    }
+    const t = durationOf?.(s) ?? null;
+    if (t) {
+      r.timeMin += t.minutes;
+      r.timeKnown += 1;
+      if (t.estimated) r.timeEstimated = true;
     }
     r.airlines.add(s.marketing_carrier);
     if (s.flight_date < r.first) r.first = s.flight_date;
@@ -237,6 +254,9 @@ export function summarizeRouteTable(
       cpmMiles,
       cpmGross,
       grossCpm: cpmMiles > 0 ? (100 * cpmGross) / cpmMiles : null,
+      timeMin: v.timeKnown > 0 ? v.timeMin : null,
+      timeFlights: v.timeKnown,
+      timeEstimated: v.timeEstimated,
       airlines: [...v.airlines].sort(),
       first: v.first,
       last: v.last,

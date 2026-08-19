@@ -14,10 +14,11 @@ import { summarizeFleet, type FleetStats } from "@/lib/fleet-stats";
 import type { EnrichedSegment } from "@/lib/types";
 import { api, fmtCpm, fmtInt, fmtMoney, fmtMonth } from "@/lib/format";
 import { rollupCashYears, rollupYears } from "@/lib/metrics";
-import { EmptyState, MilesBasisToggle, Panel } from "@/components/ui";
+import { EmptyState, MilesBasisToggle, Panel, SortTh } from "@/components/ui";
 import AnnualReport from "@/components/AnnualReport";
 import FlightMap from "@/components/FlightMap";
 import { buildMapData, type MapAirportInfo } from "@/lib/map";
+import { flightDuration, fmtDuration } from "@/lib/duration";
 import {
   RangeControl,
   filterByRange,
@@ -417,6 +418,7 @@ export default function AnalysisPage() {
           {activeTab === "routes" && (
             <RoutesPanel
               flights={windowFlights}
+              coords={coords}
               windowLabel={windowLabel}
               currency={currency}
             />
@@ -916,6 +918,7 @@ type RouteSortCol =
   | "flights"
   | "distance"
   | "miles"
+  | "time"
   | "gross"
   | "personal"
   | "cpm";
@@ -929,10 +932,12 @@ type RouteSortCol =
  */
 function RoutesPanel({
   flights,
+  coords,
   windowLabel,
   currency,
 }: {
   flights: EnrichedSegment[];
+  coords: Record<string, MapAirportInfo> | null;
   windowLabel: string;
   currency: string;
 }) {
@@ -941,9 +946,16 @@ function RoutesPanel({
     col: "flights",
     desc: true,
   });
+  /* Block time from the clocks where both ends have them, pinned to each
+     airport's zone (DST tracked per date); the distance model, marked ≈,
+     where they don't. Zones come from the same coordinates the map uses. */
+  const durationOf = useMemo(() => {
+    return (s: EnrichedSegment) =>
+      flightDuration(s, coords?.[s.origin] ?? null, coords?.[s.destination] ?? null);
+  }, [coords]);
   const rows = useMemo(
-    () => summarizeRouteTable(flights, directed),
-    [flights, directed]
+    () => summarizeRouteTable(flights, directed, durationOf),
+    [flights, directed, durationOf]
   );
   const sorted = useMemo(() => {
     const val = (r: RouteTableRow): number | string =>
@@ -951,6 +963,7 @@ function RoutesPanel({
       : sort.col === "flights" ? r.flights
       : sort.col === "distance" ? (r.distance ?? -1)
       : sort.col === "miles" ? r.miles
+      : sort.col === "time" ? (r.timeMin ?? -1)
       : sort.col === "gross" ? r.gross
       : sort.col === "personal" ? r.personal
       : (r.grossCpm ?? -1); // routes with no priceable flight sort past the priced ones
@@ -975,15 +988,25 @@ function RoutesPanel({
           personal: a.personal + r.personal,
           cpmMiles: a.cpmMiles + r.cpmMiles,
           cpmGross: a.cpmGross + r.cpmGross,
+          timeMin: a.timeMin + (r.timeMin ?? 0),
+          timeFlights: a.timeFlights + r.timeFlights,
+          timeEstimated: a.timeEstimated || r.timeEstimated,
         }),
-        { flights: 0, miles: 0, gross: 0, personal: 0, cpmMiles: 0, cpmGross: 0 }
+        {
+          flights: 0, miles: 0, gross: 0, personal: 0,
+          cpmMiles: 0, cpmGross: 0,
+          timeMin: 0, timeFlights: 0, timeEstimated: false,
+        }
       ),
     [rows]
   );
   if (rows.length === 0) return null;
 
-  const clickSort = (col: RouteSortCol) =>
-    setSort((s) => ({ col, desc: s.col === col ? !s.desc : col !== "key" }));
+  const clickSort = (col: string) =>
+    setSort((s) => ({
+      col: col as RouteSortCol,
+      desc: s.col === col ? !s.desc : col !== "key",
+    }));
   const TH = ({
     col,
     children,
@@ -993,30 +1016,9 @@ function RoutesPanel({
     children: React.ReactNode;
     num?: boolean;
   }) => (
-    <th
-      className={num ? "!text-right" : undefined}
-      aria-sort={
-        sort.col === col ? (sort.desc ? "descending" : "ascending") : undefined
-      }
-    >
-      <button
-        className="group t-label !text-[10px] transition-colors hover:text-ink pointer-coarse:py-1.5"
-        onClick={() => clickSort(col)}
-      >
-        {children}
-        {/* the arrow slot is always rendered so hovering never shifts the
-            column; on inactive columns it fades in as the "sortable" hint */}
-        <span
-          className={
-            sort.col === col
-              ? undefined
-              : "opacity-0 transition-opacity group-hover:opacity-60"
-          }
-        >
-          {sort.col === col ? (sort.desc ? " ↓" : " ↑") : " ↕"}
-        </span>
-      </button>
-    </th>
+    <SortTh col={col} sort={sort} onSort={clickSort} num={num}>
+      {children}
+    </SortTh>
   );
 
   return (
@@ -1065,6 +1067,7 @@ function RoutesPanel({
               <TH col="flights">Flights</TH>
               <TH col="distance">Distance</TH>
               <TH col="miles">Miles</TH>
+              <TH col="time">Time</TH>
               <TH col="gross">Gross</TH>
               <TH col="personal">Personal</TH>
               <TH col="cpm">¢/mi</TH>
@@ -1075,6 +1078,10 @@ function RoutesPanel({
               <tr
                 key={r.key}
                 title={`${r.airlines.join(", ")} · ${r.first.slice(0, 4)}–${r.last.slice(0, 4)}${
+                  r.timeMin != null
+                    ? ` · gate-to-gate time from ${r.timeFlights} of ${r.flights} flights (scheduled blocks, not airborne)`
+                    : ""
+                }${
                   r.grossCpm != null
                     ? ` · ¢/mi over ${r.cpmFlights} of ${r.flights} flights (${fmtInt(r.cpmMiles)} mi) — the cash-priced ones; award taxes count as money spent but price no mile`
                     : " · no flight on this route was paid in cash, so there is no ¢/mi to report"
@@ -1086,6 +1093,13 @@ function RoutesPanel({
                   {r.distance != null ? fmtInt(r.distance) : "—"}
                 </td>
                 <td className="num">{fmtInt(r.miles)}</td>
+                {/* ≈ marks estimates AND partial sums — a total quietly
+                    missing a leg would read as complete */}
+                <td className="num">
+                  {r.timeMin != null
+                    ? `${r.timeEstimated || r.timeFlights < r.flights ? "≈" : ""}${fmtDuration(r.timeMin)}`
+                    : "—"}
+                </td>
                 <td className="num">{r.gross ? fmtMoney(r.gross, currency) : "—"}</td>
                 <td className="num">
                   {r.personal ? fmtMoney(r.personal, currency) : r.gross ? fmtMoney(0, currency) : "—"}
@@ -1100,6 +1114,14 @@ function RoutesPanel({
               <td className="num">{totals.flights}</td>
               <td className="num">—</td>
               <td className="num">{fmtInt(Math.round(totals.miles))}</td>
+              <td
+                className="num"
+                title={`Gate-to-gate time across the window — scheduled blocks, not airborne time. From the clocks where both ends have them (each pinned to its airport's zone, daylight saving per date), the distance model where they don't; ${fmtInt(totals.timeFlights)} of ${fmtInt(totals.flights)} flights carry a figure.`}
+              >
+                {totals.timeMin > 0
+                  ? `${totals.timeEstimated || totals.timeFlights < totals.flights ? "≈" : ""}${fmtDuration(totals.timeMin)}`
+                  : "—"}
+              </td>
               <td className="num">{fmtMoney(totals.gross, currency)}</td>
               <td className="num">{fmtMoney(totals.personal, currency)}</td>
               <td
