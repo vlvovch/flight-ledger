@@ -110,13 +110,18 @@ export function clockMinutes(
   const dz = zoneOf(destination.lat, destination.lon);
   if (!oz || !dz) return null;
   const dep = wallToUtc(seg.flight_date, seg.departure_time, oz);
-  let arr = wallToUtc(seg.flight_date, seg.arrival_time, dz);
-  /* The ledger stores no arrival DATE: a landing past midnight computes
-     before its own departure and needs a day added — and a westbound
-     trans-Pacific leg (LAX–SYD) lands two local calendar dates later, so
-     the rollover repeats. Twice is the ceiling any real flight can need. */
-  for (let i = 0; arr <= dep && i < 2; i++) arr += 24 * 3600 * 1000;
-  return Math.round((arr - dep) / 60000);
+  const arr0 = wallToUtc(seg.flight_date, seg.arrival_time, dz);
+  /* The ledger stores no arrival DATE, so the arrival wall clock is tried on
+     each plausible calendar day: -1 for an eastbound date-line hop that lands
+     the previous local date (APW–PPG), 0 for the ordinary case, +1 for a
+     red-eye, +2 for a westbound trans-Pacific leg landing two local dates
+     later. The plausible window (20 min – 22 h) is narrower than a day, so
+     at most ONE candidate can fit — no tie to break, nothing to guess. */
+  for (const k of [-1, 0, 1, 2]) {
+    const minutes = Math.round((arr0 + k * 24 * 3600 * 1000 - dep) / 60000);
+    if (minutes >= MIN_PLAUSIBLE && minutes <= MAX_PLAUSIBLE) return minutes;
+  }
+  return null;
 }
 
 export function flightDuration(
@@ -136,13 +141,15 @@ export function flightDuration(
 
   const minutes = clockMinutes(seg, origin, destination);
   if (minutes == null) return fallback;
-  if (minutes < MIN_PLAUSIBLE || minutes > MAX_PLAUSIBLE) return fallback;
-  /* clocks that disagree wildly with the distance are malformed entries,
-     not information: block time varies with winds and schedule padding,
-     but not by a factor of eight */
+  /* The malformed-clock guard is ASYMMETRIC, because the two directions
+     fail differently: no flight beats physics, so far under the model means
+     a wrong clock — but a real flight sits on taxiways and in holds, so a
+     recorded three-hour SFO–LAX is a bad day, not bad data. Only a reading
+     past double the model plus two hours is rejected as nonsense; the
+     reconcile queue flags the questionable middle for a human. */
   if (seg.distance_miles != null && seg.distance_miles > 0) {
     const model = estimatedMinutes(seg.distance_miles);
-    if (Math.abs(minutes - model) > Math.max(40, model / 2)) return fallback;
+    if (minutes < model * 0.55 || minutes > model * 2 + 120) return fallback;
   }
   return { minutes, estimated: false };
 }
