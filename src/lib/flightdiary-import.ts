@@ -359,16 +359,21 @@ export function buildFlightDiaryPreview(
   const byIdentity = new Map<string, SegmentRow>();
   const byDateRoute = new Map<string, SegmentRow[]>();
   for (const s of segments) {
-    byIdentity.set(
-      segmentIdentityKey({
-        date: s.flight_date,
-        carrier: s.marketing_carrier,
-        number: s.flight_number,
-        origin: s.origin,
-        destination: s.destination,
-      }),
-      s
-    );
+    const key = segmentIdentityKey({
+      date: s.flight_date,
+      carrier: s.marketing_carrier,
+      number: s.flight_number,
+      origin: s.origin,
+      destination: s.destination,
+    });
+    /* A reissue chain files the same flight twice: a canceled leg on the
+       old ticket and the flown leg on the new one — one identity, two rows.
+       A log's details belong to the leg that FLEW; deciding by insertion
+       order put real tails on canceled paperwork while the flown row
+       stayed blank, and every re-import then read "already filled". */
+    const cur = byIdentity.get(key);
+    if (cur == null || (cur.status === "canceled" && s.status !== "canceled"))
+      byIdentity.set(key, s);
     const k = `${s.flight_date}|${s.origin}|${s.destination}`;
     byDateRoute.set(k, [...(byDateRoute.get(k) ?? []), s]);
   }
@@ -400,7 +405,11 @@ export function buildFlightDiaryPreview(
     if (!seg) {
       const candidates =
         byDateRoute.get(`${row.date}|${row.origin}|${row.destination}`) ?? [];
-      if (candidates.length === 1) seg = candidates[0];
+      /* same preference on the fallback: a flown leg and its canceled
+         reissue twin are one flight, not an ambiguity */
+      const live = candidates.filter((c) => c.status !== "canceled");
+      const pool = live.length > 0 ? live : candidates;
+      if (pool.length === 1) seg = pool[0];
     }
 
     if (seg) {
