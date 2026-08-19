@@ -247,13 +247,19 @@ export default function FlightForm({
     };
   }, [form.origin, form.destination]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const flightDatePast = form.flight_date <= todayStr();
-  // default status follows the date for new entries
+  /* Labels tense on what HAPPENED, not the calendar: a flight later today
+     has not departed, and a same-day flight marked flown has. */
+  const flewAlready =
+    form.flight_date < todayStr() || form.status.startsWith("flown");
+  /* Default status for new entries: yesterday and earlier default to flown
+     (backfilling is the common case), but TODAY defaults to ticketed — the
+     form cannot know it's evening, and the arrival sweep will advance a
+     ticketed flight on its own once it has actually landed. */
   useEffect(() => {
     if (segment) return;
-    set("status", flightDatePast ? "flown_unreconciled" : "ticketed");
+    set("status", form.flight_date < todayStr() ? "flown_unreconciled" : "ticketed");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flightDatePast, segment]);
+  }, [form.flight_date, segment]);
 
   const save = async (addAnother: boolean) => {
     setBusy(true);
@@ -394,7 +400,7 @@ export default function FlightForm({
             onChange={(e) => set("flight_date", e.target.value)}
           />
         </Field>
-        <Field label={flightDatePast ? "Departed" : "Departs"}>
+        <Field label={flewAlready ? "Departed" : "Departs"}>
           <input
             type="time"
             className="field t-num"
@@ -402,7 +408,7 @@ export default function FlightForm({
             onChange={(e) => set("departure_time", e.target.value)}
           />
         </Field>
-        <Field label={flightDatePast ? "Arrived" : "Arrives"}>
+        <Field label={flewAlready ? "Arrived" : "Arrives"}>
           <input
             type="time"
             className="field t-num"

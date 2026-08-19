@@ -335,7 +335,9 @@ export default function FlightsPage() {
       desc: s.col === col ? !s.desc : !["flight", "route", "cabin"].includes(col),
     }));
   const sorted = useMemo(() => {
-    const val = (f: EnrichedSegment): string | number => {
+    /* null means "the cell shows a dash" — and a dash sorts LAST whichever
+       way the arrow points, because absence is not a small value */
+    const val = (f: EnrichedSegment): string | number | null => {
       switch (sort.col) {
         case "date":
           return depInstants.get(f.id) ?? 0;
@@ -344,23 +346,23 @@ export default function FlightsPage() {
         case "route":
           return f.origin + f.destination;
         case "cabin":
-          return f.cabin ?? "";
+          return f.cabin;
         case "dist":
-          return f.distance_miles ?? -1;
+          return f.distance_miles;
         case "time":
-          return durations.get(f.id)?.minutes ?? -1;
+          return durations.get(f.id)?.minutes ?? null;
         case "award":
           return expectsMileagePlusCredit(f)
-            ? (f.award_miles ?? f.projected_award_miles ?? -1)
-            : -1;
+            ? (f.award_miles ?? f.projected_award_miles ?? null)
+            : null;
         case "pqp":
           return expectsMileagePlusCredit(f)
-            ? (f.pqp ?? f.projected_pqp ?? -1)
-            : -1;
+            ? (f.pqp ?? f.projected_pqp ?? null)
+            : null;
         case "pqf":
           return expectsMileagePlusCredit(f)
-            ? (f.pqf ?? f.projected_pqf ?? -1)
-            : -1;
+            ? (f.pqf ?? f.projected_pqf ?? null)
+            : null;
         case "gross":
           return f.gross_cost || f.estimated_gross || 0;
         case "personal":
@@ -372,13 +374,18 @@ export default function FlightsPage() {
             return (100 * fullCost) / f.distance_miles;
           if (f.estimated_gross != null && f.distance_miles && f.distance_miles > 0)
             return (100 * f.estimated_gross) / f.distance_miles;
-          return -1;
+          return null;
         }
       }
     };
     return [...filtered].sort((a, b) => {
       const x = val(a);
       const y = val(b);
+      if (x == null || y == null) {
+        if (x == null && y == null)
+          return a.flight_date.localeCompare(b.flight_date);
+        return x == null ? 1 : -1;
+      }
       const cmp =
         typeof x === "string"
           ? x.localeCompare(y as string)
@@ -683,10 +690,11 @@ export default function FlightsPage() {
                           this column's number again, or a label — on United
                           metal the estimate IS the distance until the 500-mile
                           minimum bites, and posted values only ever differed
-                          as an award's zero. So the distance stays, a leading
-                          * marks the flights that earn no lifetime miles (the
-                          marker position ≈ and * already own), and the
-                          tooltip carries what the second column used to say. */}
+                          as an award's zero. So the distance stays, and the
+                          miles that count toward United lifetime status wear
+                          the s-miles blue — the same voice the reimbursement
+                          payer speaks in. Plain ink earns nothing there; the
+                          tooltips say why. */}
                       <td className="num text-ink2">
                         {f.distance_miles == null ? (
                           "?"
@@ -700,25 +708,31 @@ export default function FlightsPage() {
                                   : "United metal, but this ticket credits another programme."
                             }`}
                           >
-                            <span className="text-mute">*</span>
                             {fmtInt(f.distance_miles)}
                           </span>
                         ) : f.lifetime_miles != null &&
                           f.lifetime_miles !== Math.round(f.distance_miles) ? (
                           <span
-                            title={`United posted ${fmtInt(f.lifetime_miles)} lifetime miles for this flight`}
+                            className="text-s-miles"
+                            title={`Counts toward United lifetime status — United posted ${fmtInt(f.lifetime_miles)} lifetime miles for this flight`}
                           >
                             {fmtInt(f.distance_miles)}
                           </span>
                         ) : f.lifetime_miles == null &&
                           estimatedLifetimeMiles(f) > f.distance_miles ? (
                           <span
-                            title={`Credits at United's ${fmtInt(MINIMUM_CREDITED_MILES)}-mile segment minimum — ≈${fmtInt(estimatedLifetimeMiles(f))} lifetime miles expected`}
+                            className="text-s-miles"
+                            title={`Counts toward United lifetime status — credits at United's ${fmtInt(MINIMUM_CREDITED_MILES)}-mile segment minimum, ≈${fmtInt(estimatedLifetimeMiles(f))} lifetime miles expected`}
                           >
                             {fmtInt(f.distance_miles)}
                           </span>
                         ) : (
-                          fmtInt(f.distance_miles)
+                          <span
+                            className="text-s-miles"
+                            title="Counts toward United lifetime status"
+                          >
+                            {fmtInt(f.distance_miles)}
+                          </span>
                         )}
                       </td>
                       <td className={`num ${earn}`}>
@@ -878,7 +892,7 @@ export default function FlightsPage() {
                   })()}
                   <td
                     className="num"
-                    title={`≈${fmtInt(totals.lifetimeEst)} of these miles count toward United lifetime status (posted so far: ${fmtInt(totals.lifetime)}); * marks flights earning none`}
+                    title={`≈${fmtInt(totals.lifetimeEst)} of these miles count toward United lifetime status (posted so far: ${fmtInt(totals.lifetime)}); the blue distances are the ones that count`}
                   >
                     {fmtInt(totals.dist)}
                   </td>

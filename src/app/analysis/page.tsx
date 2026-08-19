@@ -258,16 +258,18 @@ export default function AnalysisPage() {
             label={yearly ? "Yearly ledger" : "Monthly ledger"}
             accent={C.miles}
             className="mt-3 reveal"
-            /* The chip mirrors the money view's "paid, not flown" — the two
-               accounting views sit adjacent here precisely so the contrast
-               can be read off their headers. */
+            /* The chip mirrors the money view's "by payment date" — the two
+               accounting views sit adjacent precisely so the contrast can be
+               read off their headers. Earlier copy said "flown, not paid",
+               which beside a toggle whose first option is FLOWN read as a
+               flight filter; the basis is now named, not riddled. */
             right={
               <div className="flex flex-wrap items-center gap-2">
                 <span
                   className="t-label !text-[10px] text-mute"
                   title="Costs sit in the month you flew, whatever day the ticket was bought or repaid. The money view below is the other way round."
                 >
-                  {windowLabel} · flown, not paid
+                  {windowLabel} · costs by flight date
                 </span>
                 <MilesBasisToggle value={ledgerMiles} onChange={setLedgerMiles} />
               </div>
@@ -493,7 +495,7 @@ function CashFlowPanel({
           className="t-label !text-[10px] text-mute"
           title="Everything else on this dashboard counts money in the month you flew. This panel counts it in the month it moved — tickets on the day you bought them, refunds and reimbursements on the day the money came back. The two views are kept apart on purpose, so neither can quietly borrow the other's dates."
         >
-          {windowLabel} · paid, not flown
+          {windowLabel} · money by payment date
         </span>
       }
     >
@@ -958,18 +960,23 @@ function RoutesPanel({
     [flights, directed, durationOf]
   );
   const sorted = useMemo(() => {
-    const val = (r: RouteTableRow): number | string =>
+    /* null is a dash, and a dash sorts LAST whichever way the arrow points */
+    const val = (r: RouteTableRow): number | string | null =>
       sort.col === "key" ? r.key
       : sort.col === "flights" ? r.flights
-      : sort.col === "distance" ? (r.distance ?? -1)
+      : sort.col === "distance" ? r.distance
       : sort.col === "miles" ? r.miles
-      : sort.col === "time" ? (r.timeMin ?? -1)
+      : sort.col === "time" ? r.timeMin
       : sort.col === "gross" ? r.gross
       : sort.col === "personal" ? r.personal
-      : (r.grossCpm ?? -1); // routes with no priceable flight sort past the priced ones
+      : r.grossCpm;
     return [...rows].sort((a, b) => {
       const x = val(a);
       const y = val(b);
+      if (x == null || y == null) {
+        if (x == null && y == null) return a.key.localeCompare(b.key);
+        return x == null ? 1 : -1;
+      }
       const cmp =
         typeof x === "string"
           ? x.localeCompare(y as string)
@@ -1200,7 +1207,10 @@ function TravelMixPanel({
                 <div key={b.key} className="mb-2.5 last:mb-0">
                   <div className="flex items-baseline gap-2">
                     <span className="text-[12.5px] text-ink">{b.label}</span>
-                    <span className="t-num ml-auto text-[12.5px] text-ink">
+                    <span
+                      className="t-num ml-auto text-[12.5px] text-ink"
+                      title={`${Math.round(b.share * 100)}% of the miles flown in this window — shares weigh distance, not flight count, or a LIH–HNL hop would count like a transpacific`}
+                    >
                       {Math.round(b.share * 100)}%
                     </span>
                   </div>
