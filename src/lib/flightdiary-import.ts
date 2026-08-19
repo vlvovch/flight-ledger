@@ -34,6 +34,10 @@ export interface DiaryRow {
   destination: string;
   departure_time: string | null;
   arrival_time: string | null;
+  /** true when the time is Flighty's recorded ACTUAL, not a schedule —
+   *  an actual may correct a stored scheduled time; a schedule never may */
+  departure_actual?: boolean;
+  arrival_actual?: boolean;
   cabin: string | null;
   seat: string | null;
   aircraft: string | null;
@@ -249,6 +253,8 @@ export function parseFlightyCsv(text: string): {
   const cDiverted = col("diverted to");
   const cDep = col("gate departure (scheduled)");
   const cArr = col("gate arrival (scheduled)");
+  const cDepActual = col("gate departure (actual)");
+  const cArrActual = col("gate arrival (actual)");
   const cAircraft = col("aircraft type name");
   const cTail = col("tail number");
   const cSeat = col("seat number") >= 0 ? col("seat number") : col("seat");
@@ -292,8 +298,13 @@ export function parseFlightyCsv(text: string): {
       flight_number: number,
       origin: from,
       destination: /^[A-Z]{3}$/.test(diverted) ? diverted : to,
-      departure_time: isoTime(cells[cDep] ?? ""),
-      arrival_time: isoTime(cells[cArr] ?? ""),
+      /* the recorded actual outranks the schedule: it is what flew */
+      departure_time:
+        isoTime(cells[cDepActual] ?? "") ?? isoTime(cells[cDep] ?? ""),
+      arrival_time:
+        isoTime(cells[cArrActual] ?? "") ?? isoTime(cells[cArr] ?? ""),
+      departure_actual: isoTime(cells[cDepActual] ?? "") != null,
+      arrival_actual: isoTime(cells[cArrActual] ?? "") != null,
       cabin: FLIGHTY_CABINS[(cells[cCabin] ?? "").trim().toUpperCase()] ?? null,
       seat: (cells[cSeat] ?? "").trim().toUpperCase() || null,
       aircraft: (cells[cAircraft] ?? "").trim() || null,
@@ -345,9 +356,30 @@ const segField = (s: SegmentRow, f: (typeof FILLABLE)[number][0]) =>
  *  A receipt's cabin, a hand-entered seat, a posted anything — all outrank
  *  a diary, which the user may have back-filled years later from memory. */
 export function diaryFills(row: DiaryRow, seg: SegmentRow): string[] {
-  return FILLABLE.filter(
+  const fills: string[] = FILLABLE.filter(
     ([f]) => row[f === "note" ? "note" : f] != null && segField(seg, f) == null
   ).map(([, label]) => label);
+  /* Blanks only — with one exception the rule's own logic demands. The rule
+     exists because a receipt or hand entry usually knows better than a log;
+     but Flighty's ACTUAL gate times are the recorded truth of what flew,
+     which outranks any schedule a receipt carried. A stored time that
+     disagrees with an actual is offered as a correction, visibly, in the
+     same opt-out list as the fills. */
+  if (
+    row.departure_actual &&
+    row.departure_time != null &&
+    seg.departure_time != null &&
+    seg.departure_time !== row.departure_time
+  )
+    fills.push("departs (actual)");
+  if (
+    row.arrival_actual &&
+    row.arrival_time != null &&
+    seg.arrival_time != null &&
+    seg.arrival_time !== row.arrival_time
+  )
+    fills.push("arrives (actual)");
+  return fills;
 }
 
 export function buildFlightDiaryPreview(

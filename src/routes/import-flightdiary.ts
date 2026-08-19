@@ -123,9 +123,21 @@ export const POST = handled(async (req: Request) => {
           const fills = diaryFills(row, seg);
           if (fills.length === 0) continue;
           const patch: Record<string, string | null> = {};
-          if (seg.departure_time == null && row.departure_time != null)
+          // an ACTUAL time corrects a differing stored one; a schedule only
+          // ever fills a blank — mirrors diaryFills exactly
+          if (
+            row.departure_time != null &&
+            (seg.departure_time == null ||
+              (row.departure_actual === true &&
+                seg.departure_time !== row.departure_time))
+          )
             patch.departure_time = row.departure_time;
-          if (seg.arrival_time == null && row.arrival_time != null)
+          if (
+            row.arrival_time != null &&
+            (seg.arrival_time == null ||
+              (row.arrival_actual === true &&
+                seg.arrival_time !== row.arrival_time))
+          )
             patch.arrival_time = row.arrival_time;
           if (seg.cabin == null && row.cabin != null) patch.cabin = row.cabin;
           if (seg.seat == null && row.seat != null) patch.seat = row.seat;

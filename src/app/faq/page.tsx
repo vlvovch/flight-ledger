@@ -228,7 +228,10 @@ export default function FaqPage() {
             </p>
             <p>
               On flights the ledger already has, a log only fills blanks — a
-              receipt&rsquo;s cabin or a hand-entered seat always outranks it. You
+              receipt&rsquo;s cabin or a hand-entered seat always outranks it. The
+              one exception: Flighty&rsquo;s recorded actual departure and arrival
+              times correct a stored schedule, because what actually flew
+              outranks what was booked. You
               see the full list of adds and fills before anything is written,
               and can untick any row: some exports carry flights that were
               only tracked, never flown.

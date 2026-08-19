@@ -700,7 +700,10 @@ a flight log with no money in it, and it is read for the two things a log
 knows that receipts rarely state: history from before the ledger began, and
 the physical details of flights already recorded — seat, cabin, aircraft
 type, tail registration, purpose, scheduled times. On a known flight the
-diary fills blanks only; a value from a receipt or the user's own hand
+diary fills blanks only — with one exception: a time Flighty marks as the
+recorded ACTUAL corrects a stored scheduled time, since what flew outranks
+what was booked, and the correction is listed (untickable) in the preview
+beside the fills. Otherwise a value from a receipt or the user's own hand
 always stands.
 
 Format notes, learned from real exports: the file opens with a blank line
