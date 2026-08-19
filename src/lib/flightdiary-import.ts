@@ -424,5 +424,16 @@ export function buildFlightDiaryPreview(
       status: row.date < today ? "flown_unreconciled" : "ticketed",
     });
   }
+  /* Review order is chronological, not file order: Flighty exports newest
+     first, myFlightradar24 whatever order flights were logged, and a
+     115-row list in either is unscannable. Same-day legs order by departure
+     time where the log has one; keys are file-row indices, so the tick
+     state never depends on this order. */
+  out.sort(
+    (a, b) =>
+      a.row.date.localeCompare(b.row.date) ||
+      (a.row.departure_time ?? "99:99").localeCompare(b.row.departure_time ?? "99:99") ||
+      a.key - b.key
+  );
   return { rows: out, skipped };
 }
