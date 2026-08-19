@@ -236,10 +236,20 @@ export function manuallyEditedSegmentFields(): Map<string, Set<string>> {
     .all() as unknown as { row_id: string; diff: string }[];
   for (const r of rows) {
     try {
-      const d = JSON.parse(r.diff) as { fields?: Record<string, unknown> };
-      if (!d.fields) continue;
+      const d = JSON.parse(r.diff) as {
+        fields?: Record<string, unknown>;
+        row?: Record<string, unknown>;
+      };
+      /* updates log the changed fields; a manual CREATE logs the whole row —
+         the values a person typed at birth are as much theirs as an edit */
+      const written = d.fields
+        ? Object.keys(d.fields)
+        : d.row
+          ? Object.keys(d.row).filter((k) => d.row![k] != null)
+          : [];
+      if (written.length === 0) continue;
       const set = out.get(r.row_id) ?? new Set<string>();
-      for (const f of Object.keys(d.fields)) set.add(f);
+      for (const f of written) set.add(f);
       out.set(r.row_id, set);
     } catch {
       /* an unparseable diff protects nothing */
