@@ -25,6 +25,7 @@ import {
   summarizeMix,
   summarizeRouteTable,
 } from "../src/lib/mix";
+import { estimatedMinutes, flightDuration, fmtDuration } from "../src/lib/duration";
 import { canonicalAircraft, summarizeFleet } from "../src/lib/fleet-stats";
 import { buildMapData, dominantCategory } from "../src/lib/map";
 import { splitMbox } from "../src/lib/mbox";
@@ -94,6 +95,7 @@ import {
 } from "../src/lib/browser/ownership";
 import {
   buildFlightDiaryPreview,
+  diaryFills,
   looksLikeFlightDiary,
   looksLikeFlighty,
   parseFlightDiaryCsv,
@@ -4920,13 +4922,39 @@ console.log("flighty import:");
   check(
     "flighty: ICAO becomes IATA, ISO times become HH:MM, codes decode",
     ua.carrier === "UA" &&
-      ua.departure_time === "08:15" &&
-      ua.arrival_time === "13:45" &&
       ua.cabin === "Economy" &&
       ua.purpose === "business" &&
       ua.tail_number === "N37462",
     JSON.stringify(ua)
   );
+  check(
+    "flighty: the recorded actual outranks the schedule, and says it's an actual",
+    ua.departure_time === "08:22" &&
+      ua.arrival_time === "13:50" &&
+      ua.departure_actual === true &&
+      ua.arrival_actual === true
+  );
+  {
+    const schedOnly = p.rows.find(
+      (r) => r.departure_time != null && r.departure_actual !== true
+    );
+    check(
+      "flighty: a schedule-only row carries no actual flag",
+      schedOnly != null && schedOnly.arrival_actual !== true,
+      JSON.stringify(schedOnly)
+    );
+    const seg = mkSeg("S-actual", {
+      marketing_carrier: "UA", flight_number: "1234", origin: "SFO",
+      destination: "IAH", flight_date: "2024-05-02", status: "flown_reconciled",
+      departure_time: "08:15", arrival_time: "13:50",
+      cabin: null, seat: null, aircraft: null, tail_number: null,
+    });
+    const fills = diaryFills(ua, seg);
+    check(
+      "flighty: an actual corrects a differing stored time — an equal one stays quiet",
+      fills.includes("departs (actual)") && !fills.includes("arrives (actual)")
+    );
+  }
   check(
     "flighty: an unmapped ICAO passes through raw — the truth in the other alphabet",
     p.rows.find((r) => r.flight_number === "77")?.carrier === "XXQ"
@@ -5102,6 +5130,41 @@ console.log("reconciliation:");
   /* The still-marked-upcoming nag fires on the same scheduled-arrival
      boundary the import uses — not a day later. Same leg, three instants:
      airborne, date-passed-but-still-short-of-arrival-plus-margin, landed. */
+
+  /* clocks the distance can't explain: a connection's arrival pasted onto
+     the wrong leg reads fine as a bare time and absurd as a block time */
+  {
+    const clk = (dep: string, arr: string) =>
+      enrich(
+        mkSeg("clk", {
+          origin: "SFO", destination: "LAX", flight_date: "2025-03-01",
+          flight_number: "999", departure_time: dep, arrival_time: arr,
+          distance_miles: 337, status: "flown_reconciled",
+        })
+      );
+    const bad = buildReconcileReport(
+      { ...base, segments: [clk("08:00", "18:00")], activities: [] },
+      settings
+    );
+    const fine = buildReconcileReport(
+      { ...base, segments: [clk("08:00", "09:25")], activities: [] },
+      settings
+    );
+    check(
+      "implausible clocks are flagged for review, plausible ones stay quiet",
+      (bad.counts.implausible_clocks ?? 0) === 1 &&
+        (fine.counts.implausible_clocks ?? 0) === 0,
+      JSON.stringify({ bad: bad.counts, badEx: bad.exceptions.map((e) => e.kind) })
+    );
+    const noTimes = buildReconcileReport(
+      { ...base, segments: [enrich(mkSeg("clk2", { origin: "SFO", destination: "LAX", flight_date: "2025-03-01", departure_time: null, arrival_time: null, status: "flown_reconciled" }))], activities: [] },
+      settings
+    );
+    check(
+      "a flight without clocks cannot have implausible ones",
+      (noTimes.counts.implausible_clocks ?? 0) === 0
+    );
+  }
 
   const dupSegs = [
     enrich(mkSeg("d1", { origin: "IAH", destination: "SFO", flight_date: "2026-07-10", flight_number: "1976" })),
@@ -6971,6 +7034,85 @@ console.log("audit follow-ups:");
 }
 
 /* ---------------------- tail numbers & the fleet ------------------------ */
+console.log("flight duration:");
+{
+  const SFO = { lat: 37.6188, lon: -122.3754 };
+  const IAH = { lat: 29.9844, lon: -95.3414 };
+  const LAX = { lat: 33.9425, lon: -118.4081 };
+  const PHX = { lat: 33.4343, lon: -112.0116 };
+  const NRT = { lat: 35.7647, lon: 140.386 };
+  const leg = (date: string, dep: string, arr: string, dist = 1000) => ({
+    flight_date: date,
+    departure_time: dep,
+    arrival_time: arr,
+    distance_miles: dist,
+  });
+  check(
+    "duration: local clocks pinned to each airport's zone",
+    flightDuration(leg("2025-03-01", "08:15", "13:45", 1636), SFO, IAH)
+      ?.minutes === 210 &&
+      flightDuration(leg("2025-03-01", "08:15", "13:45", 1636), SFO, IAH)
+        ?.estimated === false
+  );
+  check(
+    "duration: daylight saving tracked per date — Phoenix doesn't observe it",
+    /* same wall clocks, different truth: in January LAX is UTC-8 and PHX
+       UTC-7 (60 min apart); in July LAX is UTC-7 and PHX still UTC-7 */
+    flightDuration(leg("2025-01-15", "10:00", "12:00", 370), LAX, PHX)
+      ?.minutes === 60 &&
+      flightDuration(leg("2025-07-15", "10:00", "12:00", 370), LAX, PHX)
+        ?.minutes === 120
+  );
+  check(
+    "duration: a landing past its own departure clock rolls one day forward",
+    /* SFO 11:00 to NRT 14:10 — the arrival wall clock computes 14 hours
+       BEFORE departure until the dateline rollover lands it at 10h10m */
+    flightDuration(leg("2025-03-01", "11:00", "14:10", 5150), SFO, NRT)
+      ?.minutes === 610
+  );
+  const est = flightDuration(
+    { flight_date: "2025-03-01", departure_time: null, arrival_time: "13:45", distance_miles: 1636 },
+    SFO,
+    IAH
+  );
+  check(
+    "duration: missing clocks fall back to the distance model, and say so",
+    est?.estimated === true &&
+      est?.minutes === estimatedMinutes(1636) &&
+      flightDuration(
+        { flight_date: "2025-03-01", departure_time: null, arrival_time: null, distance_miles: null },
+        SFO,
+        IAH
+      ) === null
+  );
+  check(
+    "duration: clocks the distance can't support are bad data, not information",
+    /* SFO–LAX entered as 08:00–18:00 passes the raw envelope; only the
+       distance knows it's nonsense */
+    flightDuration(leg("2025-03-01", "08:00", "18:00", 337), SFO, LAX)
+      ?.estimated === true &&
+      flightDuration(leg("2025-03-01", "08:00", "18:00", 337), SFO, LAX)
+        ?.minutes === estimatedMinutes(337)
+  );
+  check(
+    "duration: a westbound trans-Pacific landing two local dates later still derives",
+    /* LAX 22:30 → SYD 07:20 is ~13h50m; one day of rollover isn't enough */
+    (() => {
+      const SYD = { lat: -33.9399, lon: 151.1753 };
+      const d = flightDuration(leg("2025-03-01", "22:30", "07:20", 7488), LAX, SYD);
+      return d?.estimated === false && d.minutes === 830;
+    })()
+  );
+  check(
+    "duration: formatting keeps minutes until they stop meaning anything",
+    fmtDuration(610) === "10h 10m" &&
+      fmtDuration(60) === "1h" &&
+      fmtDuration(45) === "45m" &&
+      fmtDuration(78 * 60 + 30) === "78h 30m" &&
+      fmtDuration(1290 * 60) === "1,290h"
+  );
+}
+
 console.log("route table:");
 {
   const rseg = (
@@ -7025,6 +7167,17 @@ console.log("route table:");
   check(
     "route table: the window's edges come from the flights, booked ones outside",
     two[0].first === "2024-01-01" && two[0].last === "2025-03-01"
+  );
+  /* a leg with neither clocks nor distance contributes no time — the row
+     must SAY its sum is partial rather than pass it off as complete */
+  const timed = summarizeRouteTable(segs, false, (s) =>
+    s.id === "d" ? null : { minutes: 100, estimated: false }
+  );
+  check(
+    "route table: a time sum missing a leg discloses its basis",
+    timed[0].timeMin === 300 &&
+      timed[0].timeFlights === 3 &&
+      timed[0].flights === 4
   );
 }
 

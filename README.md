@@ -47,7 +47,11 @@ npm run seed:demo
   routes, times, cabins, seats, aircraft types and tail registrations
   (Flighty's ICAO airline codes are translated to the IATA codes the ledger
   files by). On flights the ledger already has, a log fills blanks only — a
-  receipt's cabin or a hand-entered seat always outranks it. A flight logged
+  receipt's cabin or a hand-entered seat always outranks it — with one
+  exception the rule's own logic demands: Flighty's recorded *actual* gate
+  times correct a stored schedule, because what flew outranks what was
+  booked (each correction is shown, and untickable, in the preview). A
+  flight logged
   with no airline is filed under an honest `??` rather than refused.
 
 - **Premier status by year** — PQP and PQF against the thresholds United
@@ -211,7 +215,7 @@ when you press sync.
 |---|---|
 | `npm run dev` | Start the dashboard |
 | `npm run build && npm start` | Production build and serve (uses `.next-build/`, so it won't disturb a running dev server) |
-| `npm run selftest` | 907 checks over distance, cost allocation, parsing and status math, plus a 500-case fuzz |
+| `npm run selftest` | 920 checks over distance, cost allocation, parsing and status math, plus a 500-case fuzz |
 | `npm run typecheck` | TypeScript check |
 | `npm run lint` | ESLint over `src/` and `scripts/` (Next's recommended rules, flat config) |
 | `npm run seed:demo` | Populate sample data (needs a running server) |
