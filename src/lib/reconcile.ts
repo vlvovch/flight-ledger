@@ -15,6 +15,8 @@ import {
   Settings,
   TicketRow,
 } from "./types";
+import { clockMinutes, estimatedMinutes } from "./duration";
+import { getAirport } from "./airports";
 
 export type ExceptionKind =
   | "missing_posting"
@@ -26,6 +28,7 @@ export type ExceptionKind =
   | "unconverted_currency"
   | "no_cost"
   | "unknown_airport"
+  | "implausible_clocks"
   | "allocation_warning"
   | "payment_mismatch"
   | "fare_parts_mismatch"
@@ -58,6 +61,12 @@ const localToday = () => {
 };
 
 const fmt = (n: number) => `$${n.toFixed(2)}`;
+
+const fmtBlock = (min: number) => {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return h > 0 ? (m > 0 ? `${h}h ${m}m` : `${h}h`) : `${m}m`;
+};
 
 const daysAgo = (date: string, today: string) =>
   Math.floor(
@@ -269,6 +278,35 @@ export function buildReconcileReport(
         segmentId: s.id,
       });
     }
+  }
+
+  /* Clocks the distance can't explain. Departure and arrival are local wall
+     clocks; a wrong one (a connection's arrival pasted onto the wrong leg, a
+     PM/AM slip) stays invisible as a bare time and only turns absurd as a
+     block time. Threshold calibrated on a real ledger of 305 clock-derived
+     flights: p95 deviation from the distance model is 21%, so anything past
+     max(45 min, 30%) is either a wrong clock or a memorably delayed day —
+     both worth a look, neither worth an auto-fix. */
+  for (const s of flown) {
+    if (!s.departure_time || !s.arrival_time) continue;
+    if (s.distance_miles == null || s.distance_miles <= 0) continue;
+    const minutes = clockMinutes(
+      s,
+      getAirport(s.origin) ?? null,
+      getAirport(s.destination) ?? null
+    );
+    if (minutes == null) continue;
+    const model = estimatedMinutes(s.distance_miles);
+    if (Math.abs(minutes - model) <= Math.max(45, 0.3 * model)) continue;
+    exceptions.push({
+      kind: "implausible_clocks",
+      severity: "info",
+      title: `${s.origin}→${s.destination} on ${s.flight_date}: ${fmtBlock(minutes)} on a ~${fmtBlock(model)} route`,
+      detail:
+        "The recorded clocks imply this block time. Check the departure and arrival — a connection's time on the wrong leg looks exactly like this — or keep them if it really was that delayed a day.",
+      date: s.flight_date,
+      segmentId: s.id,
+    });
   }
 
   /* data problems */

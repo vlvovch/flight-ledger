@@ -96,6 +96,12 @@ const GROUP_META: Record<ExceptionKind, Omit<ExceptionGroup, "kind">> = {
     blurb: "No coordinates, so no distance or CPM.",
     accent: "var(--color-serious)",
   },
+  implausible_clocks: {
+    label: "Clocks that disagree with the distance",
+    blurb:
+      "The recorded times imply a block time far from what the route supports — a wrong clock, or a very delayed day.",
+    accent: "var(--color-mute)",
+  },
   no_cost: {
     label: "Flights without cost",
     blurb: "Outside the CPM basis until a cost is attached.",
@@ -124,6 +130,7 @@ const ORDER = [
   "allocation_warning",
   "unlinked_exchange",
   "unknown_airport",
+  "implausible_clocks",
   "no_cost",
   "ready_to_reconcile",
 ] as const satisfies readonly ExceptionKind[];
