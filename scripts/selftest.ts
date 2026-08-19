@@ -25,7 +25,7 @@ import {
   summarizeMix,
   summarizeRouteTable,
 } from "../src/lib/mix";
-import { estimatedMinutes, flightDuration, fmtDuration } from "../src/lib/duration";
+import { clockMinutes, estimatedMinutes, flightDuration, fmtDuration } from "../src/lib/duration";
 import { canonicalAircraft, summarizeFleet } from "../src/lib/fleet-stats";
 import { buildMapData, dominantCategory } from "../src/lib/map";
 import { splitMbox } from "../src/lib/mbox";
@@ -7135,6 +7135,29 @@ console.log("flight duration:");
         ?.minutes === 180
   );
   check(
+    "duration: a day candidate crossing spring-forward stays on the wall clock",
+    /* SFO 23:00 Mar 8 to JFK 07:30 next morning — the night the US springs
+       forward. Flat 24-hour UTC blocks land the arrival an hour late (330);
+       advancing the local DATE and re-resolving the zone gives the 270 the
+       wall clocks actually describe. */
+    (() => {
+      const JFK = { lat: 40.6413, lon: -73.7781 };
+      const d = flightDuration(leg("2025-03-08", "23:00", "07:30", 2586), SFO, JFK);
+      return d?.estimated === false && d.minutes === 270;
+    })()
+  );
+  check(
+    "duration: an impossible clock stays visible to diagnostics",
+    /* same-zone 08:00 -> 07:00 is a 23-hour reading no flight can be —
+       display falls back to the estimate, but the raw reading survives so
+       the reconcile queue can flag the clocks instead of shrugging */
+    (() => {
+      const raw = clockMinutes(leg("2025-03-01", "08:00", "07:00", 337), SFO, LAX);
+      const shown = flightDuration(leg("2025-03-01", "08:00", "07:00", 337), SFO, LAX);
+      return raw === 23 * 60 && shown?.estimated === true;
+    })()
+  );
+  check(
     "duration: clocks the distance can't support are bad data, not information",
     /* SFO–LAX entered as 08:00–18:00 passes the raw envelope; only the
        distance knows it's nonsense */
@@ -8313,6 +8336,51 @@ async function routeHandlerChecks() {
         replay.body.created === 0 && replay.body.duplicates === 1,
         JSON.stringify(replay.body)
       );
+
+      /* Provenance, end to end: a flight a person CREATES carries their
+         times from birth — the change log records the whole row, and a
+         Flighty actual must bounce off it exactly as off a manual edit. */
+      const mine = await j(
+        await apiFlightCreate(
+          req("POST", "/api/flights", {
+            origin: "SFO", destination: "IAH", flight_date: "2025-06-01",
+            status: "flown_reconciled", marketing_carrier: "UA",
+            flight_number: "555", departure_time: "09:00",
+            arrival_time: "14:30",
+          })
+        )
+      );
+      const mineId = mine.body.segment?.id as string;
+      const actualCsv =
+        "Date,Airline,Flight,From,To,Dep Terminal,Dep Gate,Arr Terminal,Arr Gate,Canceled,Diverted To,Gate Departure (Scheduled),Gate Departure (Actual),Take off (Scheduled),Take off (Actual),Landing (Scheduled),Landing (Actual),Gate Arrival (Scheduled),Gate Arrival (Actual),Aircraft Type Name,Tail Number,PNR,Seat,Seat Type,Cabin Class,Flight Reason,Notes,F1,F2,F3,F4,F5,F6\n" +
+        "2025-06-01,UAL,555,SFO,IAH,,,,,false,,2025-06-01T09:00,2025-06-01T09:25,,,,,2025-06-01T14:30,2025-06-01T14:55,,,,,,,,,,,,,\n";
+      const ppv = await j(
+        await apiFlightdiary(
+          req("POST", "/api/import/flightdiary", { mode: "preview", csv: actualCsv })
+        )
+      );
+      const mineRow = (ppv.body.rows as { action: string; segmentId?: string; fills?: string[] }[])
+        .find((r) => r.segmentId === mineId);
+      check(
+        "diary route: a hand-created flight's times are provenance-protected from actuals",
+        mineRow != null && !(mineRow.fills ?? []).some((f) => f.includes("actual")),
+        JSON.stringify(mineRow)
+      );
+      await apiFlightdiary(
+        req("POST", "/api/import/flightdiary", {
+          mode: "apply",
+          rows: (ppv.body.rows as { action: string }[]).filter((r) => r.action !== "unchanged"),
+        })
+      );
+      const mineAfter = await j(await apiFlightGet(req("GET", "/x"), ctx(mineId)));
+      check(
+        "diary route: …and the apply leaves them untouched even if rows are replayed raw",
+        mineAfter.body.departure_time === "09:00" &&
+          mineAfter.body.arrival_time === "14:30",
+        JSON.stringify({ dep: mineAfter.body.departure_time, arr: mineAfter.body.arrival_time })
+      );
+      /* the later backup tests count this ledger's rows exactly */
+      await apiFlightDelete(req("DELETE", "/x"), ctx(mineId));
       /* the crash the first real import found: a hand-crafted apply row with
          no carrier must fail as ONE row in words — never as a SQLite NOT
          NULL that rolls back everyone else's flights with it */
