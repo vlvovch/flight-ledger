@@ -394,7 +394,7 @@ export default function FlightForm({
             onChange={(e) => set("flight_date", e.target.value)}
           />
         </Field>
-        <Field label="Departs">
+        <Field label={flightDatePast ? "Departed" : "Departs"}>
           <input
             type="time"
             className="field t-num"
@@ -402,7 +402,7 @@ export default function FlightForm({
             onChange={(e) => set("departure_time", e.target.value)}
           />
         </Field>
-        <Field label="Arrives">
+        <Field label={flightDatePast ? "Arrived" : "Arrives"}>
           <input
             type="time"
             className="field t-num"
