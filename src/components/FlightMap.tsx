@@ -121,9 +121,6 @@ export default function FlightMap({
   const minW = report ? 1.1 : 0.8;
   const widthOf = (count: number) => minW + Math.sqrt(count) * 0.85;
   const radiusOf = (visits: number) => 1.4 + Math.sqrt(visits) * 0.8;
-  const labeled = new Set(
-    data.airports.slice(0, report ? 8 : 6).map((a) => a.code)
-  );
 
   const hoveredRoute = hovered
     ? (data.routes.find((r) => r.key === hovered) ?? null)
@@ -134,7 +131,7 @@ export default function FlightMap({
      label sizes divide by the zoom factor so they hold their on-screen size
      while the geometry spreads, which is the entire point: at 4x the SFO and
      Frankfurt tangles separate into individually hoverable arcs. */
-  const MAX_Z = 8;
+  const MAX_Z = 32;
   type View = { x: number; y: number; w: number };
   const [view, setView] = useState<View | null>(null);
   const z = view ? W / view.w : 1;
@@ -189,6 +186,44 @@ export default function FlightMap({
       y: c.y + ((clientY - r.top) / r.height) * c.w * (height / W),
     };
   };
+
+  /* Which airports get their code written out. At the whole world, six —
+     more is clutter over a map this small. Zoomed in, the label budget
+     grows with the zoom and only airports inside the view compete for it,
+     so a close look at Europe names the cluster the world view had to
+     leave anonymous. Busiest first, and a greedy spacing check so two
+     labels never sit on each other. */
+  const labeled = useMemo(() => {
+    if (report) return new Set(data.airports.slice(0, 8).map((a) => a.code));
+    const budget = Math.min(
+      data.airports.length,
+      Math.round(6 * Math.max(1, z))
+    );
+    const vw = view ?? { x: 0, y: 0, w: W };
+    const vh = vw.w * (height / W);
+    const kept: { x: number; y: number; code: string }[] = [];
+    for (const a of data.airports) {
+      if (kept.length >= budget) break;
+      const pt = projection([a.lon, a.lat]);
+      if (!pt) continue;
+      const x = pt[0] + PAD;
+      const y = pt[1] + PAD;
+      if (
+        view &&
+        (x < vw.x - 10 / z || x > vw.x + vw.w + 10 / z ||
+          y < vw.y - 10 / z || y > vw.y + vh + 10 / z)
+      )
+        continue;
+      if (
+        kept.some(
+          (k) => Math.abs(k.x - x) < 60 / z && Math.abs(k.y - y) < 12 / z
+        )
+      )
+        continue;
+      kept.push({ x, y, code: a.code });
+    }
+    return new Set(kept.map((k) => k.code));
+  }, [data.airports, view, z, projection, height, report]);
 
   const stopAnim = () => {
     if (anim.current != null) {
