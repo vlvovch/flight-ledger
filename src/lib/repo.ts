@@ -1086,6 +1086,20 @@ export interface BackupPayload {
   adjustments: AdjustmentRow[];
   payments?: PaymentRow[]; // added later; absent in older backups
   activities?: ActivityRecord[];
+  /** The manual-actor change records, carried whole. They are the only
+   *  provenance the app has — which imported values a PERSON has since
+   *  overridden — and without them a restore onto a fresh device produces
+   *  a ledger whose hand-set times a later import may overwrite. Absent in
+   *  older backups; a restore without them simply protects nothing, as
+   *  before. */
+  manual_changes?: {
+    id?: string; // absent in the first backups that carried provenance
+    at: string;
+    op: string;
+    tbl: string;
+    row_id: string;
+    diff: string;
+  }[];
 }
 
 export function exportBackup(): BackupPayload {
@@ -1098,6 +1112,11 @@ export function exportBackup(): BackupPayload {
     adjustments: listAdjustments(),
     payments: listPayments(),
     activities: listActivities(),
+    manual_changes: getDb()
+      .prepare(
+        "SELECT id, at, op, tbl, row_id, diff FROM changes WHERE actor = 'manual' ORDER BY rowid"
+      )
+      .all() as unknown as BackupPayload["manual_changes"],
   };
 }
 
@@ -1178,6 +1197,23 @@ export function importBackup(payload: BackupPayload): void {
       payload.activities ?? [],
       ACTIVITY_FIELDS
     );
+    /* The change log describes the CURRENT ledger's lineage, and a restore
+       replaces that ledger wholesale — the wipe's own rule applies: there is
+       no data left for the prior entries to explain. So the log is replaced,
+       not unioned: the backup's manual records come in whole (they are the
+       provenance that must shield hand-set values on this machine too), and
+       everything local goes — a manual edit made HERE and then discarded by
+       restoring an older copy must not keep protecting a value it no longer
+       describes, and an export taken right after a restore must equal the
+       restored file rather than drifting Drive into a pointless push. */
+    db.exec("DELETE FROM changes");
+    const putChange = db.prepare(
+      "INSERT INTO changes (id, at, actor, op, tbl, row_id, diff) VALUES (?, ?, 'manual', ?, ?, ?, ?)"
+    );
+    for (const c of payload.manual_changes ?? []) {
+      if (typeof c?.at !== "string" || typeof c?.diff !== "string") continue;
+      putChange.run(c.id ?? newId(), c.at, c.op, c.tbl, c.row_id, c.diff);
+    }
     /* One event for the whole restore. The rows arrive via insertPreserving,
        which is deliberately unlogged — five hundred per-row "creates" would
        bury the one line that says what actually happened. */

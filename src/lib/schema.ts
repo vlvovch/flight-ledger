@@ -137,11 +137,13 @@ CREATE TABLE IF NOT EXISTS settings (
 );
 
 -- Append-only change log (design doc §16), written by repo.ts beside every
--- data write. Deliberately outside the JSON backup and untouched by a wipe:
--- it is the history of this FILE, and the incident that motivated it — flags
--- silently dropped by a restore — is exactly the case where the history must
--- outlive the data it describes. Ordering is by rowid (insertion order);
--- \`at\` is for people.
+-- data write. It describes the CURRENT ledger's lineage, so a wipe truncates
+-- it (nothing left for prior entries to explain) and a restore REPLACES it:
+-- the backup's manual-actor records ride in the JSON backup — they are the
+-- provenance that shields hand-set values from imports, on any machine the
+-- ledger lands on — and everything local goes, since it described a ledger
+-- that no longer exists. Ordering is by rowid (insertion order); \`at\`
+-- is for people.
 CREATE TABLE IF NOT EXISTS changes (
   id TEXT PRIMARY KEY,
   at TEXT NOT NULL,

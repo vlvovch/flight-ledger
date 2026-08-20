@@ -9,7 +9,17 @@ export const POST = handled(async (req: Request) => {
   const body = (await req.json()) as Partial<BackupPayload>;
   if (body.version !== 1)
     return jsonError("Unrecognized backup format (expected version 1)");
-  for (const key of ["tickets", "segments", "adjustments"] as const) {
+  /* every array-valued field, including the late arrivals — a malformed
+     one would otherwise blow up inside the transaction and answer 500 for
+     what is a caller's 400 */
+  for (const key of [
+    "tickets",
+    "segments",
+    "adjustments",
+    "payments",
+    "activities",
+    "manual_changes",
+  ] as const) {
     if (body[key] != null && !Array.isArray(body[key]))
       return jsonError(`Backup field "${key}" must be an array`);
   }
