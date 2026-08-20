@@ -4,22 +4,12 @@ export const dynamic = "force-static";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    /* the app pages are a UI over the visitor's own ledger — nothing there
-       for a crawler, and "Settings - Flight Ledger" in search results would
-       only confuse */
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: [
-        "/flights",
-        "/tickets",
-        "/activity",
-        "/analysis",
-        "/reconcile",
-        "/settings",
-        "/labs",
-      ],
-    },
+    /* Everything is crawlable ON PURPOSE, including the app routes: their
+       route-group layout emits robots noindex, and a crawler blocked by a
+       Disallow could never see it — a blocked URL can still be indexed
+       from links alone. robots.txt does crawl control; the metadata does
+       index control. */
+    rules: { userAgent: "*", allow: "/" },
     sitemap: "https://app.flightledger.net/sitemap.xml",
   };
 }

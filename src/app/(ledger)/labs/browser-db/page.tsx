@@ -32,7 +32,7 @@ export default function BrowserDbLab() {
   const run = () => {
     setState({ phase: "running" });
     workerRef.current ??= new Worker(
-      new URL("../../../lib/browser/worker.ts", import.meta.url)
+      new URL("../../../../lib/browser/worker.ts", import.meta.url)
     );
     const worker = workerRef.current;
     const id = ++idRef.current;
