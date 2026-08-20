@@ -42,8 +42,10 @@ import {
   deleteSegment,
   deleteTicket,
   getSegment,
+  exportBackup,
   importBackup,
   listChanges,
+  manuallyEditedSegmentFields,
   runAsActor,
   saveSettings,
   updateSegment,
@@ -140,7 +142,7 @@ import {
 } from "../src/app/api/flights/[id]/route";
 import { POST as apiTicketCreate } from "../src/app/api/tickets/route";
 import { DELETE as apiTicketDelete } from "../src/app/api/tickets/[id]/route";
-import { POST as apiBackupRestore } from "../src/app/api/backup/route";
+import { POST as apiBackupRestore, DELETE as apiBackupWipe } from "../src/app/api/backup/route";
 import { POST as apiFlightdiary } from "../src/app/api/import/flightdiary/route";
 import { GET as apiChanges } from "../src/app/api/changes/route";
 import { GET as apiAnalytics } from "../src/app/api/analytics/route";
@@ -6187,10 +6189,10 @@ console.log("reconciliation:");
       } as never);
       const afterRestore = listChanges();
       check(
-        "a restore is one event with its counts, appended after the wipe record",
-        afterRestore.length === 2 && afterRestore[0].op === "restore" &&
+        "a restore is one event with its counts — and the ONLY event: prior " +
+          "records described a ledger that no longer exists (the wipe's own rule)",
+        afterRestore.length === 1 && afterRestore[0].op === "restore" &&
           afterRestore[0].actor === "restore" &&
-          afterRestore[1].op === "wipe" &&
           JSON.parse(afterRestore[0].diff).restored.segments === 1,
         JSON.stringify(afterRestore.map((c) => c.op))
       );
@@ -8771,6 +8773,103 @@ async function routeHandlerChecks() {
       JSON.stringify(dNoRoute.body)
     );
     await dj(`/api/flights/${dId}`, { method: "DELETE" });
+
+    /* Provenance must survive the trip to another machine: a wipe truncates
+       the change log — exactly what a fresh device looks like — so restore
+       has to carry the manual records itself or the protection dies with
+       the move. */
+    const kept = await j(
+      await apiFlightCreate(
+        req("POST", "/api/flights", {
+          origin: "SFO", destination: "IAH", flight_date: "2025-07-01",
+          status: "flown_reconciled", marketing_carrier: "UA",
+          flight_number: "777", departure_time: "10:00",
+          arrival_time: "15:30",
+        })
+      )
+    );
+    const keptId = kept.body.segment?.id as string;
+    const carried = exportBackup();
+    check(
+      "backup: the manual change records ride along",
+      (carried.manual_changes ?? []).some((c) => c.row_id === keptId)
+    );
+    await apiBackupWipe(req("DELETE", "/api/backup?confirm=wipe"));
+    check(
+      "backup: a wipe is a fresh device — no provenance survives it alone",
+      manuallyEditedSegmentFields().size === 0
+    );
+    await apiBackupRestore(req("POST", "/api/backup", carried));
+    const prot = manuallyEditedSegmentFields().get(keptId);
+    check(
+      "backup: restored provenance still shields the hand-set clocks",
+      prot?.has("departure_time") === true && prot?.has("arrival_time") === true
+    );
+    const crossCsv =
+      "Date,Airline,Flight,From,To,Dep Terminal,Dep Gate,Arr Terminal,Arr Gate,Canceled,Diverted To,Gate Departure (Scheduled),Gate Departure (Actual),Take off (Scheduled),Take off (Actual),Landing (Scheduled),Landing (Actual),Gate Arrival (Scheduled),Gate Arrival (Actual),Aircraft Type Name,Tail Number,PNR,Seat,Seat Type,Cabin Class,Flight Reason,Notes,F1,F2,F3,F4,F5,F6\n" +
+      "2025-07-01,UAL,777,SFO,IAH,,,,,false,,2025-07-01T10:00,2025-07-01T10:25,,,,,2025-07-01T15:30,2025-07-01T15:55,,,,,,,,,,,,,\n";
+    const cpv = await j(
+      await apiFlightdiary(
+        req("POST", "/api/import/flightdiary", { mode: "preview", csv: crossCsv })
+      )
+    );
+    const crossRow = (cpv.body.rows as { segmentId?: string; fills?: string[] }[])
+      .find((r) => r.segmentId === keptId);
+    check(
+      "backup: …end to end — a Flighty actual bounces off them on the new device",
+      crossRow != null && !(crossRow.fills ?? []).some((f) => f.includes("actual"))
+    );
+    check(
+      "backup: restored change records keep real, unique ids",
+      (() => {
+        const rows = listChanges({ tbl: "segments" });
+        const ids = rows.map((c) => c.id);
+        return ids.every((i) => typeof i === "string" && i.length > 0) &&
+          new Set(ids).size === ids.length;
+      })()
+    );
+    /* Restoring an OLDER copy discards local edits — and must discard their
+       protection with them: a manual seat set after this snapshot was taken
+       no longer describes anything once the snapshot is back. The carried
+       provenance (the clocks) survives; the stale local claim does not, and
+       a fresh export equals the restored file instead of drifting Drive
+       into a pointless push. */
+    const older = exportBackup();
+    runAsActor("manual", () => updateSegment(keptId, { seat: "1A" }));
+    check(
+      "backup: the local edit protects its field before the restore",
+      manuallyEditedSegmentFields().get(keptId)?.has("seat") === true
+    );
+    await apiBackupRestore(req("POST", "/api/backup", older));
+    const afterOlder = manuallyEditedSegmentFields().get(keptId);
+    check(
+      "backup: restoring an older copy drops stale protection, keeps carried",
+      afterOlder?.has("seat") !== true && afterOlder?.has("departure_time") === true
+    );
+    check(
+      "backup: an export right after a restore equals the restored file",
+      JSON.stringify(exportBackup().manual_changes) ===
+        JSON.stringify(older.manual_changes)
+    );
+    /* the boundary answers 400 for a caller's malformed shape — a 500 from
+       inside the transaction is the server taking blame it doesn't own */
+    const badShape = await j(
+      await apiBackupRestore(
+        req("POST", "/api/backup", { version: 1, manual_changes: {} })
+      )
+    );
+    const badPayments = await j(
+      await apiBackupRestore(
+        req("POST", "/api/backup", { version: 1, payments: "x" })
+      )
+    );
+    check(
+      "backup: every array-valued field is shape-checked at the boundary",
+      badShape.status === 400 &&
+        /manual_changes.*array/.test(badShape.body.error) &&
+        badPayments.status === 400 &&
+        /payments.*array/.test(badPayments.body.error)
+    );
   } finally {
     process.chdir(cwd);
   }

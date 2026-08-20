@@ -1567,7 +1567,7 @@ notices and are treated as such.
 
 ## 19. Testing strategy
 
-`npm run selftest` — **928 checks plus a 500-case fuzz**, run against pure
+`npm run selftest` — **937 checks plus a 500-case fuzz**, run against pure
 functions with no server. `npm run typecheck` for types.
 
 ## 19.1 Unit tests
