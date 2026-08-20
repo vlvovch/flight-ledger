@@ -1370,12 +1370,14 @@ offline.
 
 **Back end** — Next.js route handlers over `node:sqlite`. **No ORM.** The
 original design recommended Prisma with PostgreSQL, or FastAPI with SQLAlchemy.
-Neither is here: `node:sqlite` shipped in Node 22.5, which removed the last
+Neither is here: `node:sqlite` shipped in Node 22.5 and ran unflagged from
+22.13, which removed the last
 reason to take a dependency for data access. There are no native modules to
 build and no migration tooling to run — the schema is one `IF NOT EXISTS` block
 plus an idempotent column list.
 
-The cost is that `node:sqlite` sets the Node floor at 22.5, declared in
+The cost is that `node:sqlite` sets the Node floor at 22.13 (the first
+release where it needs no flag), declared in
 `engines` and enforced at install.
 
 **Background jobs** — none, and no scheduler. Every derived value is computed on

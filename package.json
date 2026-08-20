@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "engines": {
-    "node": ">=22.5.0"
+    "node": ">=22.13.0"
   },
   "description": "Personal United flight, PQP, lifetime miles & CPM tracker — local web dashboard",
   "scripts": {
