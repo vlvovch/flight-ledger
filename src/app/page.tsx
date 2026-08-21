@@ -443,6 +443,32 @@ export default function DashboardPage() {
 
           {/* charts */}
           <div className="stagger grid grid-cols-1 gap-3 lg:grid-cols-2">
+            {/* The feature visualization opens the section, full width: the
+                longest timeline on the page, the natural continuation of the
+                lifetime KPI card, and the one chart no generic tracker has.
+                The chart takes the left ~three-quarters; the Million Miler
+                rungs stand as a column on the right, and drop below the
+                chart on narrow screens. */}
+            <Panel
+              label="Lifetime miles — cumulative"
+              accent={C.miles}
+              className="pb-2 lg:col-span-2"
+              right={
+                <Legend
+                  items={[
+                    { name: "Lifetime (est.)", color: C.miles },
+                    { name: "All miles flown", color: C.award, dashed: true },
+                  ]}
+                />
+              }
+            >
+              <div className="flex flex-col lg:flex-row">
+                <div className="min-w-0 flex-1 px-2 pt-1">
+                  <LifetimeChart data={lifetime} />
+                </div>
+                <MillionMiler forecast={data.lifetimeForecast} />
+              </div>
+            </Panel>
             <Panel label={`Miles flown — ${yearly ? "yearly" : "monthly"}`} accent={C.miles} className="pb-2">
               <div className="px-2 pt-1">
                 <MilesChart data={monthly} />
@@ -535,27 +561,6 @@ export default function DashboardPage() {
                 <PqpChart data={monthly} />
               </div>
             </Panel>
-
-            {/* Full width, closing the grid: the longest timeline on the
-                page, and the Million Miler rungs beneath it want the room. */}
-            <Panel
-              label="Lifetime miles — cumulative"
-              accent={C.miles}
-              className="pb-2 lg:col-span-2"
-              right={
-                <Legend
-                  items={[
-                    { name: "Lifetime (est.)", color: C.miles },
-                    { name: "All miles flown", color: C.award, dashed: true },
-                  ]}
-                />
-              }
-            >
-              <div className="px-2 pt-1">
-                <LifetimeChart data={lifetime} />
-              </div>
-              <MillionMiler forecast={data.lifetimeForecast} />
-            </Panel>
           </div>
 
           <footer className="mt-6 flex items-center justify-between pb-4">
@@ -609,14 +614,24 @@ function MillionMiler({ forecast }: { forecast: LifetimeForecast | null }) {
   /* Only describe the forecast if one is being made. Where every rung shown is
      already behind you, the rate did no work and quoting it explains nothing. */
   const projects = shown.some((m) => !m.reached);
+  /* Two shapes from one component: a footnote row under the chart on
+     narrow screens, a standing column beside it from lg up — where the
+     full-width panel gives the chart the left three-quarters and the
+     rungs read as a ladder, each one on its own line. */
   return (
     <div
-      className="mt-1 border-t border-line px-4 pt-2.5 pb-1"
+      className="mt-1 border-t border-line px-4 pt-2.5 pb-1 lg:mt-1 lg:mb-1 lg:w-[230px] lg:shrink-0 lg:self-stretch lg:border-t-0 lg:border-l lg:pt-1.5"
       title={`Million Miler progress. A crossed rung shows the month the ledger passed it. A ≈ year is a straight-line projection from the miles credited over the last ${windowMonths} complete months, to ${fmtMonth(to, "long")} — a year rather than a date, because the rate is an average over a lumpy history. Rungs more than ${horizonYears} years out are not shown.`}
     >
-      <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1">
+      <div className="t-label mb-1 hidden !text-[10px] text-mute lg:block">
+        Million Miler
+      </div>
+      <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1 lg:flex-col lg:items-stretch lg:gap-y-2">
         {shown.map((m) => (
-          <span key={m.miles} className="flex items-baseline gap-1.5">
+          <span
+            key={m.miles}
+            className="flex items-baseline gap-1.5 lg:justify-between"
+          >
             <span className="t-label !text-[10px]">{m.label}</span>
             {/* A crossed rung is a fact and carries its month; a projected one
                 takes the ≈ this app puts on every estimated figure, so the
@@ -632,7 +647,7 @@ function MillionMiler({ forecast }: { forecast: LifetimeForecast | null }) {
         ))}
       </div>
       {projects && (
-        <p className="mt-1 text-[11px] text-mute">
+        <p className="mt-1 text-[11px] leading-snug text-mute lg:mt-2.5">
           ≈ forecast at {fmtInt(ratePerYear)} mi/yr over the last {windowMonths}{" "}
           months, to {fmtMonth(to)}
         </p>
