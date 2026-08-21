@@ -5,6 +5,8 @@ cost, what United credited for it, and whether those numbers agree. Flight
 trackers watch your next departure; this explains everything you already
 flew. It runs entirely on your own machine.
 
+![The dashboard on the sample ledger: Premier standing, recent and upcoming flights, spend and cost per mile](docs/media/dashboard.png)
+
 ### [Try it now at app.flightledger.net](https://app.flightledger.net)
 
 Nothing to install, no account to create. The whole app runs inside your
@@ -26,6 +28,8 @@ CSV whenever you like.
 Already keep a flight log in Flighty or myFlightradar24? Drop its CSV
 export too. It loads years of history on any airline, including aircraft
 types and tail numbers, and the app tells the formats apart on its own.
+
+![Five stops: the CSV import preview, the dashboard it builds, the flight table, the Premier gauges, and the offline route map](docs/media/tour.gif)
 
 ## Where Flight Ledger is different
 
