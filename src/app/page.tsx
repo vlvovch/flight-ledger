@@ -5,7 +5,6 @@ import Link from "next/link";
 import { AlertTriangle, Plus, Upload } from "lucide-react";
 import type { Analytics, LifetimeForecast } from "@/lib/metrics";
 import type { ReconcileReport } from "@/lib/reconcile";
-import { RECONCILE_GROUPS } from "@/lib/reconcile-groups";
 import type { EnrichedSegment, SegmentRow, TicketRow } from "@/lib/types";
 import { rollupYears } from "@/lib/metrics";
 import { api, fmtCpm, fmtDate, fmtInt, fmtMoney, fmtMonth } from "@/lib/format";
@@ -140,16 +139,6 @@ export default function DashboardPage() {
     }
   };
 
-  const openIssueFlight = async (segmentId?: string) => {
-    if (!segmentId) return;
-    try {
-      const seg = await api<SegmentRow>(`/api/flights/${segmentId}`);
-      setEditSegment(seg);
-    } catch {
-      /* stale issue */
-    }
-  };
-
   if (error)
     return (
       <Panel label="Error" className="mt-8 p-6">
@@ -159,7 +148,6 @@ export default function DashboardPage() {
   if (!data) return <div className="t-label p-8">Loading…</div>;
 
   const { cards, currency } = data;
-  const exceptions = data.reconcile?.exceptions ?? [];
   const hasData = data.totals.flights > 0 || data.upcoming.length > 0;
   const year = new Date().getFullYear();
 
@@ -180,14 +168,6 @@ export default function DashboardPage() {
           .join(" + ")
       : "";
 
-  /* Attention, grouped the way the Reconcile queue groups — worst first.
-     40 raw rows of repeated chain warnings is a wall; counts per kind and
-     the three most urgent items is a briefing. */
-  const attnGroups = RECONCILE_GROUPS.map((g) => ({
-    ...g,
-    items: exceptions.filter((e) => e.kind === g.kind),
-  })).filter((g) => g.items.length > 0);
-  const attnTop = attnGroups.flatMap((g) => g.items).slice(0, 3);
 
   return (
     <div className="mx-auto max-w-[1440px]">
@@ -200,18 +180,21 @@ export default function DashboardPage() {
           </h1>
         </div>
         <div className="flex items-center gap-2.5">
+          {/* Reconciliation's entire dashboard presence: a badge, straight
+              to the queue. The panel it used to anchor turned the board
+              into an error console — and a ledger can hold permanently
+              unresolvable exceptions, which a "needs attention" heading
+              recast as standing guilt. The WARN count, and says so;
+              info-level nudges live in Reconcile alone. */}
           {cards.openIssues > 0 && (
-            <a href="#attention" className="chip !text-[10.5px]" style={{
+            <Link href="/reconcile" className="chip !text-[10.5px]" style={{
               color: "var(--color-warning)",
               borderColor: "color-mix(in oklab, var(--color-warning) 45%, transparent)",
               background: "color-mix(in oklab, var(--color-warning) 10%, transparent)",
             }}>
               <AlertTriangle size={11} />
-              {/* the WARN count, and says so — the attention panel's queue
-                  also carries info-level nudges, so "issues" here and a
-                  bigger total there read as a contradiction */}
               {cards.openIssues} warning{cards.openIssues === 1 ? "" : "s"}
-            </a>
+            </Link>
           )}
           {/* The recurring gesture leads: a fresh My Activity CSV is how this
               ledger is maintained, where logging a flight by hand is the
@@ -409,86 +392,19 @@ export default function DashboardPage() {
             />
           </div>
 
-          {/* The actionable row, before any chart: what needs doing and
-              what's next are the two facts a returning user came for — 135
-              open issues buried under five charts was analytics posing as a
-              dashboard. */}
+          {/* The flying itself, before any chart: what flew and what's next
+              are the dashboard's temporal story, and the reconciliation
+              queue is not part of it — a queue can hold permanently
+              unresolvable exceptions, and a panel of them turned the board
+              into an error console. Reconcile keeps the full list; the
+              header badge carries the count. */}
           <div className="stagger mt-6 grid grid-cols-1 gap-3 lg:grid-cols-2">
-            <Panel
-              label="Needs attention"
-              accent="var(--color-warning)"
-              className="pb-2"
-              right={
-                <Link href="/reconcile" className="t-label !text-[9.5px] text-s-miles hover:underline">
-                  Open queue →
-                </Link>
-              }
-            >
-              <div id="attention" className="px-4 pb-3">
-                {exceptions.length === 0 ? (
-                  <p className="py-8 text-center text-[13px] text-mute">
-                    All clear — nothing to reconcile.
-                  </p>
-                ) : (
-                  <>
-                    {/* the queue at a glance: a count per kind, in the
-                        queue's own worst-first order, then only the three
-                        most urgent items — the full list is one click away
-                        and 40 raw rows of repeated chain warnings is a
-                        wall, not a briefing */}
-                    <div className="flex flex-wrap gap-1.5 border-b border-[color-mix(in_oklab,var(--color-line)_55%,transparent)] pb-2.5 pt-1">
-                      {attnGroups.map((g) => (
-                        <Link
-                          key={g.kind}
-                          href="/reconcile"
-                          className="chip !px-1.5 !text-[9.5px]"
-                          style={{
-                            color: g.accent,
-                            borderColor: `color-mix(in oklab, ${g.accent} 45%, transparent)`,
-                          }}
-                          title={g.blurb}
-                        >
-                          {g.label} ×{g.items.length}
-                        </Link>
-                      ))}
-                    </div>
-                    <ul>
-                      {attnTop.map((e, i) => (
-                        <li
-                          key={i}
-                          className={`flex items-start gap-2.5 border-b border-[color-mix(in_oklab,var(--color-line)_55%,transparent)] py-2 last:border-0 ${
-                            e.segmentId ? "cursor-pointer hover:bg-[var(--tint-accent-faint)]" : ""
-                          }`}
-                          onClick={() => openIssueFlight(e.segmentId)}
-                        >
-                          <span
-                            className="chip mt-0.5 shrink-0 !px-1.5 !text-[9px]"
-                            style={{
-                              color: e.severity === "warn" ? "var(--color-warning)" : "var(--color-s-miles)",
-                              borderColor: `color-mix(in oklab, ${e.severity === "warn" ? "var(--color-warning)" : "var(--color-s-miles)"} 45%, transparent)`,
-                            }}
-                          >
-                            {e.severity === "warn" ? "WARN" : "INFO"}
-                          </span>
-                          <div className="min-w-0">
-                            <p className="truncate text-[12.5px] text-ink2">{e.title}</p>
-                            {e.detail && (
-                              <p className="mt-0.5 text-[11px] leading-snug text-mute">
-                                {e.detail}
-                              </p>
-                            )}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                    {exceptions.length > attnTop.length && (
-                      <p className="pt-1.5 text-[11px] text-mute">
-                        …and {fmtInt(exceptions.length - attnTop.length)} more in the queue.
-                      </p>
-                    )}
-                  </>
-                )}
-              </div>
+            <Panel label="Recent flights" accent={C.award}>
+              <SegmentList
+                segments={data.recent}
+                empty="No flown segments yet."
+                onPick={(s) => setEditSegment(s)}
+              />
             </Panel>
             <Panel label="Up next" accent={C.miles}>
               <SegmentList
@@ -586,24 +502,6 @@ export default function DashboardPage() {
               </div>
             </Panel>
             <Panel
-              label="Lifetime miles — cumulative"
-              accent={C.miles}
-              className="pb-2"
-              right={
-                <Legend
-                  items={[
-                    { name: "Lifetime (est.)", color: C.miles },
-                    { name: "All miles flown", color: C.award, dashed: true },
-                  ]}
-                />
-              }
-            >
-              <div className="px-2 pt-1">
-                <LifetimeChart data={lifetime} />
-              </div>
-              <MillionMiler forecast={data.lifetimeForecast} />
-            </Panel>
-            <Panel
               label="Spend — personal vs covered"
               accent={C.personal}
               className="pb-2"
@@ -638,15 +536,25 @@ export default function DashboardPage() {
               </div>
             </Panel>
 
-            {/* Recent flights close the instruments grid to an even six.
-                Top routes left the dashboard for Analysis → Routes, where
-                the full sortable table already outclassed this excerpt. */}
-            <Panel label="Recent flights" accent={C.award}>
-              <SegmentList
-                segments={data.recent}
-                empty="No flown segments yet."
-                onPick={(s) => setEditSegment(s)}
-              />
+            {/* Full width, closing the grid: the longest timeline on the
+                page, and the Million Miler rungs beneath it want the room. */}
+            <Panel
+              label="Lifetime miles — cumulative"
+              accent={C.miles}
+              className="pb-2 lg:col-span-2"
+              right={
+                <Legend
+                  items={[
+                    { name: "Lifetime (est.)", color: C.miles },
+                    { name: "All miles flown", color: C.award, dashed: true },
+                  ]}
+                />
+              }
+            >
+              <div className="px-2 pt-1">
+                <LifetimeChart data={lifetime} />
+              </div>
+              <MillionMiler forecast={data.lifetimeForecast} />
             </Panel>
           </div>
 
