@@ -6,7 +6,7 @@ While flight trackers help with your next departure, the Flight Ledger helps you
 the flying you've already done and how your MileagePlus account is performing. 
 It runs client-side, entirely on your own machine.
 
-### [Try it now at app.flightledger.net](https://app.flightledger.net)
+**[Try it now at app.flightledger.net →](https://app.flightledger.net)**
 
 Nothing to install, no account to create. The whole app runs inside your
 browser (SQLite compiled to WebAssembly), and your ledger stays there.
