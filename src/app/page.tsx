@@ -435,8 +435,9 @@ export default function DashboardPage() {
             </Panel>
           </div>
 
-          {/* range control */}
-          <div className="mt-6 mb-3 flex items-center justify-between">
+          {/* range control — wraps below the label on narrow screens rather
+              than squeezing beside it */}
+          <div className="mt-6 mb-3 flex flex-wrap items-center justify-between gap-2">
             <h2 className="t-label">Instruments</h2>
             <RangeControl range={range} years={years} onChange={setRange} />
           </div>

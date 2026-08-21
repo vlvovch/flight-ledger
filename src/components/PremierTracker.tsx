@@ -167,7 +167,9 @@ function YearDetail({ y }: { y: PremierYear }) {
               <div className="mb-1 text-[11.5px] text-mute">
                 points <span className="text-ink2">+</span> flights
               </div>
-              <div className="flex items-center gap-1">
+              {/* wraps: two 182px gauges side by side outgrow a phone, and a
+                  clipped gauge reads as a broken one */}
+              <div className="flex flex-wrap items-center justify-center gap-1">
                 <PremierGauge slices={pqpSlices} target={next.pqp} unit="PQP" size={182} />
                 <span className="t-num text-[18px] text-mute">+</span>
                 <PremierGauge slices={pqfSlices} target={next.pqf} unit="PQF" size={182} />

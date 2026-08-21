@@ -51,7 +51,7 @@ export function RangeControl({
           <button
             key={r}
             onClick={() => onChange(r)}
-            className={`t-display px-3 py-1 text-[11.5px] tracking-[0.1em] transition-colors pointer-coarse:py-2.5 ${
+            className={`t-display whitespace-nowrap px-3 py-1 text-[11.5px] tracking-[0.1em] transition-colors pointer-coarse:py-2.5 ${
               range === r
                 ? "bg-[var(--tint-accent-strong)] text-ink"
                 : "text-mute hover:text-ink2"

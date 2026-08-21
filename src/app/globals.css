@@ -178,6 +178,18 @@ html[data-theme="light"] {
   --vh-scaled: calc(100vh / var(--ui-scale));
 }
 
+/* The 125% was judged on a desktop, where the window had room to give. On a
+   phone the same zoom shrinks an already-narrow viewport by a quarter — a
+   412px screen laying out as ~330px is why every table read as a keyhole
+   and every font as oversized. Phones get the layout at its designed size.
+   (zoom does not change what media queries measure, so this fires on the
+   real device width.) */
+@media (max-width: 767px) {
+  :root {
+    --ui-scale: 1;
+  }
+}
+
 body {
   zoom: var(--ui-scale);
 }
