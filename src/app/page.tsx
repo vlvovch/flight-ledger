@@ -7,6 +7,7 @@ import type { Analytics, LifetimeForecast } from "@/lib/metrics";
 import type { ReconcileReport } from "@/lib/reconcile";
 import type { EnrichedSegment, SegmentRow, TicketRow } from "@/lib/types";
 import { rollupYears } from "@/lib/metrics";
+import { trackEvent } from "@/lib/track";
 import { api, fmtCpm, fmtDate, fmtInt, fmtMoney, fmtMonth } from "@/lib/format";
 import { EmptyState, MilesBasisToggle, Panel, StatCard, StatusChip, toast } from "@/components/ui";
 import FlightForm from "@/components/FlightForm";
@@ -129,6 +130,9 @@ export default function DashboardPage() {
       toast(
         `Demo ledger loaded — ${r.restored.segments} flights on ${r.restored.tickets} tickets. Erase it any time from Settings.`
       );
+      /* the one number the launch needs: how many visitors try the demo.
+         Name-only, hostname-gated, counted once per session */
+      trackEvent("demo_loaded", true);
       refresh();
     } catch (e) {
       /* setError would replace the whole dashboard with the error panel —

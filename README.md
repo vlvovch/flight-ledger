@@ -86,12 +86,11 @@ browser's own storage (OPFS); "clear site data" deletes it, so export
 backups. Self-hosted, each account is one SQLite file under `data/`, and the
 server binds to `127.0.0.1` only.
 
-One exception is Google Drive sync. 
-If you turn it on, copies the backup
-from your browser to a private folder of your own Drive when you press
-sync. The public site also counts page views, but never sees ledger
-contents. Details in the
-[privacy policy](https://app.flightledger.net/privacy).
+One exception is Google Drive sync. If you turn it on, it copies the
+backup from your browser to a private folder of your own Drive when you
+press sync. The public site also counts page views and a few feature
+events by name only (such as demo loads), but never sees ledger contents.
+Details in the [privacy policy](https://app.flightledger.net/privacy).
 
 ## Self-hosting and development
 
