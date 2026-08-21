@@ -1,21 +1,34 @@
 # Flight Ledger
 
 Flight Ledger is a private ledger of your flying: every flight, what it
-cost, what United credited for it, and whether those numbers agree. Flight
-trackers help with your next departure; Flight Ledger helps you understand
-the flying you've already done. It runs entirely on your own machine.
+cost, what United credited for it, and whether those numbers agree. 
+While flight trackers help with your next departure, the Flight Ledger helps you understand
+the flying you've already done and how your MileagePlus account is performing. 
+It runs client-side, entirely on your own machine.
 
 ### [Try it now at app.flightledger.net](https://app.flightledger.net)
 
 Nothing to install, no account to create. The whole app runs inside your
 browser (SQLite compiled to WebAssembly), and your ledger stays there.
-No ledger contents are uploaded unless you turn on Drive sync yourself.
+No ledger contents are uploaded to a third-party server. 
+You do have an option to turn on Google Drive sync for backups and multi-device access.
 One click loads a demo ledger if you'd rather look around before
 importing anything.
 
 ![The dashboard on the sample ledger: Premier standing, recent and upcoming flights, spend and cost per mile](docs/media/dashboard.png)
 
-## Start in five minutes
+## Backstory
+
+I built Flight Ledger to make sense of my own flying. I have been based near
+SFO and IAH, both United hubs, and fly frequently for work. My flight history
+was scattered across airline accounts, MileagePlus activity, and email
+receipts.
+
+I wanted one private place to see where I had flown, what it cost, and whether
+United had credited it correctly, without signing up for another service,
+logging into multiple accounts, or digging through old receipts.
+
+## Quick start
 
 1. Download your "My Activity" CSV from united.com (MileagePlus → My
    Activity).
@@ -23,14 +36,16 @@ importing anything.
    and starts the Premier tracker: PQP and PQF against the thresholds
    United published for each year, drawn as the same arc gauges united.com
    uses, plus lifetime miles and Million Miler progress.
-3. Add more when you feel like it. A **Flighty** or **myFlightradar24**
-   CSV brings years of history on any airline, aircraft types and tail
-   numbers included, and email receipts add the money side. The app tells
-   the formats apart on its own.
+3. Add more when you feel like it. You can also import a **Flighty** or **myFlightradar24**
+   CSV to bring years of history on any airline, aircraft types and tail
+   numbers included. The email receipts add the money side. 
+   The app tells the formats apart on its own.
 
 Re-importing the same file changes nothing, so pull a fresh CSV whenever
-you like. And export a backup from Settings once you're set up: your
-ledger has no cloud copy unless you turn on Drive sync.
+you like. And export a backup from Settings once you're set up. 
+
+Not that your ledger has no cloud copy by default.
+To back up your data in the cloud, you can turn on Google Drive sync. 
 
 ![Five stops: the CSV import preview, the dashboard it builds, the flight table, the Premier gauges, and the offline route map](docs/media/tour.gif)
 
@@ -43,30 +58,25 @@ Lufthansa and others, plus bookings made through Amex, Chase, and Capital
 One travel portals. Then:
 
 - A reissued ticket is priced as one economic unit across the flights that
-  actually flew, so the value carried between tickets is never counted
+  actually flew, so the value carried between tickets is not counted
   twice.
-- Refunds and reimbursements are tracked properly. Refunds reduce what the
-  trip cost; reimbursements reduce what it cost *you*.
-- Cost per mile comes in gross, personal, and per-route flavors, and every
-  figure states which flights it rests on instead of quietly averaging
-  away the ones with no recorded cost.
-- Cash flow gets its own view: the same money shown in the month it moved
-  rather than the month you flew. The two are never blended.
+- Refunds and reimbursements tracking. Separate business and out-of-pocket costs.
+- Cost per mile (CPM) in gross, personal, and per-route flavors.
+- Cash flow gets its own view.
 - Whatever doesn't line up lands in a reconcile queue: flights United never
   credited, duplicates, foreign-currency tickets counted at 1:1, clocks
   that disagree with the distance.
 
 ## Also in the box
 
-Statistics, mostly: a zoomable route map drawn fully offline from bundled
-data, a sortable table of every route you fly, fleet statistics down to
+Statistics, mostly: a zoomable route map drawn from bundled
+data, the total miles you've flown, 
+a sortable table of every route you fly, fleet statistics down to
 individual airframes enriched from the FAA registry, travel mix,
 fare-class economics, and a printable annual report.
-
-And the bookkeeping to trust it all: a change log records every edit and
-whether it came from you or an import, so "what did that import actually
-do?" always has an answer. Estimates wear an `≈`, and a value you typed
-by hand is never overwritten by an import. The reasoning behind each rule
+Estimates wear a `≈` symbol, and a value you typed
+by hand is not overwritten by an import. 
+The reasoning behind each rule
 lives in the [docs](#documentation).
 
 ## Your data
@@ -76,7 +86,8 @@ browser's own storage (OPFS); "clear site data" deletes it, so export
 backups. Self-hosted, each account is one SQLite file under `data/`, and the
 server binds to `127.0.0.1` only.
 
-One exception: Google Drive sync, if you turn it on, copies the backup
+One exception is Google Drive sync. 
+If you turn it on, copies the backup
 from your browser to a private folder of your own Drive when you press
 sync. The public site also counts page views, but never sees ledger
 contents. Details in the
@@ -133,9 +144,11 @@ and map data are bundled, with no third-party runtime data services.
 
 ## Status
 
-Flight Ledger is in daily use. Imports are manual by design today: it
-does not connect to your Gmail or poll airlines on a schedule; you feed
+Flight Ledger is in daily use. 
+All the data imports are manual by design: you feed
 it files, and nothing happens without you.
+The app does not connect to your Gmail or poll airlines on a schedule. 
+
 
 ## License
 
