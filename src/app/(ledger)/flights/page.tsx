@@ -531,7 +531,7 @@ export default function FlightsPage() {
             }
           />
         ) : (
-          <div className="max-h-[calc(var(--vh-scaled)-240px)] overflow-auto">
+          <div className="ledger-scroll max-h-[calc(var(--vh-scaled)-240px)] overflow-auto">
             <table className="ledger">
               <thead>
                 <tr>

@@ -957,6 +957,7 @@ function TicketDetail({
               of the fare (manual → PQP → distance → equal).
             </p>
           ) : (
+            <div className="ledger-scroll">
             <table className="ledger">
               <thead>
                 <tr>
@@ -1004,6 +1005,7 @@ function TicketDetail({
                 })}
               </tbody>
             </table>
+            </div>
           )}
 
           {/* Only an empty ticket needs a prompt; otherwise attaching more is an

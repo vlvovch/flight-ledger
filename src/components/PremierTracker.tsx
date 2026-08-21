@@ -162,20 +162,23 @@ function YearDetail({ y }: { y: PremierYear }) {
               </label>
             )}
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-2">
+          {/* Explicit column-to-row layouts, not free wrapping: wrap decides
+              line breaks by fit, which could strand the "+" beside one gauge
+              and the "OR" beside another. Below xl the two routes stack with
+              OR between them; the gauge pair itself goes side by side from
+              sm up and stacks under that, so no gauge ever clips. */}
+          <div className="flex flex-col items-center justify-center gap-y-2 xl:flex-row xl:gap-x-1">
             <div className="text-center">
               <div className="mb-1 text-[11.5px] text-mute">
                 points <span className="text-ink2">+</span> flights
               </div>
-              {/* wraps: two 182px gauges side by side outgrow a phone, and a
-                  clipped gauge reads as a broken one */}
-              <div className="flex flex-wrap items-center justify-center gap-1">
+              <div className="flex flex-col items-center gap-1 sm:flex-row">
                 <PremierGauge slices={pqpSlices} target={next.pqp} unit="PQP" size={182} />
                 <span className="t-num text-[18px] text-mute">+</span>
                 <PremierGauge slices={pqfSlices} target={next.pqf} unit="PQF" size={182} />
               </div>
             </div>
-            <div className="mx-2 hidden h-[150px] self-center border-l border-line sm:block" />
+            <div className="mx-2 hidden h-[150px] self-center border-l border-line xl:block" />
             <span className="t-display px-1.5 text-[12px] text-mute">OR</span>
             <div className="text-center">
               <div className="mb-1 text-[11.5px] text-mute">points alone</div>

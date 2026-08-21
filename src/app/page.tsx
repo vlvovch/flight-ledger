@@ -179,7 +179,8 @@ export default function DashboardPage() {
             Operations Dashboard
           </h1>
         </div>
-        <div className="flex items-center gap-2.5">
+        {/* wraps: badge plus two buttons outgrow a 320px screen */}
+        <div className="flex flex-wrap items-center gap-2.5">
           {/* Reconciliation's entire dashboard presence: a badge, straight
               to the queue. The panel it used to anchor turned the board
               into an error console — and a ledger can hold permanently

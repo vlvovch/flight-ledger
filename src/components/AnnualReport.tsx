@@ -217,6 +217,7 @@ export default function AnnualReport({
 
         <section className="mt-7">
           <h2 className="t-label mb-2">Month by month</h2>
+          <div className="ledger-scroll">
           <table className="ledger w-full">
             <thead>
               <tr>
@@ -260,6 +261,7 @@ export default function AnnualReport({
               </tr>
             </tfoot>
           </table>
+          </div>
           {spread && (
             <p className="mt-1.5 text-[11.5px] text-mute">
               Per flight: half of the {spread.flights} cash flights cost under{" "}
@@ -272,6 +274,7 @@ export default function AnnualReport({
         <div className="mt-7 grid grid-cols-1 gap-7 sm:grid-cols-2">
           <section>
             <h2 className="t-label mb-2">Routes</h2>
+            <div className="ledger-scroll">
             <table className="ledger w-full">
               <thead>
                 <tr>
@@ -292,6 +295,7 @@ export default function AnnualReport({
                 ))}
               </tbody>
             </table>
+            </div>
           </section>
           <section>
             <h2 className="t-label mb-2">The mix</h2>

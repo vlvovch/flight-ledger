@@ -275,7 +275,7 @@ export default function AnalysisPage() {
               </div>
             }
           >
-            <div className="overflow-x-auto px-1 pb-1 pt-1">
+            <div className="ledger-scroll overflow-x-auto px-1 pb-1 pt-1">
               {/* Fixed layout, because one header changes with the toggle:
                   "Miles" and "United lifetime" are different widths, so an
                   auto-laid-out table re-measured every column on each switch
@@ -536,7 +536,7 @@ function CashFlowPanel({
           )}
         </p>
       )}
-      <div className="overflow-x-auto px-1 pb-1 pt-1">
+      <div className="ledger-scroll overflow-x-auto px-1 pb-1 pt-1">
         <table className="ledger w-full table-fixed">
           <colgroup>
             <col className="w-[22%]" />
@@ -643,7 +643,7 @@ function FareClassPanel({
       className="mt-3 reveal"
       right={<span className="t-label !text-[10px] text-mute">{windowLabel}</span>}
     >
-      <div className="overflow-x-auto px-1 pb-1 pt-1">
+      <div className="ledger-scroll overflow-x-auto px-1 pb-1 pt-1">
         <table className="ledger w-full table-fixed">
           <colgroup>
             <col className="w-[10%]" />
@@ -1066,7 +1066,7 @@ function RoutesPanel({
         </div>
       }
     >
-      <div className="overflow-x-auto px-1 pb-1 pt-1">
+      <div className="ledger-scroll overflow-x-auto px-1 pb-1 pt-1">
         <table className="ledger w-full">
           <thead>
             <tr>

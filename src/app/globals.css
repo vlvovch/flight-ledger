@@ -181,10 +181,13 @@ html[data-theme="light"] {
 /* The 125% was judged on a desktop, where the window had room to give. On a
    phone the same zoom shrinks an already-narrow viewport by a quarter — a
    412px screen laying out as ~330px is why every table read as a keyhole
-   and every font as oversized. Phones get the layout at its designed size.
-   (zoom does not change what media queries measure, so this fires on the
-   real device width.) */
-@media (max-width: 767px) {
+   and every font as oversized. Small screens get the layout at its designed
+   size, and the boundary is 1024 on purpose: that is where the app swaps to
+   its compact shell, so scale and shell always change hands together
+   instead of leaving a 768-1023 band wearing desktop zoom inside the
+   mobile chrome. (zoom does not change what media queries measure, so this
+   fires on the real device width.) */
+@media (max-width: 1023px) {
   :root {
     --ui-scale: 1;
   }
@@ -537,14 +540,18 @@ input[type="date"].field::-webkit-calendar-picker-indicator {
   }
 }
 
-/* Small screens: wide tables scroll sideways inside their own box instead of
-   blowing the page out. Desktop layout untouched — the media query is the
-   whole switch. */
+/* Small screens: wide tables scroll sideways inside their .ledger-scroll
+   wrapper instead of blowing the page out. The WRAPPER owns both axes and
+   the table stays a real table — making the table itself the scroll box
+   put a second scroller inside the vertical one, and the sticky header
+   pinned itself to the inner box and rode out of view. Desktop layout
+   untouched — the media query is the whole switch. */
 @media (max-width: 1023px) {
-  table.ledger {
-    display: block;
+  .ledger-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+  }
+  table.ledger {
     white-space: nowrap;
   }
 }
@@ -554,9 +561,10 @@ input[type="date"].field::-webkit-calendar-picker-indicator {
    ever invented — and the first column holds still so a row keeps its label
    while the numbers slide. Both only under a coarse pointer: a mouse user
    has a visible scrollbar and hover, and the sticky cells' opaque background
-   would cost desktop nothing but risk for no gain. */
+   would cost desktop nothing but risk for no gain. The fade lives on the
+   wrapper, which is the box the eye actually sees clip. */
 @media (pointer: coarse) and (max-width: 1023px) {
-  table.ledger {
+  .ledger-scroll {
     mask-image: linear-gradient(
       90deg,
       #000 0,
