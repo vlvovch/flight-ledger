@@ -667,9 +667,12 @@ function SegmentList({
 }) {
   if (segments.length === 0)
     return <p className="px-4 py-6 text-[13px] text-mute">{empty}</p>;
+  /* Three, not six: these lists brief, they don't archive — the Flights
+     page holds the ledger, and six recent rows beside an empty "Up next"
+     read as a tower next to a hole. */
   return (
     <ul className="px-4 pb-3">
-      {segments.slice(0, 6).map((s) => (
+      {segments.slice(0, 3).map((s) => (
         <li
           key={s.id}
           className="flex cursor-pointer items-center gap-3 border-b border-[color-mix(in_oklab,var(--color-line)_55%,transparent)] py-2 transition-colors last:border-0 hover:bg-[var(--tint-accent-faint)]"
