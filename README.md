@@ -5,8 +5,6 @@ cost, what United credited for it, and whether those numbers agree. Flight
 trackers watch your next departure; this explains everything you already
 flew. It runs entirely on your own machine.
 
-![The dashboard on the sample ledger: Premier standing, recent and upcoming flights, spend and cost per mile](docs/media/dashboard.png)
-
 ### [Try it now at app.flightledger.net](https://app.flightledger.net)
 
 Nothing to install, no account to create. The whole app runs inside your
@@ -14,6 +12,8 @@ browser (SQLite compiled to WebAssembly), and your ledger stays there.
 No ledger contents are uploaded unless you turn on Drive sync yourself.
 One click loads a demo ledger if you'd rather look around before
 importing anything.
+
+![The dashboard on the sample ledger: Premier standing, recent and upcoming flights, spend and cost per mile](docs/media/dashboard.png)
 
 ## Start in five minutes
 
@@ -135,10 +135,14 @@ forwarding and scheduled imports.
 
 ## License
 
-[MIT](LICENSE). The bundled datasets keep their own terms: OurAirports and
-Natural Earth are public domain, the FAA aircraft registry is public data,
-and the BIS city-pair table credits the FlyerTalk thread it was compiled
-from in its header.
+[MIT](LICENSE). Redistributed third-party material keeps its own terms —
+the Barlow and IBM Plex Mono fonts (SIL OFL 1.1) and eighteen test
+fixtures from two MIT-licensed corpora — inventoried in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) with full license texts
+under `licenses/`. The bundled datasets are public domain or public data:
+OurAirports, Natural Earth, the FAA aircraft registry, and the BIS
+city-pair table, which credits the FlyerTalk thread it was compiled from
+in its header.
 
 ---
 
