@@ -2,8 +2,8 @@
 
 Flight Ledger is a private ledger of your flying: every flight, what it
 cost, what United credited for it, and whether those numbers agree. Flight
-trackers watch your next departure; this explains everything you already
-flew. It runs entirely on your own machine.
+trackers help with your next departure; Flight Ledger helps you understand
+the flying you've already done. It runs entirely on your own machine.
 
 ### [Try it now at app.flightledger.net](https://app.flightledger.net)
 
@@ -17,27 +17,30 @@ importing anything.
 
 ## Start in five minutes
 
-Download your "My Activity" CSV from united.com (MileagePlus → My Activity)
-and drop it on the Flights page, or use Flights → Import CSV. That one file builds your flight history and starts
-the Premier tracker: PQP and PQF measured against the thresholds United
-published for each year, drawn as the same arc gauges united.com uses, with
-unlock dates, projections from booked travel, lifetime miles, and Million
-Miler progress. Re-importing the same file changes nothing, so pull a fresh
-CSV whenever you like.
+1. Download your "My Activity" CSV from united.com (MileagePlus → My
+   Activity).
+2. Drop it on the Flights page. That one file builds your flight history
+   and starts the Premier tracker: PQP and PQF against the thresholds
+   United published for each year, drawn as the same arc gauges united.com
+   uses, plus lifetime miles and Million Miler progress.
+3. Add more when you feel like it. A **Flighty** or **myFlightradar24**
+   CSV brings years of history on any airline, aircraft types and tail
+   numbers included, and email receipts add the money side. The app tells
+   the formats apart on its own.
 
-Already keep a flight log in Flighty or myFlightradar24? Drop its CSV
-export too. It loads years of history on any airline, including aircraft
-types and tail numbers, and the app tells the formats apart on its own.
+Re-importing the same file changes nothing, so pull a fresh CSV whenever
+you like. And export a backup from Settings once you're set up: your
+ledger has no cloud copy unless you turn on Drive sync.
 
 ![Five stops: the CSV import preview, the dashboard it builds, the flight table, the Premier gauges, and the offline route map](docs/media/tour.gif)
 
 ## Where Flight Ledger is different
 
 Feed it your email receipts and it becomes an accounting tool. Drop `.eml`
-files or a whole Gmail label exported through Takeout; 23 formats are read,
-covering United, American, Delta, Southwest, Alaska, Lufthansa and others,
-plus bookings made through Amex, Chase, and Capital One travel portals.
-Then:
+files or a whole Gmail label exported through Takeout. It recognizes 23
+receipt formats, covering United, American, Delta, Southwest, Alaska,
+Lufthansa and others, plus bookings made through Amex, Chase, and Capital
+One travel portals. Then:
 
 - A reissued ticket is priced as one economic unit across the flights that
   actually flew, so the value carried between tickets is never counted
@@ -55,15 +58,16 @@ Then:
 
 ## Also in the box
 
-Statistics, mostly. A zoomable route map drawn fully offline from bundled
-data, so no tile server ever learns your travel history. A sortable table
-of every route you fly. Fleet statistics down to individual airframes,
-enriched from the FAA registry. Travel mix, fare-class economics, and a
-printable annual report. Plus a change log that records every edit, who
-made it, and what changed, so "what did that import actually do?" always
-has an answer. Estimates wear an `≈`, and a value you typed by hand is
-never overwritten by an import. The reasoning behind each rule lives in
-the [docs](#documentation).
+Statistics, mostly: a zoomable route map drawn fully offline from bundled
+data, a sortable table of every route you fly, fleet statistics down to
+individual airframes enriched from the FAA registry, travel mix,
+fare-class economics, and a printable annual report.
+
+And the bookkeeping to trust it all: a change log records every edit and
+whether it came from you or an import, so "what did that import actually
+do?" always has an answer. Estimates wear an `≈`, and a value you typed
+by hand is never overwritten by an import. The reasoning behind each rule
+lives in the [docs](#documentation).
 
 ## Your data
 
@@ -78,7 +82,7 @@ sync. The public site also counts page views, but never sees ledger
 contents. Details in the
 [privacy policy](https://app.flightledger.net/privacy).
 
-## Run it yourself
+## Self-hosting and development
 
 ```bash
 npm install
@@ -129,15 +133,15 @@ and map data are bundled, with no third-party runtime data services.
 
 ## Status
 
-In daily use: the ledger, receipt and CSV imports, weighted matching, the
-reconcile queue, payments and exchange chains. Not built yet: Gmail
-forwarding and scheduled imports.
+Flight Ledger is in daily use. Imports are manual by design today: it
+does not connect to your Gmail or poll airlines on a schedule; you feed
+it files, and nothing happens without you.
 
 ## License
 
-[MIT](LICENSE). Redistributed third-party material keeps its own terms —
+[MIT](LICENSE). Redistributed third-party material keeps its own terms:
 the Barlow and IBM Plex Mono fonts (SIL OFL 1.1) and eighteen test
-fixtures from two MIT-licensed corpora — inventoried in
+fixtures from two MIT-licensed corpora, inventoried in
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) with full license texts
 under `licenses/`. The bundled datasets are public domain or public data:
 OurAirports, Natural Earth, the FAA aircraft registry, and the BIS
