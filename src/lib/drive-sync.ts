@@ -54,8 +54,16 @@ export async function backupFingerprint(payload: BackupPayload): Promise<string>
   ).join("");
 }
 
-/** Empty in the sense that matters for sync: no rows worth protecting. */
-export function backupIsEmpty(payload: BackupPayload): boolean {
+/** Empty in the sense that matters for sync AND for the demo-data button:
+ *  no rows worth protecting, in any table. The parameter asks only for the
+ *  five arrays so the analytics route can hand it EnrichedData directly —
+ *  same test, one definition. */
+export function backupIsEmpty(
+  payload: Pick<
+    BackupPayload,
+    "tickets" | "segments" | "adjustments" | "payments" | "activities"
+  >
+): boolean {
   return (
     !payload.tickets?.length &&
     !payload.segments?.length &&

@@ -2,12 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, Plus } from "lucide-react";
-import type { Analytics, LifetimeForecast, RouteSummary } from "@/lib/metrics";
+import { AlertTriangle, Plus, Upload } from "lucide-react";
+import type { Analytics, LifetimeForecast } from "@/lib/metrics";
 import type { ReconcileReport } from "@/lib/reconcile";
+import { RECONCILE_GROUPS } from "@/lib/reconcile-groups";
 import type { EnrichedSegment, SegmentRow, TicketRow } from "@/lib/types";
+import { rollupYears } from "@/lib/metrics";
 import { api, fmtCpm, fmtDate, fmtInt, fmtMoney, fmtMonth } from "@/lib/format";
-import { EmptyState, MilesBasisToggle, Panel, StatCard, StatusChip } from "@/components/ui";
+import { EmptyState, MilesBasisToggle, Panel, StatCard, StatusChip, toast } from "@/components/ui";
 import FlightForm from "@/components/FlightForm";
 import {
   C,
@@ -24,10 +26,27 @@ import {
   type Range,
 } from "@/components/RangeControl";
 
+/** what /api/analytics returns beyond the Analytics core */
+type DashPayload = Analytics & {
+  reconcile: ReconcileReport;
+  /** authoritative — every table empty, by the same test Drive sync applies */
+  ledgerEmpty: boolean;
+  /** current qualification year's standing, from the premier machinery —
+   *  tier, next and the ask all read off the ≈ standing (posted + flown
+   *  awaiting credit), never a mix */
+  premierNow: {
+    tier: string | null;
+    /** reached on the ≈ standing but not yet on posted totals */
+    tierIsEstimated: boolean;
+    next: string | null;
+    needPqp: number;
+    needPqf: number;
+    shortfall: string | null;
+  } | null;
+};
+
 export default function DashboardPage() {
-  const [data, setData] = useState<(Analytics & { reconcile: ReconcileReport }) | null>(
-    null
-  );
+  const [data, setData] = useState<DashPayload | null>(null);
   const [tickets, setTickets] = useState<TicketRow[]>([]);
   const [range, setRange] = useState<Range>("24");
   /* Cents per mile FLOWN, or cents per mile that credited toward Million
@@ -38,9 +57,10 @@ export default function DashboardPage() {
   const [showForm, setShowForm] = useState(false);
   const [editSegment, setEditSegment] = useState<SegmentRow | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [demoBusy, setDemoBusy] = useState(false);
 
   const refresh = useCallback(() => {
-    api<Analytics & { reconcile: ReconcileReport }>("/api/analytics")
+    api<DashPayload>("/api/analytics")
       .then(setData)
       .catch((e) => setError(e.message));
     api<{ tickets: TicketRow[] }>("/api/tickets").then((r) => setTickets(r.tickets)).catch(() => {});
@@ -55,10 +75,16 @@ export default function DashboardPage() {
     return [...new Set(data.monthly.map((m) => m.month.slice(0, 4)))].sort().reverse();
   }, [data]);
 
-  const monthly = useMemo(
-    () => (data ? filterByRange(data.monthly, range) : []),
-    [data, range]
-  );
+  /* At ALL the series spans every year the ledger knows — decades, once a
+     flight diary lands — so the instrument charts step up to year bars, the
+     same altitude change the Analysis ledger makes at this range. Ratios are
+     re-derived from summed bases inside the rollup, never averaged. */
+  const yearly = range === "all";
+  const monthly = useMemo(() => {
+    if (!data) return [];
+    const rows = filterByRange(data.monthly, range);
+    return yearly ? rollupYears(rows) : rows;
+  }, [data, range, yearly]);
   /* The cumulative series is a RUNNING TOTAL, so slicing it to one window
      keeps each point's true running value — the line starts wherever the
      window began rather than at zero, which is the honest reading of
@@ -75,6 +101,44 @@ export default function DashboardPage() {
     const first = monthly[0]?.month;
     return first ? rows.filter((r) => r.date >= first) : rows;
   }, [data, range, monthly]);
+
+  /* One click stands up a full sample ledger on an empty install, through
+     the same door a real backup restore takes — so what the visitor
+     explores is exactly what the app does with data, reconcile queue and
+     all. The fixture rides the bundle and loads only on click. Offered
+     only while the ledger is EMPTY — every table, not just flights, since
+     restore REPLACES and a tickets-only ledger has everything to lose —
+     and emptiness is re-established at click time, because the rendered
+     flag is as old as the page data and another tab may have imported
+     something since. */
+  const loadDemo = async () => {
+    setDemoBusy(true);
+    try {
+      const fresh = await api<DashPayload>("/api/analytics");
+      if (!fresh.ledgerEmpty) {
+        setData(fresh);
+        toast(
+          "This ledger already holds data, so the demo stays out. Erase all data from Settings first if you really want it."
+        );
+        return;
+      }
+      const demo = (await import("@/data/demo-ledger.json")).default;
+      const r = await api<{ restored: Record<string, number> }>("/api/backup", {
+        method: "POST",
+        body: JSON.stringify(demo),
+      });
+      toast(
+        `Demo ledger loaded — ${r.restored.segments} flights on ${r.restored.tickets} tickets. Erase it any time from Settings.`
+      );
+      refresh();
+    } catch (e) {
+      /* setError would replace the whole dashboard with the error panel —
+         a failed demo load is a toast-sized event, not a dead page */
+      toast(e instanceof Error ? e.message : "Demo data failed to load");
+    } finally {
+      setDemoBusy(false);
+    }
+  };
 
   const openIssueFlight = async (segmentId?: string) => {
     if (!segmentId) return;
@@ -99,6 +163,32 @@ export default function DashboardPage() {
   const hasData = data.totals.flights > 0 || data.upcoming.length > 0;
   const year = new Date().getFullYear();
 
+  /* The Premier card's second line: standing and the ask. "7,193 / 24"
+     answers where you are; the next threshold and what it still wants is
+     the question a status chaser actually has. The flight/other split and
+     the booked figure move to the tooltip, alongside the full shortfall
+     sentence with the pqp-only route. */
+  const premier = data.premierNow;
+  const tierShort = (name: string | null) => name?.replace("Premier ", "");
+  const premierAsk =
+    premier?.next != null
+      ? [
+          premier.needPqp > 0 ? `${fmtInt(premier.needPqp)} PQP` : null,
+          premier.needPqf > 0 ? `${premier.needPqf} PQF` : null,
+        ]
+          .filter(Boolean)
+          .join(" + ")
+      : "";
+
+  /* Attention, grouped the way the Reconcile queue groups — worst first.
+     40 raw rows of repeated chain warnings is a wall; counts per kind and
+     the three most urgent items is a briefing. */
+  const attnGroups = RECONCILE_GROUPS.map((g) => ({
+    ...g,
+    items: exceptions.filter((e) => e.kind === g.kind),
+  })).filter((g) => g.items.length > 0);
+  const attnTop = attnGroups.flatMap((g) => g.items).slice(0, 3);
+
   return (
     <div className="mx-auto max-w-[1440px]">
       {/* header */}
@@ -117,10 +207,19 @@ export default function DashboardPage() {
               background: "color-mix(in oklab, var(--color-warning) 10%, transparent)",
             }}>
               <AlertTriangle size={11} />
-              {cards.openIssues} open issue{cards.openIssues === 1 ? "" : "s"}
+              {/* the WARN count, and says so — the attention panel's queue
+                  also carries info-level nudges, so "issues" here and a
+                  bigger total there read as a contradiction */}
+              {cards.openIssues} warning{cards.openIssues === 1 ? "" : "s"}
             </a>
           )}
-          <button className="btn btn-primary" onClick={() => setShowForm(true)}>
+          {/* The recurring gesture leads: a fresh My Activity CSV is how this
+              ledger is maintained, where logging a flight by hand is the
+              exception. Same deep link the empty state uses. */}
+          <Link href="/activity?import=1" className="btn btn-primary">
+            <Upload size={14} /> Import CSV
+          </Link>
+          <button className="btn btn-ghost" onClick={() => setShowForm(true)}>
             <Plus size={14} /> Log flight
           </button>
         </div>
@@ -148,6 +247,14 @@ export default function DashboardPage() {
                 <button className="btn btn-ghost" onClick={() => setShowForm(true)}>
                   <Plus size={14} /> Log a flight
                 </button>
+                {/* only on a truly empty ledger — tickets or activity with no
+                    flights still shows this board, but a restore would take
+                    that data with it */}
+                {data.ledgerEmpty && (
+                  <button className="btn btn-ghost" onClick={loadDemo} disabled={demoBusy}>
+                    {demoBusy ? "Loading…" : "Load demo data"}
+                  </button>
+                )}
               </div>
             }
           />
@@ -204,19 +311,32 @@ export default function DashboardPage() {
                 </span>
               }
               sub={
-                [
-                  cards.ytdNonFlightPqp > 0
-                    ? `${fmtInt(cards.ytdPqp)} flight + ${fmtInt(cards.ytdNonFlightPqp)} other PQP`
-                    : `${fmtInt(cards.ytdPqp)} flight PQP`,
-                  cards.pendingBookedPqp > 0
-                    ? `+${fmtInt(cards.pendingBookedPqp)} booked`
-                    : null,
-                ]
-                  .filter(Boolean)
-                  .join(" · ")
+                premier?.next != null && premierAsk
+                  ? `${premier.tierIsEstimated ? "≈" : ""}${tierShort(premier.tier) ?? "No tier yet"} · ${tierShort(premier.next)} in ${premierAsk}`
+                  : premier?.next == null && premier?.tier != null
+                    ? `${premier.tierIsEstimated ? "≈" : ""}${tierShort(premier.tier)} — the top rung`
+                    : [
+                        cards.ytdNonFlightPqp > 0
+                          ? `${fmtInt(cards.ytdPqp)} flight + ${fmtInt(cards.ytdNonFlightPqp)} other PQP`
+                          : `${fmtInt(cards.ytdPqp)} flight PQP`,
+                        cards.pendingBookedPqp > 0
+                          ? `+${fmtInt(cards.pendingBookedPqp)} booked`
+                          : null,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")
               }
               accent={C.pqp}
-              title="The two Premier qualifying currencies. PQP counts flights plus card, shopping and partner earning; PQF counts qualifying flight segments. The ≈ includes flown flights whose credit hasn't posted; “booked” is receipt-projected PQP on flights not yet flown."
+              title={
+                "The two Premier qualifying currencies. PQP counts flights plus card, shopping and partner earning; PQF counts qualifying flight segments. The ≈ includes flown flights whose credit hasn't posted." +
+                (cards.ytdNonFlightPqp > 0
+                  ? `\n\n${fmtInt(cards.ytdPqp)} flight + ${fmtInt(cards.ytdNonFlightPqp)} other PQP.`
+                  : "") +
+                (cards.pendingBookedPqp > 0
+                  ? `\n${fmtInt(cards.pendingBookedPqp)} more PQP is receipt-projected on booked flights not yet flown.`
+                  : "") +
+                (premier?.shortfall ? `\n\n${premier.shortfall}` : "")
+              }
             />
             <StatCard
               label="United lifetime miles"
@@ -289,6 +409,116 @@ export default function DashboardPage() {
             />
           </div>
 
+          {/* The actionable row, before any chart: what needs doing and
+              what's next are the two facts a returning user came for — 135
+              open issues buried under five charts was analytics posing as a
+              dashboard. */}
+          <div className="stagger mt-6 grid grid-cols-1 gap-3 lg:grid-cols-2">
+            <Panel
+              label="Needs attention"
+              accent="var(--color-warning)"
+              className="pb-2"
+              right={
+                <Link href="/reconcile" className="t-label !text-[9.5px] text-s-miles hover:underline">
+                  Open queue →
+                </Link>
+              }
+            >
+              <div id="attention" className="px-4 pb-3">
+                {exceptions.length === 0 ? (
+                  <p className="py-8 text-center text-[13px] text-mute">
+                    All clear — nothing to reconcile.
+                  </p>
+                ) : (
+                  <>
+                    {/* the queue at a glance: a count per kind, in the
+                        queue's own worst-first order, then only the three
+                        most urgent items — the full list is one click away
+                        and 40 raw rows of repeated chain warnings is a
+                        wall, not a briefing */}
+                    <div className="flex flex-wrap gap-1.5 border-b border-[color-mix(in_oklab,var(--color-line)_55%,transparent)] pb-2.5 pt-1">
+                      {attnGroups.map((g) => (
+                        <Link
+                          key={g.kind}
+                          href="/reconcile"
+                          className="chip !px-1.5 !text-[9.5px]"
+                          style={{
+                            color: g.accent,
+                            borderColor: `color-mix(in oklab, ${g.accent} 45%, transparent)`,
+                          }}
+                          title={g.blurb}
+                        >
+                          {g.label} ×{g.items.length}
+                        </Link>
+                      ))}
+                    </div>
+                    <ul>
+                      {attnTop.map((e, i) => (
+                        <li
+                          key={i}
+                          className={`flex items-start gap-2.5 border-b border-[color-mix(in_oklab,var(--color-line)_55%,transparent)] py-2 last:border-0 ${
+                            e.segmentId ? "cursor-pointer hover:bg-[var(--tint-accent-faint)]" : ""
+                          }`}
+                          onClick={() => openIssueFlight(e.segmentId)}
+                        >
+                          <span
+                            className="chip mt-0.5 shrink-0 !px-1.5 !text-[9px]"
+                            style={{
+                              color: e.severity === "warn" ? "var(--color-warning)" : "var(--color-s-miles)",
+                              borderColor: `color-mix(in oklab, ${e.severity === "warn" ? "var(--color-warning)" : "var(--color-s-miles)"} 45%, transparent)`,
+                            }}
+                          >
+                            {e.severity === "warn" ? "WARN" : "INFO"}
+                          </span>
+                          <div className="min-w-0">
+                            <p className="truncate text-[12.5px] text-ink2">{e.title}</p>
+                            {e.detail && (
+                              <p className="mt-0.5 text-[11px] leading-snug text-mute">
+                                {e.detail}
+                              </p>
+                            )}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                    {exceptions.length > attnTop.length && (
+                      <p className="pt-1.5 text-[11px] text-mute">
+                        …and {fmtInt(exceptions.length - attnTop.length)} more in the queue.
+                      </p>
+                    )}
+                  </>
+                )}
+              </div>
+            </Panel>
+            <Panel label="Up next" accent={C.miles}>
+              <SegmentList
+                segments={data.upcoming}
+                /* an equal-height panel with one line of "nothing" in it is
+                   dead space — say what would put something here */
+                empty={
+                  <>
+                    Nothing scheduled.{" "}
+                    <button
+                      className="underline decoration-[var(--color-line2)] underline-offset-2 transition-colors hover:text-ink"
+                      onClick={() => setShowForm(true)}
+                    >
+                      Log a planned flight
+                    </button>
+                    , or drop a booking receipt on the{" "}
+                    <Link
+                      href="/tickets"
+                      className="underline decoration-[var(--color-line2)] underline-offset-2 transition-colors hover:text-ink"
+                    >
+                      Tickets page
+                    </Link>
+                    .
+                  </>
+                }
+                onPick={(s) => setEditSegment(s)}
+              />
+            </Panel>
+          </div>
+
           {/* range control */}
           <div className="mt-6 mb-3 flex items-center justify-between">
             <h2 className="t-label">Instruments</h2>
@@ -297,7 +527,7 @@ export default function DashboardPage() {
 
           {/* charts */}
           <div className="stagger grid grid-cols-1 gap-3 lg:grid-cols-2">
-            <Panel label="Miles flown — monthly" accent={C.miles} className="pb-2">
+            <Panel label={`Miles flown — ${yearly ? "yearly" : "monthly"}`} accent={C.miles} className="pb-2">
               <div className="px-2 pt-1">
                 <MilesChart data={monthly} />
               </div>
@@ -312,23 +542,32 @@ export default function DashboardPage() {
                  marks it names anyway. */
               right={
                 <div className="flex flex-wrap items-center gap-2">
-                  <select
-                    className="field !w-auto !py-1 text-[11.5px]"
-                    value={cpmRolling}
-                    onChange={(e) => setCpmRolling(Number(e.target.value))}
-                    title="Trailing average, weighted by miles rather than averaging the monthly figures"
-                  >
-                    <option value={0}>No average</option>
-                    <option value={3}>3-mo avg</option>
-                    <option value={6}>6-mo avg</option>
-                    <option value={12}>12-mo avg</option>
-                  </select>
+                  {/* A trailing N-month average has no meaning over year bars,
+                      so at year altitude the control steps aside rather than
+                      offering windows it would silently misapply. */}
+                  {!yearly && (
+                    <select
+                      className="field !w-auto !py-1 text-[11.5px]"
+                      value={cpmRolling}
+                      onChange={(e) => setCpmRolling(Number(e.target.value))}
+                      title="Trailing average, weighted by miles rather than averaging the monthly figures"
+                    >
+                      <option value={0}>No average</option>
+                      <option value={3}>3-mo avg</option>
+                      <option value={6}>6-mo avg</option>
+                      <option value={12}>12-mo avg</option>
+                    </select>
+                  )}
                   <MilesBasisToggle value={cpmBasis} onChange={setCpmBasis} />
                 </div>
               }
             >
               <div className="px-2 pt-1">
-                <CpmChart data={monthly} basis={cpmBasis} rollingWindow={cpmRolling} />
+                <CpmChart
+                  data={monthly}
+                  basis={cpmBasis}
+                  rollingWindow={yearly ? 0 : cpmRolling}
+                />
                 {/* Naming the two SEGMENTS, not the total: the bar's full
                     height is still gross CPM, but gross has no colour of its
                     own, so listing it would point at a swatch that isn't in
@@ -338,7 +577,9 @@ export default function DashboardPage() {
                     items={[
                       { name: "Personal", color: C.personal },
                       { name: "Covered", color: C.covered },
-                      ...(cpmRolling > 0 ? [{ name: "Average", color: C.miles }] : []),
+                      ...(!yearly && cpmRolling > 0
+                        ? [{ name: "Average", color: C.miles }]
+                        : []),
                     ]}
                   />
                 </div>
@@ -380,7 +621,7 @@ export default function DashboardPage() {
               </div>
             </Panel>
             <Panel
-              label="Premier qualifying points — monthly"
+              label={`Premier qualifying points — ${yearly ? "yearly" : "monthly"}`}
               accent={C.pqp}
               className="pb-2"
               right={
@@ -397,129 +638,15 @@ export default function DashboardPage() {
               </div>
             </Panel>
 
-            {/* attention — mirrors the reconciliation queue */}
-            <Panel
-              label="Needs attention"
-              accent="var(--color-warning)"
-              className="pb-2"
-              right={
-                <Link href="/reconcile" className="t-label !text-[9.5px] text-s-miles hover:underline">
-                  Open queue →
-                </Link>
-              }
-            >
-              <div id="attention" className="max-h-[224px] overflow-y-auto px-4 pb-3">
-                {exceptions.length === 0 ? (
-                  <p className="py-8 text-center text-[13px] text-mute">
-                    All clear — nothing to reconcile.
-                  </p>
-                ) : (
-                  <ul>
-                    {exceptions.slice(0, 40).map((e, i) => (
-                      <li
-                        key={i}
-                        className={`flex items-start gap-2.5 border-b border-[color-mix(in_oklab,var(--color-line)_55%,transparent)] py-2 last:border-0 ${
-                          e.segmentId ? "cursor-pointer hover:bg-[var(--tint-accent-faint)]" : ""
-                        }`}
-                        onClick={() => openIssueFlight(e.segmentId)}
-                      >
-                        <span
-                          className="chip mt-0.5 shrink-0 !px-1.5 !text-[9px]"
-                          style={{
-                            color: e.severity === "warn" ? "var(--color-warning)" : "var(--color-s-miles)",
-                            borderColor: `color-mix(in oklab, ${e.severity === "warn" ? "var(--color-warning)" : "var(--color-s-miles)"} 45%, transparent)`,
-                          }}
-                        >
-                          {e.severity === "warn" ? "WARN" : "INFO"}
-                        </span>
-                        <div className="min-w-0">
-                          <p className="truncate text-[12.5px] text-ink2">{e.title}</p>
-                          {e.detail && (
-                            <p className="mt-0.5 text-[11px] leading-snug text-mute">
-                              {e.detail}
-                            </p>
-                          )}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </Panel>
-          </div>
-
-
-          {/* lists row */}
-          <div className="stagger mt-3 grid grid-cols-1 gap-3 lg:grid-cols-3">
-            <Panel label="Up next" accent={C.miles}>
-              <SegmentList
-                segments={data.upcoming}
-                empty="Nothing scheduled."
-                onPick={(s) => setEditSegment(s)}
-              />
-            </Panel>
+            {/* Recent flights close the instruments grid to an even six.
+                Top routes left the dashboard for Analysis → Routes, where
+                the full sortable table already outclassed this excerpt. */}
             <Panel label="Recent flights" accent={C.award}>
               <SegmentList
                 segments={data.recent}
                 empty="No flown segments yet."
                 onPick={(s) => setEditSegment(s)}
               />
-            </Panel>
-            <Panel
-              label="Top routes"
-              accent={C.pqp}
-              right={
-                <span
-                  className="t-label !text-[10px] text-mute"
-                  title="Gross cents per mile on this city pair, over its flights that have a recorded cost and earn lifetime miles — the same basis as the CPM figures above. Hover a route for personal CPM, spend, and the directions flown."
-                >
-                  gross ¢/mi
-                </span>
-              }
-            >
-              {data.routes.length === 0 ? (
-                <p className="px-4 py-6 text-[13px] text-mute">No flown routes yet.</p>
-              ) : (
-                <ul className="px-4 pb-3">
-                  {data.routes.map((r) => (
-                    <li
-                      key={r.route}
-                      className="border-b border-[color-mix(in_oklab,var(--color-line)_55%,transparent)] py-2 last:border-0"
-                      title={routeTitle(r, currency)}
-                    >
-                      <div className="flex items-baseline gap-3">
-                        <span className="t-num text-[13px] text-ink">{r.route}</span>
-                        <span className="t-num ml-auto text-[13px] text-ink">
-                          {fmtCpm(r.grossCpm)}
-                        </span>
-                      </div>
-                      <div className="mt-0.5 flex items-baseline gap-3 text-[11.5px] text-mute">
-                        <span>
-                          {r.count}× · {fmtInt(r.miles)} mi
-                        </span>
-                        {/* Only where it differs. A route whose every flight is
-                            in the basis needs no footnote, and printing one on
-                            all of them would bury the routes where the n really
-                            is smaller than the flight count.
-
-                            Says which flights the figure rests on, never why
-                            the others are out: a flight leaves the basis for
-                            having no recorded cost OR for earning no lifetime
-                            miles, and "no costed flight" claimed the first on
-                            an award ticket that cost $5.60. The tooltip carries
-                            the reason; the row carries the count. */}
-                        {r.cpmFlights < r.count && (
-                          <span className="ml-auto">
-                            {r.cpmFlights === 0
-                              ? "¢/mi not available"
-                              : `¢/mi from ${r.cpmFlights} of ${r.count}`}
-                          </span>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
             </Panel>
           </div>
 
@@ -606,42 +733,13 @@ function MillionMiler({ forecast }: { forecast: LifetimeForecast | null }) {
   );
 }
 
-/**
- * The detail behind a route row. The panel is a third of the width, so the row
- * carries the figure and this carries the reasoning — which for a route means
- * mostly the basis: on a pair flown twice, how many of those two are actually
- * behind the number is the difference between reading it and misreading it.
- */
-function routeTitle(r: RouteSummary, currency: string): string {
-  const dirs = r.directions.map((d) => `${d.route} ×${d.count}`).join(" · ");
-  if (r.cpmFlights === 0) {
-    return `${dirs}\n\nNo flight on this pair has both a recorded cost and lifetime-mile credit, so there is no cost per mile to report.`;
-  }
-  /* The basis only needs explaining where it excluded something. On a route
-     whose every flight counts, "all 3 flights" is the whole story, and the
-     clause about recorded cost and lifetime miles is answering a question
-     nobody asked. */
-  const whole = r.cpmFlights === r.count;
-  const basis = whole
-    ? `Over all ${r.count} flight${r.count === 1 ? "" : "s"} · ${fmtInt(r.cpmMiles)} mi.`
-    : `Over ${r.cpmFlights} of ${r.count} flights · ${fmtInt(r.cpmMiles)} mi — the ones with a recorded cost that earn lifetime miles.`;
-  return [
-    dirs,
-    "",
-    `Gross ${fmtMoney(r.gross, currency)} · personal ${fmtMoney(r.personal, currency)}`,
-    `Personal ${fmtCpm(r.personalCpm)} per mile`,
-    "",
-    basis,
-  ].join("\n");
-}
-
 function SegmentList({
   segments,
   empty,
   onPick,
 }: {
   segments: EnrichedSegment[];
-  empty: string;
+  empty: React.ReactNode;
   onPick: (s: EnrichedSegment) => void;
 }) {
   if (segments.length === 0)

@@ -191,6 +191,12 @@ export default function FaqPage() {
             <p>
               Prefer to start small? Log a flight by hand and go from there.
             </p>
+            <p>
+              Just want to look around first? Press{" "}
+              <strong>Load demo data</strong> on the empty dashboard and a
+              sample ledger appears. Erase it from Settings when you&rsquo;re
+              done.
+            </p>
           </QA>
 
           <QA q="What if I don't use Gmail?">

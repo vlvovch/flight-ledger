@@ -430,7 +430,6 @@ export interface Analytics {
   issues: Issue[];
   upcoming: EnrichedSegment[];
   recent: EnrichedSegment[];
-  routes: RouteSummary[];
   /** money in the month it moved, not the month flown (§7.3) */
   cashFlow: CashFlow;
   totals: {
@@ -852,7 +851,6 @@ export function buildAnalytics(data: EnrichedData): Analytics {
     .sort((a, b) => b.flight_date.localeCompare(a.flight_date))
     .slice(0, 8);
 
-  const routes = summarizeRoutes(data.segments);
   const cashFlow = buildCashFlow(data.tickets, data.adjustments, data.allocations);
 
   /* Effective CPM across a band of valuations, not just the configured one.
@@ -956,7 +954,6 @@ export function buildAnalytics(data: EnrichedData): Analytics {
     issues,
     upcoming,
     recent,
-    routes,
     cashFlow,
     totals: totalsAll,
   };

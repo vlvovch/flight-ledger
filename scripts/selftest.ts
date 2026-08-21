@@ -8870,6 +8870,116 @@ async function routeHandlerChecks() {
         badPayments.status === 400 &&
         /payments.*array/.test(badPayments.body.error)
     );
+    /* The bundled demo ledger rides this same door: the empty-dashboard
+       button POSTs src/data/demo-ledger.json verbatim, so the fixture
+       drifting from the backup schema must fail here, not on a visitor's
+       first click. Runs last in this section — a restore replaces the
+       whole temp ledger. */
+    const demoFixture = JSON.parse(
+      readFileSync(join(cwd, "src/data/demo-ledger.json"), "utf-8")
+    );
+    const demoRes = await j(
+      await apiBackupRestore(req("POST", "/api/backup", demoFixture))
+    );
+    check(
+      "demo ledger: the bundled fixture restores cleanly, every row counted",
+      demoRes.status === 200 &&
+        demoRes.body.restored.segments === demoFixture.segments.length &&
+        demoRes.body.restored.tickets === demoFixture.tickets.length &&
+        demoRes.body.restored.adjustments === demoFixture.adjustments.length
+    );
+    check(
+      "demo ledger: enough of a ledger to be worth demonstrating",
+      demoFixture.segments.length >= 10 &&
+        demoFixture.tickets.length >= 5 &&
+        demoFixture.manual_changes.length > 0
+    );
+    /* The demo button's guard is the LEDGER being empty, not the flight
+       count — a tickets-only ledger has no flights on the board and
+       everything to lose to a demo restore. The analytics payload carries
+       the authoritative flag, by the same test Drive sync applies. */
+    const anFull = await j(await apiAnalytics());
+    check(
+      "analytics: a restored ledger is authoritatively not empty",
+      anFull.body.ledgerEmpty === false
+    );
+    check(
+      "analytics: premier standing rides the payload with the next-tier ask",
+      anFull.body.premierNow != null &&
+        typeof anFull.body.premierNow.shortfall === "string" &&
+        anFull.body.premierNow.needPqp > 0,
+      JSON.stringify(anFull.body.premierNow)
+    );
+    await apiBackupWipe(req("DELETE", "/api/backup?confirm=wipe"));
+    const tkOnly = await j(
+      await apiTicketCreate(req("POST", "/api/tickets", {
+        confirmation_code: "LONELY", issue_date: "2026-01-05", gross_total: 250,
+      }))
+    );
+    const anTicketOnly = await j(await apiAnalytics());
+    check(
+      "analytics: a tickets-only ledger is NOT empty — flights aren't the measure",
+      tkOnly.status === 201 &&
+        anTicketOnly.body.totals.flights === 0 &&
+        anTicketOnly.body.ledgerEmpty === false
+    );
+    await apiBackupWipe(req("DELETE", "/api/backup?confirm=wipe"));
+    const anWiped = await j(await apiAnalytics());
+    check(
+      "analytics: only a wiped-clean ledger reads empty",
+      anWiped.body.ledgerEmpty === true
+    );
+    /* Pending credit that crosses a tier: the payload's tier, next rung and
+       ask must move TOGETHER to the ≈ standing. The lib's posted-only tier
+       said "no tier yet, Silver next" while the standing had crossed
+       Silver — leaving the card naming a rung already passed and asking for
+       0 more toward it. A tiny custom program puts the boundary within one
+       flight's reach; posted sits at 900, a flown-uncredited leg adds a
+       projected 150, and 1,050 is past Silver's 1,000. */
+    await apiSettingsPut(
+      req("PUT", "/api/settings", {
+        premier_programs: [
+          {
+            from: 2020,
+            minFlights: 0,
+            tiers: [
+              { name: "Premier Silver", pqp: 1000, pqf: 1, pqpOnly: 1200 },
+              { name: "Premier Gold", pqp: 2000, pqf: 2, pqpOnly: 2400 },
+            ],
+          },
+        ],
+      })
+    );
+    const crossYr = new Date().getFullYear();
+    await apiFlightCreate(
+      req("POST", "/api/flights", {
+        origin: "IAH", destination: "DEN", marketing_carrier: "UA",
+        flight_date: `${crossYr}-01-01`, status: "flown_reconciled",
+        pqp: 900, pqf: 1,
+      })
+    );
+    await apiFlightCreate(
+      req("POST", "/api/flights", {
+        origin: "DEN", destination: "IAH", marketing_carrier: "UA",
+        flight_date: `${crossYr}-01-02`, status: "flown_unreconciled",
+        projected_pqp: 150, projected_pqf: 0,
+      })
+    );
+    const anCross = await j(await apiAnalytics());
+    const pn = anCross.body.premierNow;
+    check(
+      "analytics: pending credit crossing a tier moves tier, next and ask together",
+      pn != null &&
+        pn.tier === "Premier Silver" &&
+        pn.tierIsEstimated === true &&
+        pn.next === "Premier Gold" &&
+        pn.needPqp === 950 &&
+        /Gold/.test(pn.shortfall ?? ""),
+      JSON.stringify(pn)
+    );
+    // back to the built-in table, and a clean temp ledger
+    await apiSettingsPut(req("PUT", "/api/settings", { premier_programs: null }));
+    await apiBackupWipe(req("DELETE", "/api/backup?confirm=wipe"));
   } finally {
     process.chdir(cwd);
   }

@@ -10,6 +10,8 @@ flew. It runs entirely on your own machine.
 Nothing to install, no account to create. The whole app runs inside your
 browser (SQLite compiled to WebAssembly), and your ledger stays there.
 No ledger contents are uploaded unless you turn on Drive sync yourself.
+One click loads a demo ledger if you'd rather look around before
+importing anything.
 
 ## Start in five minutes
 
@@ -79,10 +81,10 @@ npm install
 npm run dev
 ```
 
-Open <http://localhost:3000>. To explore with sample data first, run
-`npm run seed:demo` and erase it later from Settings → Erase all data.
-Requires Node 22.13 or newer, the first release where `node:sqlite` runs
-without a flag.
+Open <http://localhost:3000>. To explore with sample data first, press
+"Load demo data" on the empty dashboard and erase it later from Settings →
+Erase all data. Requires Node 22.13 or newer, the first release where
+`node:sqlite` runs without a flag.
 
 `npm run build:browser` exports the entire app as static files (`out/`)
 that run with no server at all; serve them from any static host. For a
@@ -96,7 +98,7 @@ any other origin needs its own Google OAuth client ID for Drive sync.
 |---|---|
 | `npm run dev` | Start the dashboard |
 | `npm run build && npm start` | Production build and serve (uses `.next-build/`, so it won't disturb a running dev server) |
-| `npm run selftest` | 937 checks over distance, cost allocation, parsing and status math, plus a 500-case fuzz |
+| `npm run selftest` | 944 checks over distance, cost allocation, parsing and status math, plus a 500-case fuzz |
 | `npm run typecheck` | TypeScript check |
 | `npm run lint` | ESLint over `src/` and `scripts/` (Next's recommended rules, flat config) |
 | `npm run seed:demo` | Populate sample data (needs a running server) |
