@@ -40,9 +40,9 @@ async function main() {
   /* ---------- Four prior years, so the charts have a story to tell ----------
      A ledger seeded with one year of flying leaves its own signature chart
      flat: lifetime miles ran horizontal, the ALL range had one bar, and the
-     map stopped at two continents. These trips put a believable Houston
-     academic behind the numbers — conferences reimbursed by the university,
-     family summers in Europe, a Denver winter habit — climbing from the
+     map stopped at two continents. These trips put a believable Chicago
+     road warrior behind the numbers — conferences on the employer's dime,
+     family summers in Portugal, a Denver ski habit — climbing from the
      120k baseline toward the current year. PQP is roughly the fare split
      per leg; award miles ride at the member earn rate; lifetime miles are
      deliberately NOT set, because posted history predates any ledger and
@@ -66,80 +66,80 @@ async function main() {
   }> = [
     // 2022
     { code: "Q4TR82", issued: "2022-02-10", total: 260, cls: "V",
-      reimbursed: { payer: "University", date: "2022-04-04" },
-      legs: [["IAH", "ORD", "2022-03-06", "1188", 110], ["ORD", "IAH", "2022-03-10", "2085", 110]] },
+      reimbursed: { payer: "Employer", date: "2022-04-04" },
+      legs: [["ORD", "SAN", "2022-03-06", "1427", 140], ["SAN", "ORD", "2022-03-10", "2054", 140]] },
     { code: "L8MV31", issued: "2022-04-02", total: 1180, cls: "W", personal: true,
-      legs: [["IAH", "FRA", "2022-05-21", "46", 480], ["FRA", "IAH", "2022-06-04", "47", 480]] },
+      legs: [["ORD", "FRA", "2022-05-21", "944", 480], ["FRA", "ORD", "2022-06-04", "945", 480]] },
     { code: "V2KD97", issued: "2022-07-19", total: 380, cls: "S",
-      reimbursed: { payer: "University", date: "2022-10-21" },
-      legs: [["IAH", "EWR", "2022-09-12", "1296", 160], ["EWR", "IAH", "2022-09-16", "2128", 160]] },
+      reimbursed: { payer: "Employer", date: "2022-10-21" },
+      legs: [["ORD", "BOS", "2022-09-12", "1104", 140], ["BOS", "ORD", "2022-09-16", "519", 140]] },
     { code: "B6PN44", issued: "2022-09-08", total: 1620, cls: "K",
-      reimbursed: { payer: "University", date: "2022-12-12" },
+      reimbursed: { payer: "Employer", date: "2022-12-12" },
       legs: [
-        ["IAH", "SFO", "2022-11-01", "1949", 190], ["SFO", "NRT", "2022-11-01", "837", 650],
-        ["NRT", "SFO", "2022-11-09", "838", 650], ["SFO", "IAH", "2022-11-09", "397", 190],
+        ["ORD", "SFO", "2022-11-01", "684", 190], ["SFO", "NRT", "2022-11-01", "837", 650],
+        ["NRT", "SFO", "2022-11-09", "838", 650], ["SFO", "ORD", "2022-11-09", "2033", 190],
       ] },
     { code: "H3JW60", issued: "2022-11-20", total: 460, cls: "T", personal: true,
-      legs: [["IAH", "SEA", "2022-12-17", "541", 200], ["SEA", "IAH", "2022-12-23", "226", 200]] },
+      legs: [["ORD", "SEA", "2022-12-17", "541", 180], ["SEA", "ORD", "2022-12-23", "226", 180]] },
     // 2023
     { code: "P7GX25", issued: "2023-01-05", total: 290, cls: "T", personal: true,
-      legs: [["IAH", "DEN", "2023-02-11", "1885", 120], ["DEN", "IAH", "2023-02-15", "622", 120]] },
+      legs: [["ORD", "DEN", "2023-02-11", "1988", 110], ["DEN", "ORD", "2023-02-15", "522", 110]] },
     { code: "W1EC58", issued: "2023-02-22", total: 1290, cls: "L",
-      reimbursed: { payer: "University", date: "2023-05-30" },
+      reimbursed: { payer: "Employer", date: "2023-05-30" },
       legs: [
-        ["IAH", "FRA", "2023-04-16", "46", 460], ["FRA", "VIE", "2023-04-17", "8941", 55, "LH"],
-        ["VIE", "FRA", "2023-04-22", "8942", 55, "LH"], ["FRA", "IAH", "2023-04-22", "47", 460],
+        ["ORD", "FRA", "2023-04-16", "944", 460], ["FRA", "VIE", "2023-04-17", "8941", 55, "LH"],
+        ["VIE", "FRA", "2023-04-22", "8942", 55, "LH"], ["FRA", "ORD", "2023-04-22", "945", 460],
       ] },
     { code: "S9HB12", issued: "2023-05-01", total: 1310, cls: "W", personal: true,
       legs: [
-        ["IAH", "FRA", "2023-06-24", "46", 470], ["FRA", "WAW", "2023-06-25", "8817", 60, "LH"],
-        ["WAW", "FRA", "2023-07-09", "8818", 60, "LH"], ["FRA", "IAH", "2023-07-10", "47", 470],
+        ["ORD", "FRA", "2023-06-24", "944", 470], ["FRA", "LIS", "2023-06-25", "8926", 60, "LH"],
+        ["LIS", "FRA", "2023-07-09", "8927", 60, "LH"], ["FRA", "ORD", "2023-07-10", "945", 470],
       ] },
     { code: "D5QK73", issued: "2023-08-14", total: 1950, cls: "K",
-      reimbursed: { payer: "University", date: "2023-11-20" },
+      reimbursed: { payer: "Employer", date: "2023-11-20" },
       legs: [
-        ["IAH", "LAX", "2023-10-08", "1071", 170], ["LAX", "SYD", "2023-10-08", "839", 700],
-        ["SYD", "LAX", "2023-10-15", "840", 700], ["LAX", "IAH", "2023-10-16", "2402", 170],
+        ["ORD", "LAX", "2023-10-08", "1071", 170], ["LAX", "SYD", "2023-10-08", "839", 700],
+        ["SYD", "LAX", "2023-10-15", "840", 700], ["LAX", "ORD", "2023-10-16", "2402", 170],
       ] },
     // 2024
     { code: "G2ZN86", issued: "2024-01-10", total: 400, cls: "V",
-      reimbursed: { payer: "LBNL", date: "2024-03-25" },
-      legs: [["IAH", "BOS", "2024-02-25", "1104", 170], ["BOS", "IAH", "2024-02-28", "519", 170]] },
+      reimbursed: { payer: "Client", date: "2024-03-25" },
+      legs: [["ORD", "BOS", "2024-02-25", "1104", 150], ["BOS", "ORD", "2024-02-28", "519", 150]] },
     { code: "K9TF34", issued: "2024-03-03", total: 1090, cls: "L",
-      reimbursed: { payer: "University", date: "2024-05-28" },
-      legs: [["IAH", "LHR", "2024-04-14", "880", 450], ["LHR", "IAH", "2024-04-19", "881", 450]] },
+      reimbursed: { payer: "Employer", date: "2024-05-28" },
+      legs: [["ORD", "LHR", "2024-04-14", "928", 450], ["LHR", "ORD", "2024-04-19", "929", 450]] },
     { code: "X3RM77", issued: "2024-05-20", total: 440, cls: "S",
-      reimbursed: { payer: "LBNL", date: "2024-08-19" },
-      legs: [["IAH", "SFO", "2024-07-11", "1949", 190], ["SFO", "IAH", "2024-07-14", "397", 190]] },
+      reimbursed: { payer: "Client", date: "2024-08-19" },
+      legs: [["ORD", "SFO", "2024-07-11", "684", 190], ["SFO", "ORD", "2024-07-14", "2033", 190]] },
     { code: "M4CW29", issued: "2024-04-28", total: 1150, cls: "W", personal: true,
-      legs: [["IAH", "FRA", "2024-06-15", "46", 470], ["FRA", "IAH", "2024-06-29", "47", 470]] },
+      legs: [["ORD", "FRA", "2024-06-15", "944", 470], ["FRA", "ORD", "2024-06-29", "945", 470]] },
     { code: "R8LD51", issued: "2024-07-30", total: 1680, cls: "K",
-      reimbursed: { payer: "University", date: "2024-11-04" },
+      reimbursed: { payer: "Employer", date: "2024-11-04" },
       legs: [
-        ["IAH", "SFO", "2024-09-21", "1949", 195], ["SFO", "NRT", "2024-09-21", "837", 660],
-        ["NRT", "SFO", "2024-09-29", "838", 660], ["SFO", "IAH", "2024-09-30", "397", 195],
+        ["ORD", "SFO", "2024-09-21", "684", 195], ["SFO", "NRT", "2024-09-21", "837", 660],
+        ["NRT", "SFO", "2024-09-29", "838", 660], ["SFO", "ORD", "2024-09-30", "2033", 195],
       ] },
     { code: "T6VJ18", issued: "2024-10-12", total: 310, cls: "T", personal: true,
-      legs: [["IAH", "DEN", "2024-12-14", "1885", 125], ["DEN", "IAH", "2024-12-18", "622", 125]] },
+      legs: [["ORD", "DEN", "2024-12-14", "1988", 115], ["DEN", "ORD", "2024-12-18", "522", 115]] },
     // 2025
     { code: "E5WY42", issued: "2025-01-20", total: 270, cls: "V",
-      reimbursed: { payer: "University", date: "2025-03-31" },
-      legs: [["IAH", "ORD", "2025-03-02", "1188", 115], ["ORD", "IAH", "2025-03-05", "2085", 115]] },
+      reimbursed: { payer: "Employer", date: "2025-03-31" },
+      legs: [["ORD", "SAN", "2025-03-02", "1427", 145], ["SAN", "ORD", "2025-03-05", "2054", 145]] },
     { code: "N2BQ69", issued: "2025-04-07", total: 1340, cls: "W", personal: true,
       legs: [
-        ["IAH", "FRA", "2025-06-21", "46", 480], ["FRA", "WAW", "2025-06-22", "8817", 60, "LH"],
-        ["WAW", "FRA", "2025-07-06", "8818", 60, "LH"], ["FRA", "IAH", "2025-07-07", "47", 480],
+        ["ORD", "FRA", "2025-06-21", "944", 480], ["FRA", "LIS", "2025-06-22", "8926", 60, "LH"],
+        ["LIS", "FRA", "2025-07-06", "8927", 60, "LH"], ["FRA", "ORD", "2025-07-07", "945", 480],
       ] },
     { code: "U7SD90", issued: "2025-07-25", total: 2050, cls: "K",
-      reimbursed: { payer: "University", date: "2025-11-10" },
+      reimbursed: { payer: "Employer", date: "2025-11-10" },
       legs: [
-        ["IAH", "LAX", "2025-09-27", "1071", 175], ["LAX", "SYD", "2025-09-27", "839", 720],
-        ["SYD", "LAX", "2025-10-05", "840", 720], ["LAX", "IAH", "2025-10-06", "2402", 175],
+        ["ORD", "LAX", "2025-09-27", "1071", 175], ["LAX", "SYD", "2025-09-27", "839", 720],
+        ["SYD", "LAX", "2025-10-05", "840", 720], ["LAX", "ORD", "2025-10-06", "2402", 175],
       ] },
     { code: "J1FP36", issued: "2025-09-15", total: 390, cls: "S", personal: true,
-      legs: [["IAH", "EWR", "2025-11-22", "1296", 165], ["EWR", "IAH", "2025-11-30", "2128", 165]] },
+      legs: [["ORD", "EWR", "2025-11-22", "1660", 145], ["EWR", "ORD", "2025-11-30", "1661", 145]] },
     { code: "C8HT21", issued: "2025-10-30", total: 300, cls: "T", personal: true,
-      legs: [["IAH", "DEN", "2025-12-20", "1885", 128], ["DEN", "IAH", "2025-12-27", "622", 128]] },
+      legs: [["ORD", "DEN", "2025-12-20", "1988", 118], ["DEN", "ORD", "2025-12-27", "522", 118]] },
   ];
   for (const trip of priorTrips) {
     const tk = await call<{ id: string }>("/api/tickets", "POST", {
@@ -193,17 +193,17 @@ async function main() {
     type: "reimbursement",
     amount: 478.6,
     effective_date: "2026-05-02",
-    payer: "University",
+    payer: "Employer",
   });
   await call("/api/flights", "POST", {
     ticket_id: tk1.id,
     marketing_carrier: "UA",
-    flight_number: "1071",
-    origin: "IAH",
-    destination: "LAX",
+    flight_number: "1427",
+    origin: "ORD",
+    destination: "SAN",
     flight_date: "2026-04-11",
     departure_time: "08:05",
-    arrival_time: "09:41",
+    arrival_time: "10:20",
     cabin: "Economy",
     booking_class: "K",
     seat: "21F",
@@ -212,17 +212,17 @@ async function main() {
     pqp: 199,
     pqf: 1,
     award_miles: 995,
-    lifetime_miles: 1379,
+    lifetime_miles: 1723,
   });
   await call("/api/flights", "POST", {
     ticket_id: tk1.id,
     marketing_carrier: "UA",
-    flight_number: "2402",
-    origin: "LAX",
-    destination: "IAH",
+    flight_number: "2054",
+    origin: "SAN",
+    destination: "ORD",
     flight_date: "2026-04-15",
     departure_time: "16:10",
-    arrival_time: "21:32",
+    arrival_time: "22:15",
     cabin: "Economy",
     booking_class: "K",
     seat: "20A",
@@ -231,7 +231,7 @@ async function main() {
     pqp: 199,
     pqf: 1,
     award_miles: 995,
-    lifetime_miles: 1379,
+    lifetime_miles: 1723,
   });
 
   /* --- Europe family trip on a partner: unreimbursed, so personal --- */
@@ -247,10 +247,10 @@ async function main() {
     payment_method: "Visa …6411",
   });
   const legs2 = [
-    ["IAH", "FRA", "2026-06-18", "UA", "46", "16:40", "09:35", "Economy", "W", "flown_reconciled", 634, 1, 3169, 5769, "B787-9"],
-    ["FRA", "WAW", "2026-06-19", "LH", "8817", "12:10", "13:40", "Economy", "W", "flown_reconciled", 63, 0.5, 316, 558, "A320neo"],
-    ["WAW", "FRA", "2026-07-05", "LH", "8818", "15:25", "17:05", "Economy", "W", "flown_reconciled", 63, 0.5, 316, 558, "A320neo"],
-    ["FRA", "IAH", "2026-07-06", "UA", "47", "11:35", "15:50", "Economy", "W", "flown_reconciled", 634, 1, 3169, 5769, "B787-9"],
+    ["ORD", "FRA", "2026-06-18", "UA", "944", "16:40", "08:10", "Economy", "W", "flown_reconciled", 560, 1, 2800, 4340, "B787-9"],
+    ["FRA", "LIS", "2026-06-19", "LH", "8926", "12:10", "14:15", "Economy", "W", "flown_reconciled", 63, 0.5, 316, 1222, "A320neo"],
+    ["LIS", "FRA", "2026-07-05", "LH", "8927", "15:25", "19:20", "Economy", "W", "flown_reconciled", 63, 0.5, 316, 1222, "A320neo"],
+    ["FRA", "ORD", "2026-07-06", "UA", "945", "11:35", "14:10", "Economy", "W", "flown_reconciled", 560, 1, 2800, 4340, "B787-9"],
   ] as const;
   for (const [o, d, date, carrier, num, dep, arr, cabin, cls, status, pqp, pqf, award, lifetime, aircraft] of legs2) {
     await call("/api/flights", "POST", {
@@ -287,10 +287,10 @@ async function main() {
     payment_method: "Visa …6411",
   });
   const legs3 = [
-    ["IAH", "SFO", "2026-09-05", "265", "09:15", "11:42"],
-    ["SFO", "ICN", "2026-09-05", "893", "14:05", "18:55"],
-    ["ICN", "SFO", "2026-09-13", "892", "20:40", "14:55"],
-    ["SFO", "IAH", "2026-09-13", "1732", "17:30", "23:44"],
+    ["ORD", "SFO", "2026-09-05", "684", "09:15", "12:00"],
+    ["SFO", "SIN", "2026-09-05", "29", "14:05", "22:00"],
+    ["SIN", "SFO", "2026-09-13", "30", "09:40", "09:15"],
+    ["SFO", "ORD", "2026-09-13", "2033", "11:30", "17:55"],
   ] as const;
   for (const [o, d, date, num, dep, arr] of legs3) {
     await call("/api/flights", "POST", {
@@ -319,19 +319,19 @@ async function main() {
   await call("/api/flights", "POST", {
     ticket_id: tkFeb.id,
     marketing_carrier: "UA",
-    flight_number: "2128",
+    flight_number: "1661",
     origin: "EWR",
-    destination: "IAH",
+    destination: "ORD",
     flight_date: "2026-02-09",
     departure_time: "17:45",
     cabin: "Economy",
     booking_class: "S",
     status: "flown_reconciled",
     purpose: "personal",
-    pqp: 158,
+    pqp: 138,
     pqf: 1,
-    award_miles: 790,
-    lifetime_miles: 1400,
+    award_miles: 690,
+    lifetime_miles: 719,
   });
 
   const tkMar = await call<{ id: string }>("/api/tickets", "POST", {
@@ -345,11 +345,11 @@ async function main() {
     type: "reimbursement",
     amount: 500,
     effective_date: "2026-04-01",
-    payer: "LBNL",
+    payer: "Client",
   });
   for (const [o, d, date, num, status] of [
-    ["IAH", "SFO", "2026-03-09", "1949", "flown_reconciled"],
-    ["SFO", "IAH", "2026-03-13", "397", "flown_reconciled"],
+    ["ORD", "SFO", "2026-03-09", "684", "flown_reconciled"],
+    ["SFO", "ORD", "2026-03-13", "2033", "flown_reconciled"],
   ] as const) {
     await call("/api/flights", "POST", {
       ticket_id: tkMar.id,
@@ -361,10 +361,10 @@ async function main() {
       cabin: "Economy",
       booking_class: "V",
       status,
-      pqp: 267,
+      pqp: 235,
       pqf: 1,
-      award_miles: 1335,
-      lifetime_miles: 1635,
+      award_miles: 1175,
+      lifetime_miles: 1846,
     });
   }
 
@@ -376,8 +376,8 @@ async function main() {
     gross_total: 312.4,
   });
   for (const [o, d, date, num] of [
-    ["IAH", "DEN", "2026-07-16", "1885"],
-    ["DEN", "IAH", "2026-07-18", "622"],
+    ["ORD", "DEN", "2026-07-16", "1988"],
+    ["DEN", "ORD", "2026-07-18", "522"],
   ] as const) {
     await call("/api/flights", "POST", {
       ticket_id: tkJul.id,
@@ -405,9 +405,9 @@ async function main() {
   await call("/api/flights", "POST", {
     ticket_id: tkAward.id,
     marketing_carrier: "UA",
-    flight_number: "790",
-    origin: "IAH",
-    destination: "ORD",
+    flight_number: "1276",
+    origin: "ORD",
+    destination: "MCO",
     flight_date: "2026-05-22",
     cabin: "Economy",
     booking_class: "X",
