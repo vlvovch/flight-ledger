@@ -116,7 +116,7 @@ any other origin needs its own Google OAuth client ID for Drive sync.
 |---|---|
 | `npm run dev` | Start the dashboard |
 | `npm run build && npm start` | Production build and serve (uses `.next-build/`, so it won't disturb a running dev server) |
-| `npm run selftest` | 944 checks over distance, cost allocation, parsing and status math, plus a 500-case fuzz |
+| `npm run selftest` | 945 checks over distance, cost allocation, parsing and status math, plus a 500-case fuzz |
 | `npm run typecheck` | TypeScript check |
 | `npm run lint` | ESLint over `src/` and `scripts/` (Next's recommended rules, flat config) |
 | `npm run seed:demo` | Populate sample data (needs a running server) |

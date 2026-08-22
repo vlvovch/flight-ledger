@@ -2382,6 +2382,31 @@ console.log("receipt parsing (anonymized fixtures):");
       donePv.payments.length === 0 && donePv.stalePayments.length === 0,
       JSON.stringify(donePv.stalePayments)
     );
+    /* The reverse vintage: the ledger holds the healed, reference-bearing
+       miles row, and the mailbox coughs up an older TEMPLATE of the same
+       receipt whose parse states the redemption bare. That rendition is not
+       on file by exact key and is not poorer-existing for the stale sweep,
+       so it used to import as a second 30,000-mile payment — funding doubled
+       in the one direction the sweep can't reach. Same redemption to the
+       mile means the same redemption, whichever telling is richer. */
+    const bareParse = {
+      ...pairParse,
+      payments: pairParse.payments.map((b) =>
+        b.payment_type === "miles" ? { ...b, reference: null } : b
+      ),
+    };
+    const reversePv = buildReceiptPreview(
+      bareParse,
+      [healTicket],
+      [],
+      informative,
+      buildBatchContext([bareParse], [healTicket])
+    );
+    check(
+      "a poorer rendition never re-doubles a redemption the ledger states richer",
+      reversePv.payments.length === 0 && reversePv.stalePayments.length === 0,
+      JSON.stringify({ add: reversePv.payments, stale: reversePv.stalePayments })
+    );
   }
 
   /* The NGVWFE deadlock, from a real mailbox: an upgrade receipt names the

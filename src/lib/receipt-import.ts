@@ -1701,11 +1701,37 @@ export function buildReceiptPreview(
       ? []
       : existingPayments.filter((p) => p.ticket_id === existing.id).map(payKey)
   );
+  const normRef = (x: { reference?: string | null }) =>
+    (x.reference ?? "").trim().toLowerCase();
+  const milesOnFile =
+    existing == null
+      ? []
+      : existingPayments.filter(
+          (m) => m.ticket_id === existing.id && m.payment_type === "miles"
+        );
   // a cancellation re-prints the original purchase summary; it isn't a new
   // payment and must not be recorded as one
   let payments = isCancellation
     ? []
-    : parsed.payments.filter((p) => !onFile.has(payKey(p)));
+    : parsed.payments.filter((b) => {
+        if (onFile.has(payKey(b))) return false;
+        /* A miles row restating a redemption the ticket already carries, to
+           the mile, is the same redemption in another rendition — an older
+           template prints it without the member number. Creating it doubled
+           funding in the one direction the stale sweep below cannot reach:
+           that sweep retires POORER existing rows, and here the ledger's row
+           is the richer one. So the parsed twin is dropped, unless it is the
+           richer telling (it carries a reference the ledger's row lacks), in
+           which case it lands and the sweep retires the bare original. */
+        if (b.payment_type === "miles" && b.award_miles_used != null) {
+          const bRef = normRef(b);
+          const twin = milesOnFile.find(
+            (m) => (m.award_miles_used ?? null) === b.award_miles_used
+          );
+          if (twin && !(bRef !== "" && normRef(twin) === "")) return false;
+        }
+        return true;
+      });
 
   /* The mirror of the row-by-row match above: rows an EARLIER, poorer parse of
      this same receipt wrote. The method block used to import as amount-less
@@ -1717,8 +1743,6 @@ export function buildReceiptPreview(
      amount nor miles cannot be hand-entered (the API refuses it), and a bare
      miles row that repeats a now-attributed redemption to the mile is the same
      statement, so both are superseded, not second payments. */
-  const normRef = (x: { reference?: string | null }) =>
-    (x.reference ?? "").trim().toLowerCase();
   const stalePayments =
     existing == null || isCancellation
       ? []
