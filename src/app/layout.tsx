@@ -93,10 +93,12 @@ export default function RootLayout({
           <Sidebar />
           <main className="flex min-w-0 flex-1 flex-col px-4 pb-6 pt-16 lg:px-10 lg:py-6">
             <div className="flex-1">{children}</div>
-            {/* Every page ends the same way: who made this, and the one link
-                a visitor goes looking for. The FAQ lives here (and in the
+            {/* Every page ends the same way: who made this, and the links a
+                visitor goes looking for. The FAQ lives here (and in the
                 sidebar's footer) rather than in the nav — it is read once,
-                and the nav stays the pages an owner works in. */}
+                and the nav stays the pages an owner works in. The GitHub
+                link is the trust signal for the skeptical visitor: the
+                privacy claims are checkable against the source. */}
             <footer className="mt-12 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-line pt-3 text-[11px] text-mute">
               <span>
                 © {new Date().getFullYear()} VV Labs LLC · Built by{" "}
@@ -116,6 +118,14 @@ export default function RootLayout({
                 <Link href="/privacy" className="transition-colors hover:text-ink2">
                   Privacy policy
                 </Link>
+                <a
+                  href="https://github.com/vlvovch/flight-ledger"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-ink2"
+                >
+                  GitHub
+                </a>
               </span>
             </footer>
           </main>
