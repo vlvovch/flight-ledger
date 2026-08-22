@@ -294,6 +294,23 @@ export default function FlightsPage() {
     if (purpose !== "all") list = list.filter((f) => f.effective_purpose === purpose);
     if (q.trim()) {
       const needle = q.trim().toUpperCase();
+      /* A route pair is its own search grammar: "ORD SFO", "ORD-SFO", or
+         the routes table's own "ORD ⇄ SFO" find the pair in both
+         directions, and "ORD → SFO" (or ">") keeps the direction — which
+         is what lets a routes-table row link straight to its flights.
+         Single codes still match any flight touching them. */
+      const pair = needle.match(/^([A-Z]{3})(?:\s*([⇄→>-])\s*|\s+)([A-Z]{3})$/);
+      if (pair) {
+        const [, a, sep, b] = pair;
+        const directed = sep === "→" || sep === ">";
+        list = list.filter((f) =>
+          directed
+            ? f.origin === a && f.destination === b
+            : (f.origin === a && f.destination === b) ||
+              (f.origin === b && f.destination === a)
+        );
+        return list;
+      }
       list = list.filter((f) =>
         [
           f.origin,

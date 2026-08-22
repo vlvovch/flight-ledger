@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import type { Analytics, CashFlow, CashMonth } from "@/lib/metrics";
 import type { FareClassRow, MixBucket, TravelMix } from "@/lib/mix";
 import {
@@ -1094,7 +1095,17 @@ function RoutesPanel({
                     : " · no flight on this route was paid in cash, so there is no ¢/mi to report"
                 }`}
               >
-                <td className="t-num text-ink">{r.key}</td>
+                {/* the row's own key is a valid Flights search ("ORD ⇄
+                    SFO" or "ORD → SFO"), so the link IS the filter */}
+                <td className="t-num text-ink">
+                  <Link
+                    href={`/flights?q=${encodeURIComponent(r.key)}`}
+                    className="underline decoration-transparent underline-offset-2 transition-colors hover:decoration-[var(--color-line2)] hover:text-ink"
+                    title="See these flights in the ledger"
+                  >
+                    {r.key}
+                  </Link>
+                </td>
                 <td className="num">{r.flights}</td>
                 <td className="num">
                   {r.distance != null ? fmtInt(r.distance) : "—"}
