@@ -41,6 +41,17 @@ export default function EngineBoot() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  /* The badge announces, then yields. Fixed to the corner it sat on top of
+     the footer's own links (and on phones, on top of content), permanently —
+     but its job is the first few seconds of a visit: say which engine holds
+     the data before anyone has to wonder. The durable indicator is the
+     sidebar's storage line; this one fades once it has been seen. */
+  const [badgeShown, setBadgeShown] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setBadgeShown(false), 6000);
+    return () => clearTimeout(t);
+  }, []);
+
   /* One tab owns the ledger: OPFS sync-access handles are exclusive, so a
      second tab's engine cannot boot — it used to fail as a cryptic broken
      dashboard. Ownership is decided in lib/browser/ownership.ts, and the
@@ -107,7 +118,9 @@ export default function EngineBoot() {
   return (
     <div
       data-engine="browser"
-      className="fixed bottom-3 right-3 z-50 rounded-full border border-line2 bg-panel2 px-3 py-1 text-[11px] text-ink2 shadow-lg"
+      className={`fixed bottom-3 right-3 z-50 rounded-full border border-line2 bg-panel2 px-3 py-1 text-[11px] text-ink2 shadow-lg transition-opacity duration-700 ${
+        badgeShown ? "opacity-100" : "pointer-events-none opacity-0"
+      }`}
       title="The ledger lives in this browser's storage (OPFS). Export from Settings to back it up."
     >
       Browser engine — data stays in this browser

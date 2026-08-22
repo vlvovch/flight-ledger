@@ -110,6 +110,15 @@ export default function RootLayout({
                 >
                   Volodymyr Vovchenko
                 </a>
+                {" · "}
+                <a
+                  href="https://github.com/vlvovch/flight-ledger"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline decoration-[var(--color-line2)] underline-offset-2 transition-colors hover:text-ink2"
+                >
+                  Open source on GitHub
+                </a>
               </span>
               <span className="flex items-center gap-4">
                 <Link href="/faq" className="transition-colors hover:text-ink2">
@@ -118,14 +127,6 @@ export default function RootLayout({
                 <Link href="/privacy" className="transition-colors hover:text-ink2">
                   Privacy policy
                 </Link>
-                <a
-                  href="https://github.com/vlvovch/flight-ledger"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="transition-colors hover:text-ink2"
-                >
-                  GitHub
-                </a>
               </span>
             </footer>
           </main>
