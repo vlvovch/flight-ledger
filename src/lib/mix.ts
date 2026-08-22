@@ -367,8 +367,9 @@ export interface CpmSpread {
  * mean in the app. The mean answers "what does my flying cost"; miles dominate
  * it, so three transatlantics outvote ten hops. Here each flight is one vote:
  * half cost less than the median, and the p10–p90 band is the spread the
- * average erases. On one real ledger the mean was 13.8¢, the median 12.9¢,
- * and the band ran 9.2¢ to 26.4¢ — a 3× spread inside one tidy-looking mean.
+ * average erases. On a mature ledger the mean can sit at 14.2¢ over a
+ * median of 13.1¢ with a band of 9.6¢ to 27.8¢ — a 3× spread inside one
+ * tidy-looking mean.
  *
  * Basis: cash-priced flights (pricesInCash) with a positive cost and a known
  * distance. Percentiles are nearest-rank; the median averages the two middle

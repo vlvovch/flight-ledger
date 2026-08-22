@@ -246,7 +246,7 @@ absent, which is never a cancellation.
 
 Unlike the eTicket receipt's "Total Credit", the credit here is checkable
 (original − new − taxes difference must equal it), and only then is it
-recorded as a residual. A real three-document booking: $2,185.93 ticket,
+recorded as a residual. A three-document example: a $2,185.93 ticket,
 changed to $1,215.26 ($970.67 back) and then to $1,184.08 ($31.18 back),
 costs the flights that flew $1,184.08.
 
@@ -559,7 +559,7 @@ each carries the date that says which coupons it voided:
 - a cancellation notice voids only travel that hadn't departed when the
   notice was *sent*. It reprints the whole reservation, legs you already flew
   included, so its send date is the cut, not the legs it happens to list.
-  One refinement, from a real eleven-reissue chain: United has emailed a
+  One refinement, from a long reissue chain: United has emailed a
   midnight cancellation the next morning, making a flight that never flew
   look already-departed. A coupon issued on or after its own flight day
   (a same-day change), cancelled by an email at most a day later, never

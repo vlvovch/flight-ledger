@@ -440,21 +440,21 @@ booking earns real points for no fare, so leaving its PQP in the divisor makes
 the class it sits in look like it buys status nearly free.
 
 The figures bear out §7.4's premise, incidentally: cost per PQP lands between
-$1.09 and $1.20 across every class on a real ledger, which is what "PQP ≈ base
+$1.08 and $1.22 across every class on a mature ledger, which is what "PQP ≈ base
 fare, plus tax" predicts. Cents per mile is where classes actually differ,
-ranging 8.5¢ to 22.5¢.
+ranging 8.7¢ to 23.1¢.
 
 **Award-mile valuation scenarios** report effective CPM across a band of
 valuations (1¢, 1.5¢, 2¢, plus whatever is configured) beside the headline
 figure. §4.5 requires the valuation to be labelled an assumption; the band
-says how much the answer depends on it. On a real ledger the spread runs 2.39¢
-to 1.48¢, so it depends a great deal, which is the point of showing it.
+says how much the answer depends on it. On a mature ledger the spread can run 2.3¢
+to 1.4¢, so it depends a great deal, which is the point of showing it.
 
 **Median segment CPM** (`flightCpmSpread`) is the counterpart to every
 weighted mean in the app: one vote per flight instead of per mile, reported
 with the p10–p90 band, because the spread is what the average erases. On a
-real ledger the mean was 13.8¢, the median 12.9¢, and the band ran 9.2¢ to
-26.4¢. Shown in plain words under the monthly ledger ("half of your 178
+mature ledger the mean can sit at 14.2¢ over a median of 13.1¢, with the
+band running 9.6¢ to 27.8¢. Shown in plain words under the monthly ledger ("half of your 164
 cash-paid flights cost under…") and on the annual report. With this, §5.5's
 original list is complete.
 
@@ -635,9 +635,9 @@ a negative month. That decomposition lives in `allocateChain` beside the
 inference it depends on: the additional collection and the residual are
 usually derived from consecutive face values, and a second implementation of
 that would be a second answer waiting to disagree. Summed across a chain it
-equals `chain.cash`, which the selftest asserts. On a real ledger it removes
-$13,241.95 of overlap across 15 chained tickets, 27% of the naive sum of face
-values.
+equals `chain.cash`, which the selftest asserts. On a mature ledger it can remove
+over $11,000 of overlap across a dozen chained tickets, roughly a quarter of
+the naive sum of face values.
 
 Inflow is every adjustment. Refunds, reimbursements, statement credits and
 employer payments all return money, and the distinction that matters
@@ -646,8 +646,9 @@ for cash.
 
 **An undated inflow is assumed into its ticket's purchase month, and marked.**
 This is not an edge case: ticking "Reimbursed" deliberately records no date
-(see [accounting.md](accounting.md)), so on a real ledger the entire inflow
-side can be undated, $28,598.12 across 51 adjustments in one case, and the
+(see [accounting.md](accounting.md)), so on a mature ledger the entire inflow
+side can be undated, tens of thousands of dollars across dozens of
+adjustments, and the
 first version of this view, which refused to guess, drew every purchase and
 nothing coming back. An empty answer was the more misleading one. What makes
 the guess admissible is §1.3's convention: the assumed share rides on the

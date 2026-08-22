@@ -283,10 +283,11 @@ export function buildReconcileReport(
   /* Clocks the distance can't explain. Departure and arrival are local wall
      clocks; a wrong one (a connection's arrival pasted onto the wrong leg, a
      PM/AM slip) stays invisible as a bare time and only turns absurd as a
-     block time. Threshold calibrated on a real ledger of 305 clock-derived
-     flights: p95 deviation from the distance model is 21%, so anything past
-     max(45 min, 30%) is either a wrong clock or a memorably delayed day —
-     both worth a look, neither worth an auto-fix. */
+     block time. Threshold calibrated against a few hundred clock-derived
+     flights on a mature ledger: p95 deviation from the distance model sits
+     near 20%, so anything past max(45 min, 30%) is either a wrong clock or
+     a memorably delayed day — both worth a look, neither worth an
+     auto-fix. */
   for (const s of flown) {
     if (!s.departure_time || !s.arrival_time) continue;
     if (s.distance_miles == null || s.distance_miles <= 0) continue;

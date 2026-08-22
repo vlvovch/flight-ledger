@@ -285,7 +285,7 @@ that genuinely forfeits the difference.
 Which is exactly why the receipt's "Total Credit" line is not one: it is the
 balance of your whole future-flight-credit bank after the purchase, and it can
 hold value from tickets this one never touched. Read as a residual it turned a
-real $179.48 chain into −$362.80. It's recorded as a note on the ticket
+$179.48 chain into −$362.80. It's recorded as a note on the ticket
 instead.
 
 A reissue also takes the flight with it. When the leg is still attached to the
