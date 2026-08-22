@@ -44,7 +44,7 @@ logging into multiple accounts, or digging through old receipts.
 Re-importing the same file changes nothing, so pull a fresh CSV whenever
 you like. And export a backup from Settings once you're set up. 
 
-Not that your ledger has no cloud copy by default.
+Note that your ledger has no cloud copy by default.
 To back up your data in the cloud, you can turn on Google Drive sync. 
 
 ![Five stops: the CSV import preview, the dashboard it builds, the flight table, the Premier gauges, and the offline route map](docs/media/tour.gif)
