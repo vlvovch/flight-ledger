@@ -131,10 +131,9 @@ export default function PrivacyPage() {
 
         <Section label="This website" accent={ACCENT.pqp}>
           <p>
-            flightledger.net counts page views, and a few feature events by
-            name only, such as how many visitors load the demo ledger. That
-            is how we know whether anyone visits and whether the demo gets
-            used. The counter is Swetrix, a GDPR-compliant analytics tool
+            flightledger.net counts page views and a few feature events by
+            name only. That is how we know whether anyone visits and uses
+            the app. The counter is Swetrix, a GDPR-compliant analytics tool
             running on our own server, and it works without cookies. That is
             why there is no cookie banner here: there is nothing to consent
             to. It does not identify you, does not follow you to other sites,

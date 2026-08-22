@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FileUp, Upload } from "lucide-react";
 import { Modal, ErrorNote } from "./ui";
+import { trackEvent } from "@/lib/track";
 import { api, fmtInt } from "@/lib/format";
 import { ACTIVITY_TYPE_LABELS } from "@/lib/types";
 import type {
@@ -180,6 +181,7 @@ export default function ImportModal({
       });
       setDiaryResult(res);
       setStage("done");
+      trackEvent("import_applied", true);
       onApplied();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Apply failed");
@@ -255,6 +257,7 @@ export default function ImportModal({
       });
       setResult(res);
       setStage("done");
+      trackEvent("import_applied", true);
       onApplied();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Import failed");

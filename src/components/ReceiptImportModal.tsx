@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FileUp, MailOpen, Upload } from "lucide-react";
 import { ErrorNote, Modal, StatusChip } from "./ui";
+import { trackEvent } from "@/lib/track";
 import { api, fmtDate, fmtMoney } from "@/lib/format";
 import { buildApplyItem } from "@/lib/receipt-import";
 import { MAX_BATCH_MESSAGES, splitMbox } from "@/lib/mbox";
@@ -326,6 +327,8 @@ export default function ReceiptImportModal({
         errors: res.errors,
       });
       setStage("done");
+      /* a visitor became a user — name-only, counted once per session */
+      trackEvent("import_applied", true);
       onApplied();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Import failed");
