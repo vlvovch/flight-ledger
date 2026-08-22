@@ -226,23 +226,30 @@ export default function DashboardPage() {
             }
             action={
               <div className="flex flex-wrap justify-center gap-2">
+                {/* The demo leads while the ledger is truly empty: a visitor
+                    deciding whether to care has no CSV in hand, and the demo
+                    is the one click that shows the app full. A returning
+                    user's ledger has data, the demo button is gone, and the
+                    import path stands first again. (Truly empty: tickets or
+                    activity with no flights still shows this board, but a
+                    restore would take that data with it.) */}
+                {data.ledgerEmpty && (
+                  <button className="btn btn-primary" onClick={loadDemo} disabled={demoBusy}>
+                    {demoBusy ? "Loading…" : "Load demo data"}
+                  </button>
+                )}
                 {/* deep-link straight into the import dialog — landing on the
                     page and hunting for a second Import button is a step a
                     first user shouldn't need */}
-                <Link href="/activity?import=1" className="btn btn-primary">
+                <Link
+                  href="/activity?import=1"
+                  className={`btn ${data.ledgerEmpty ? "btn-ghost" : "btn-primary"}`}
+                >
                   Import MileagePlus CSV
                 </Link>
                 <button className="btn btn-ghost" onClick={() => setShowForm(true)}>
                   <Plus size={14} /> Log a flight
                 </button>
-                {/* only on a truly empty ledger — tickets or activity with no
-                    flights still shows this board, but a restore would take
-                    that data with it */}
-                {data.ledgerEmpty && (
-                  <button className="btn btn-ghost" onClick={loadDemo} disabled={demoBusy}>
-                    {demoBusy ? "Loading…" : "Load demo data"}
-                  </button>
-                )}
               </div>
             }
           />
