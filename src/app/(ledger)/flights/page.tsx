@@ -13,6 +13,7 @@ import { api, fmtCpm, fmtInt, fmtMoney, STATUS_LABELS } from "@/lib/format";
 import { EmptyState, Panel, SortTh, StatusChip } from "@/components/ui";
 import FlightForm from "@/components/FlightForm";
 import { learnFleet, normalizeTail } from "@/lib/fleet";
+import { canonicalAircraft } from "@/lib/fleet-stats";
 import { flightDuration, fmtDuration, wallToUtc, zoneOf } from "@/lib/duration";
 import ImportModal from "@/components/ImportModal";
 import { C } from "@/components/charts";
@@ -330,7 +331,14 @@ export default function FlightsPage() {
            names. */
         (f.tail_number != null &&
           normalizeTail(needle).length > 0 &&
-          normalizeTail(f.tail_number).includes(normalizeTail(needle)))
+          normalizeTail(f.tail_number).includes(normalizeTail(needle))) ||
+        /* Aircraft also match by their CANONICAL name, exactly — the fleet
+           panel's type rows link here with it, and the raw strings behind
+           one row ("B739", "Boeing 737-900", "737-924ER") share no
+           substring a raw search could use. Exact, not includes, so
+           B737-900 never drags in the -900ER the fleet keeps separate. */
+        (f.aircraft != null &&
+          canonicalAircraft(f.aircraft).toUpperCase() === needle)
       );
     }
     return list;

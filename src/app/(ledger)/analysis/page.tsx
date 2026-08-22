@@ -802,12 +802,20 @@ function FleetPanel({
         <div>
           <div
             className="t-label !text-[10px] mb-2"
-            title="Labels are normalized before counting, so a hand-typed B739, an import's Boeing 737-900 and the FAA's 737-924ER are one row. Distinctions the sources genuinely make (-900 vs -900ER) stay separate."
+            title="Labels are normalized before counting, so a hand-typed B739, an import's Boeing 737-900 and the FAA's 737-924ER are one row. Distinctions the sources genuinely make (-900 vs -900ER) stay separate. Click a type to see its flights."
           >
             Aircraft types <span className="text-mute">{fleet.types.length}</span>
           </div>
           {types.map((t) => (
-            <div key={t.name} className="mb-2.5 last:mb-0">
+            /* the whole block links, like the airframe rows below it — the
+               canonical name is a valid Flights search, matched canonically
+               there because the raw strings behind one row share no
+               substring */
+            <a
+              key={t.name}
+              href={`/flights?q=${encodeURIComponent(t.name)}`}
+              className="mb-2.5 block rounded-sm last:mb-0 hover:bg-[var(--tint-accent)]"
+            >
               <div className="flex items-baseline gap-2">
                 <span className="text-[12.5px] text-ink">{t.name}</span>
                 <span className="t-num ml-auto text-[12.5px] text-ink">
@@ -840,7 +848,7 @@ function FleetPanel({
                   </span>
                 )}
               </div>
-            </div>
+            </a>
           ))}
           {fleet.types.length > TYPE_CUT && (
             <button
