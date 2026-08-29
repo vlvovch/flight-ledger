@@ -12,6 +12,7 @@ import { hasFreshDriveToken } from "@/lib/browser/drive";
 import { toast } from "@/components/ui";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Popover, PopoverAnchorBox, PopoverContent, PopoverTrigger } from "./ui/popover";
 import {
   ChartSpline,
   CircleHelp,
@@ -434,20 +435,27 @@ export default function Sidebar() {
             one place that never mentioned accounts — so there was no way to
             find out you could have more than one. */}
         {reg && (
-          <div className="relative mb-3">
-            <button
-              className="flex w-full items-center gap-2 rounded-md border border-line px-2.5 py-1.5 text-left transition-colors hover:border-line2"
-              onClick={() => setPicking((v) => !v)}
-              disabled={busy}
-            >
-              <Users size={13} className="shrink-0 text-mute" />
-              <span className="truncate text-[12px] text-ink">
-                {reg.accounts.find((a) => a.id === reg.active)?.label ?? "Account"}
-              </span>
-              <ChevronsUpDown size={12} className="ml-auto shrink-0 text-mute" />
-            </button>
-            {picking && (
-              <div className="absolute bottom-full left-0 z-50 mb-1 w-full overflow-hidden rounded-md border border-line2 bg-panel shadow-[0_12px_28px_var(--shadow-pop)]">
+          <PopoverAnchorBox className="mb-3">
+            {/* The picker rides the popover primitive (ui/popover.tsx): the
+                hand-rolled dropdown closed only from its own toggle — no
+                Escape, no outside click, focus never moved. NOT a menu on
+                purpose: rows carry a nested remove button and the add-flow
+                is a text input, which menuitem semantics can't hold and
+                menu typeahead would eat. Placement is the same CSS the old
+                dropdown used — see the primitive for why Floating UI's own
+                positioning can't be trusted under the deck's zoom. */}
+            <Popover open={picking} onOpenChange={setPicking}>
+              <PopoverTrigger
+                className="flex w-full items-center gap-2 rounded-md border border-line px-2.5 py-1.5 text-left transition-colors hover:border-line2"
+                disabled={busy}
+              >
+                <Users size={13} className="shrink-0 text-mute" />
+                <span className="truncate text-[12px] text-ink">
+                  {reg.accounts.find((a) => a.id === reg.active)?.label ?? "Account"}
+                </span>
+                <ChevronsUpDown size={12} className="ml-auto shrink-0 text-mute" />
+              </PopoverTrigger>
+              <PopoverContent placement="bottom-full left-0 mb-1 w-full">
                 {reg.accounts.map((a) => (
                   <button
                     key={a.id}
@@ -498,6 +506,10 @@ export default function Sidebar() {
                       onKeyDown={(e) => {
                         if (e.key === "Enter") addAccount();
                         if (e.key === "Escape") {
+                          /* one Escape cancels the TYPING; stopping it here
+                             keeps the popover open — the second Escape is
+                             the one that closes the picker */
+                          e.stopPropagation();
                           setAdding(false);
                           setNewName("");
                         }
@@ -535,9 +547,9 @@ export default function Sidebar() {
                     New account
                   </button>
                 )}
-              </div>
-            )}
-          </div>
+              </PopoverContent>
+            </Popover>
+          </PopoverAnchorBox>
         )}
         {/* Whose deck this is, when it's been said. Sits with the storage
             line because both answer "where am I", not "what am I doing". */}
