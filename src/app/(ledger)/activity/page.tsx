@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { FileUp, Plus, Search, Trash2 } from "lucide-react";
 import {
   ACTIVITY_TYPES,
@@ -45,6 +46,14 @@ export default function ActivityPage() {
   const [type, setType] = useState("all");
   const [q, setQ] = useState("");
   const [showImport, setShowImport] = useState(false);
+  /* The dashboard's CTA borrows this page for one errand. If the dialog it
+     opened is closed with nothing imported, the visitor is returned to the
+     dashboard they were standing on — closing an aborted errand must not
+     strand them on a page they never chose. A COMPLETED import stays: the
+     table below is its result. Refs, not state: neither fact re-renders. */
+  const router = useRouter();
+  const cameFromCta = useRef(false);
+  const didImport = useRef(false);
   const [showAdd, setShowAdd] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<ActivityView | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -77,6 +86,8 @@ export default function ActivityPage() {
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("import") != null) {
       setShowImport(true);
+      cameFromCta.current = true;
+      didImport.current = false;
       window.history.replaceState(null, "", window.location.pathname);
     }
   });
@@ -389,7 +400,17 @@ export default function ActivityPage() {
       )}
 
       {showImport && (
-        <ImportModal onClose={() => setShowImport(false)} onApplied={refresh} />
+        <ImportModal
+          onClose={() => {
+            setShowImport(false);
+            if (cameFromCta.current && !didImport.current) router.push("/");
+            cameFromCta.current = false;
+          }}
+          onApplied={() => {
+            didImport.current = true;
+            refresh();
+          }}
+        />
       )}
       {showAdd && (
         <AddActivityForm onClose={() => setShowAdd(false)} onSaved={refresh} />
