@@ -203,6 +203,14 @@ body {
   font-family: var(--font-body);
   font-size: 14px;
   letter-spacing: 0.01em;
+  /* Every digit the same width, everywhere — this is a ledger, and figures
+     that don't line up read as different numbers. The mono already is
+     tabular; this covers the Barlow numbers (card sub-lines, legends,
+     tooltips), whose subset kept the tnum feature: measured 111111 at 212px
+     proportional and 317px tabular, so this is real, not a wish. (Plex
+     Mono's default dotted zero already settles 0-vs-O; no slashed-zero
+     override, because the subset renders it identically anyway.) */
+  font-variant-numeric: tabular-nums;
   /* blueprint grid + soft radar glow atmosphere */
   background-image:
     radial-gradient(
