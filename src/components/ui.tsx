@@ -3,6 +3,20 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "./ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogClose,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
 
 /* ------------------------------- Panel -------------------------------- */
 
@@ -165,6 +179,15 @@ export function ToastHost() {
 
 /* ------------------------------- Modal --------------------------------- */
 
+/**
+ * The app-facing dialog: same API as it always had (mount to open, onClose
+ * to ask for dismissal), so no caller changed when the behavioral layer
+ * moved to the Base UI primitive in ui/dialog.tsx. What changed underneath:
+ * a real dialog role, focus trapped and returned, Escape closing only the
+ * topmost of nested dialogs, and scroll lock that survives a nested
+ * Confirm's unmount — all things the hand-rolled version got wrong or
+ * lacked. The pixels are the ones it always wore.
+ */
 export function Modal({
   title,
   subtitle,
@@ -178,70 +201,48 @@ export function Modal({
   children: ReactNode;
   wide?: boolean;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  /* Portaled to <body>. Rendered in place, the overlay's fixed positioning
-     is at the mercy of every ancestor — one transform, filter or zoom quirk
-     up the tree and "cover the viewport" becomes "cover the panel", with
-     page chrome painting through the backdrop (a settings input floated
-     over a conflict dialog this way). From body there is nothing to
-     inherit, and last-in-DOM settles the paint order too. */
-  const [host, setHost] = useState<HTMLElement | null>(null);
-  useEffect(() => setHost(document.body), []);
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
-
-  if (!host) return null;
-  return createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-[rgba(4,8,16,0.72)] p-4 backdrop-blur-[3px] sm:p-8"
-      onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose();
+  return (
+    <Dialog
+      open
+      onOpenChange={(next) => {
+        if (!next) onClose();
       }}
     >
-      {/* The panel is capped to the viewport and the CONTENT scrolls, inside
-          one contained region — a taller-than-screen modal used to scroll as
-          part of the overlay, which put the title and the action buttons a
-          hundred cards away and let the wheel chain to whatever was behind.
-          The cap is a PERCENTAGE of the overlay (a fixed inset-0 box that is
-          the visual viewport), never dvh: the deck's --ui-scale zoom makes
-          dvh resolve in unzoomed pixels and overflow the screen. */}
-      <div
-        ref={ref}
-        className={`reveal panel my-4 flex max-h-[calc(100%_-_2rem)] w-full flex-col border-line2 bg-panel2 shadow-[0_24px_80px_var(--shadow-pop)] ${
-          wide ? "max-w-3xl" : "max-w-xl"
-        }`}
-      >
+      <DialogContent wide={wide}>
         <header className="flex shrink-0 items-start justify-between border-b border-line px-5 py-4">
           <div>
-            <h2 className="t-display text-[19px] text-ink">{title}</h2>
-            {subtitle && <p className="mt-0.5 text-[12px] text-mute">{subtitle}</p>}
+            <DialogTitle render={<h2 className="t-display text-[19px] text-ink" />}>
+              {title}
+            </DialogTitle>
+            {subtitle && (
+              <DialogDescription render={<p className="mt-0.5 text-[12px] text-mute" />}>
+                {subtitle}
+              </DialogDescription>
+            )}
           </div>
-          <button
-            onClick={onClose}
+          <DialogClose
             className="rounded-md p-1.5 text-mute transition-colors hover:bg-well hover:text-ink"
             aria-label="Close"
           >
             <X size={16} />
-          </button>
+          </DialogClose>
         </header>
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4">
           {children}
         </div>
-      </div>
-    </div>,
-    host
+      </DialogContent>
+    </Dialog>
   );
 }
 
 /* ------------------------------ Confirm -------------------------------- */
 
+/**
+ * Destructive questions ride the alert-dialog primitive now: clicking the
+ * backdrop no longer answers them (a mis-click near "Delete" must not read
+ * as "Cancel"), Escape still explicitly cancels, and focus opens on Cancel
+ * so a stray Enter never deletes anything.
+ */
 export function Confirm({
   message,
   detail,
@@ -255,19 +256,42 @@ export function Confirm({
   onConfirm: () => void;
   onCancel: () => void;
 }) {
+  const cancelRef = useRef<HTMLButtonElement>(null);
   return (
-    <Modal title="Confirm" onClose={onCancel}>
-      <p className="text-[14px] text-ink">{message}</p>
-      {detail && <p className="mt-1.5 text-[12.5px] text-mute">{detail}</p>}
-      <div className="mt-5 flex justify-end gap-2">
-        <button className="btn btn-ghost" onClick={onCancel}>
-          Cancel
-        </button>
-        <button className="btn btn-danger" onClick={onConfirm}>
-          {confirmLabel}
-        </button>
-      </div>
-    </Modal>
+    <AlertDialog
+      open
+      onOpenChange={(next) => {
+        if (!next) onCancel();
+      }}
+    >
+      <AlertDialogContent initialFocus={cancelRef}>
+        <header className="flex shrink-0 items-start justify-between border-b border-line px-5 py-4">
+          <AlertDialogTitle render={<h2 className="t-display text-[19px] text-ink" />}>
+            Confirm
+          </AlertDialogTitle>
+          <AlertDialogClose
+            className="rounded-md p-1.5 text-mute transition-colors hover:bg-well hover:text-ink"
+            aria-label="Close"
+          >
+            <X size={16} />
+          </AlertDialogClose>
+        </header>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4">
+          <AlertDialogDescription render={<p className="text-[14px] text-ink" />}>
+            {message}
+          </AlertDialogDescription>
+          {detail && <p className="mt-1.5 text-[12.5px] text-mute">{detail}</p>}
+          <div className="mt-5 flex justify-end gap-2">
+            <button ref={cancelRef} className="btn btn-ghost" onClick={onCancel}>
+              Cancel
+            </button>
+            <button className="btn btn-danger" onClick={onConfirm}>
+              {confirmLabel}
+            </button>
+          </div>
+        </div>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 
