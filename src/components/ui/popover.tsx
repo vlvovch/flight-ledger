@@ -43,11 +43,16 @@ export function PopoverAnchorBox({
 
 export function PopoverContent({
   placement,
+  label,
   className = "",
   children,
 }: {
   /** CSS placement relative to the anchor box, e.g. "bottom-full left-0 mb-1 w-full" */
   placement: string;
+  /** the popup's accessible name — it renders role="dialog", and a dialog a
+   *  screen reader can't name is a door without a sign. Required so no
+   *  future caller can ship one. */
+  label: string;
   className?: string;
   children: ReactNode;
 }) {
@@ -63,6 +68,7 @@ export function PopoverContent({
           className={`!absolute !top-auto !right-auto !transform-none z-50 ${placement}`}
         >
           <BasePopover.Popup
+            aria-label={label}
             className={`w-full overflow-hidden rounded-md border border-line2 bg-panel shadow-[0_12px_28px_var(--shadow-pop)] ${className}`}
           >
             {children}

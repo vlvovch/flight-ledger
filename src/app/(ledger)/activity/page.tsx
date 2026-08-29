@@ -403,7 +403,12 @@ export default function ActivityPage() {
         <ImportModal
           onClose={() => {
             setShowImport(false);
-            if (cameFromCta.current && !didImport.current) router.push("/");
+            /* back(), not push("/"): the CTA always ARRIVES by a push from
+               the dashboard, so going back lands there — while push added a
+               third entry and left /activity one Back-press away, dialogless.
+               After back(), /activity sits on the FORWARD stack, which is
+               where a back-then-forward user expects the detour to be. */
+            if (cameFromCta.current && !didImport.current) router.back();
             cameFromCta.current = false;
           }}
           onApplied={() => {

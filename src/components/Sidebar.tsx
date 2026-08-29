@@ -455,7 +455,7 @@ export default function Sidebar() {
                 </span>
                 <ChevronsUpDown size={12} className="ml-auto shrink-0 text-mute" />
               </PopoverTrigger>
-              <PopoverContent placement="bottom-full left-0 mb-1 w-full">
+              <PopoverContent placement="bottom-full left-0 mb-1 w-full" label="Switch account">
                 {reg.accounts.map((a) => (
                   <button
                     key={a.id}
