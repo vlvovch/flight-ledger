@@ -3693,15 +3693,20 @@ console.log("receipt supersession (reissues & cancellations):");
       kind: "cancellation", confirmation: "RECYC1", ticket_number: null,
       email_date: "2026-06-20", segments: [],
     });
+    /* The legs sit far in the future on purpose: the check wants the
+       ancient booking left "ticketed", and a fixture date the calendar
+       catches up with turns into flown_unreconciled and fails the suite
+       (it did, the September after it was written). Era matching reads
+       the issue dates, so the flight date is free to be distant. */
     const ancient = mkReceipt({
       confirmation: "RECYC1", ticket_number: "0167900000061",
       issue_date: "2023-01-10", email_date: "2023-01-10",
-      segments: [leg("2026-09-01", "SFO", "IAH")],
+      segments: [leg("2033-09-01", "SFO", "IAH")],
     });
     const current = mkReceipt({
       confirmation: "RECYC1", ticket_number: "0167900000062",
       issue_date: "2026-05-01", email_date: "2026-05-01",
-      segments: [leg("2026-09-01", "IAH", "SFO")],
+      segments: [leg("2033-09-01", "IAH", "SFO")],
     });
     const b = buildBatchContext([ancient, current, recycledNotice], []);
     check(
