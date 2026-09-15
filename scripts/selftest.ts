@@ -80,7 +80,7 @@ import {
   EMPTY_BATCH,
   buildApplyItem,
   buildBatchContext,
-  buildReceiptPreview,
+  buildReceiptPreview as buildReceiptPreviewLive,
 } from "../src/lib/receipt-import";
 import { classifyActivity, matchActivity } from "../src/lib/activity-match";
 import { spanLabel } from "../src/lib/format";
@@ -194,6 +194,27 @@ import type {
   SegmentRow,
   TicketRow,
 } from "../src/lib/types";
+
+/* The suite's clock. Receipt previews decide ticketed-vs-flown by holding a
+   fixture's flight date against "today", and these checks once asked the
+   wall clock — which made every near-future fixture date a burning fuse.
+   One burned down on 2026-09-14 (the recycled-code check, legs then dated
+   2026-09-01), and five fixtures dated 2026-09-20 were days from the same
+   fate. Every preview here now runs on this pinned day instead, chosen
+   while the whole suite was green against the real one: earlier fixture
+   dates are past for good, later ones stay future for good. A check that
+   wants to probe a different day passes its own todayOverride, which wins
+   over the pin. The premier, forecast and flight-diary checks already pin
+   their clocks at their call sites. */
+const FIXTURE_TODAY = "2026-09-15";
+const buildReceiptPreview: typeof buildReceiptPreviewLive = (
+  parsed, tickets, segments, existingPayments, batch, existingAdjustments,
+  activityCoverage, myTraveler, todayOverride
+) =>
+  buildReceiptPreviewLive(
+    parsed, tickets, segments, existingPayments, batch, existingAdjustments,
+    activityCoverage, myTraveler, todayOverride ?? FIXTURE_TODAY
+  );
 
 let failures = 0;
 function check(name: string, cond: boolean, detail = "") {
@@ -8232,10 +8253,14 @@ async function routeHandlerChecks() {
           })
         )
       );
+      /* This check runs the sweep against the real clock on purpose — that
+         IS its subject — so the not-yet-landed leg must stay ahead of any
+         year the suite plausibly runs in, or the sweep rightly flips it and
+         the check rots (its first date, 2031, had a fuse). */
       const future = await j(
         await apiFlightCreate(
           req("POST", "/api/flights", {
-            origin: "SFO", destination: "IAH", flight_date: "2031-01-01",
+            origin: "SFO", destination: "IAH", flight_date: "2099-01-01",
             status: "ticketed", marketing_carrier: "UA", flight_number: "998",
           })
         )
@@ -8923,6 +8948,20 @@ async function routeHandlerChecks() {
       demoFixture.segments.length >= 10 &&
         demoFixture.tickets.length >= 5 &&
         demoFixture.manual_changes.length > 0
+    );
+    /* The premierNow check below asserts the CURRENT qualification year's
+       standing rides the payload — and the analytics route reads the wall
+       clock for what "current" means. The demo fixture's flying ends in
+       2026, so from 2027-01-01 the route would rightly answer null and the
+       check would rot on time alone. One flight dated in whatever year the
+       suite runs keeps the check about its actual subject — the plumbing —
+       in every year. */
+    const nowYear = new Date().getFullYear();
+    await apiFlightCreate(
+      req("POST", "/api/flights", {
+        origin: "ORD", destination: "DEN", flight_date: `${nowYear}-01-02`,
+        status: "flown_unreconciled", marketing_carrier: "UA", pqp: 100, pqf: 1,
+      })
     );
     /* The demo button's guard is the LEDGER being empty, not the flight
        count — a tickets-only ledger has no flights on the board and
