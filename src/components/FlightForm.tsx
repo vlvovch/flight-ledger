@@ -68,6 +68,9 @@ type FormState = {
   pqf: string;
   award_miles: string;
   lifetime_miles: string;
+  projected_pqp: string;
+  projected_pqf: string;
+  projected_award_miles: string;
   credits_mileageplus: string;
   manual_cost: string;
   notes: string;
@@ -95,6 +98,10 @@ function toForm(seg?: EnrichedSegment | SegmentRow | null): FormState {
     pqf: seg?.pqf != null ? String(seg.pqf) : "",
     award_miles: seg?.award_miles != null ? String(seg.award_miles) : "",
     lifetime_miles: seg?.lifetime_miles != null ? String(seg.lifetime_miles) : "",
+    projected_pqp: seg?.projected_pqp != null ? String(seg.projected_pqp) : "",
+    projected_pqf: seg?.projected_pqf != null ? String(seg.projected_pqf) : "",
+    projected_award_miles:
+      seg?.projected_award_miles != null ? String(seg.projected_award_miles) : "",
     credits_mileageplus:
       seg?.credits_mileageplus != null ? String(seg.credits_mileageplus) : "",
     manual_cost: seg?.manual_cost != null ? String(seg.manual_cost) : "",
@@ -126,6 +133,9 @@ function toPayload(f: FormState) {
     pqf: nn(f.pqf),
     award_miles: nn(f.award_miles),
     lifetime_miles: nn(f.lifetime_miles),
+    projected_pqp: nn(f.projected_pqp),
+    projected_pqf: nn(f.projected_pqf),
+    projected_award_miles: nn(f.projected_award_miles),
     credits_mileageplus: nn(f.credits_mileageplus),
     manual_cost: nn(f.manual_cost),
     notes: nn(f.notes),
@@ -353,6 +363,20 @@ export default function FlightForm({
       ),
     [form.pqp, form.pqf, form.award_miles, form.lifetime_miles]
   );
+
+  /* Estimates are planning data: the Premier projection reads them only while
+     the matching posted box is blank. The row appears for a booked flight —
+     the one state where the posted boxes count nowhere, so this is the only
+     place its earning can be said at all — and stays wherever a receipt
+     already wrote an estimate. Gated on the SAVED row, not the draft, so
+     clearing a box mid-edit doesn't yank the inputs out from under the
+     cursor. */
+  const showEstimates =
+    !noneExpected &&
+    (form.status === "ticketed" ||
+      segment?.projected_pqp != null ||
+      segment?.projected_pqf != null ||
+      segment?.projected_award_miles != null);
 
   return (
     <Modal
@@ -644,8 +668,8 @@ export default function FlightForm({
               placeholder={
                 noneExpected
                   ? "—"
-                  : segment?.projected_pqp != null
-                    ? `≈ ${segment.projected_pqp}`
+                  : form.projected_pqp.trim() !== ""
+                    ? `≈ ${form.projected_pqp.trim()}`
                     : ""
               }
               value={form.pqp}
@@ -659,8 +683,8 @@ export default function FlightForm({
               placeholder={
                 noneExpected
                   ? "—"
-                  : segment?.projected_pqf != null
-                    ? `≈ ${segment.projected_pqf}`
+                  : form.projected_pqf.trim() !== ""
+                    ? `≈ ${form.projected_pqf.trim()}`
                     : "1"
               }
               value={form.pqf}
@@ -674,8 +698,8 @@ export default function FlightForm({
               placeholder={
                 noneExpected
                   ? "—"
-                  : segment?.projected_award_miles != null
-                    ? `≈ ${segment.projected_award_miles}`
+                  : form.projected_award_miles.trim() !== ""
+                    ? `≈ ${form.projected_award_miles.trim()}`
                     : ""
               }
               value={form.award_miles}
@@ -728,6 +752,43 @@ export default function FlightForm({
             <span className="t-label !text-[10px]">MileagePlus</span>
           </label>
         </div>
+        {showEstimates && (
+          <>
+            <div className="mb-2.5 mt-4 flex items-baseline justify-between">
+              <span className="t-label !text-[10px]">Estimated until posted</span>
+              <span className="text-[11px] text-mute">
+                From the booking receipt when imported — the projection reads
+                these while the posted boxes are blank
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-[1fr_.5fr_1fr_1fr_auto] sm:items-end">
+              <Field label="Est. PQP">
+                <input
+                  className="field t-num"
+                  inputMode="decimal"
+                  value={form.projected_pqp}
+                  onChange={(e) => set("projected_pqp", e.target.value)}
+                />
+              </Field>
+              <Field label="Est. PQF">
+                <input
+                  className="field t-num"
+                  inputMode="decimal"
+                  value={form.projected_pqf}
+                  onChange={(e) => set("projected_pqf", e.target.value)}
+                />
+              </Field>
+              <Field label="Est. award miles">
+                <input
+                  className="field t-num"
+                  inputMode="numeric"
+                  value={form.projected_award_miles}
+                  onChange={(e) => set("projected_award_miles", e.target.value)}
+                />
+              </Field>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3.5">
