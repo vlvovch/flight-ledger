@@ -620,7 +620,7 @@
       "flight_number": "2033",
       "origin": "SFO",
       "destination": "ORD",
-      "flight_date": "2026-09-13",
+      "flight_date": "2026-12-11",
       "departure_time": "11:30",
       "arrival_time": "17:55",
       "cabin": "Economy",
@@ -652,7 +652,7 @@
       "flight_number": "30",
       "origin": "SIN",
       "destination": "SFO",
-      "flight_date": "2026-09-13",
+      "flight_date": "2026-12-11",
       "departure_time": "09:40",
       "arrival_time": "09:15",
       "cabin": "Economy",
@@ -684,7 +684,7 @@
       "flight_number": "29",
       "origin": "SFO",
       "destination": "SIN",
-      "flight_date": "2026-09-05",
+      "flight_date": "2026-12-03",
       "departure_time": "14:05",
       "arrival_time": "22:00",
       "cabin": "Economy",
@@ -716,7 +716,7 @@
       "flight_number": "684",
       "origin": "ORD",
       "destination": "SFO",
-      "flight_date": "2026-09-05",
+      "flight_date": "2026-12-03",
       "departure_time": "09:15",
       "arrival_time": "12:00",
       "cabin": "Economy",
@@ -3788,7 +3788,7 @@
       "op": "create",
       "tbl": "segments",
       "row_id": "8bb7d82c-30f1-4c96-892d-45486d6c8f7d",
-      "diff": "{\"label\":\"ORD → SFO 2026-09-05\",\"row\":{\"ticket_id\":\"a9ccb789-2c2d-4033-8d6f-408fa9646609\",\"marketing_carrier\":\"UA\",\"flight_number\":\"684\",\"origin\":\"ORD\",\"destination\":\"SFO\",\"flight_date\":\"2026-09-05\",\"departure_time\":\"09:15\",\"arrival_time\":\"12:00\",\"cabin\":\"Economy\",\"booking_class\":\"L\",\"status\":\"ticketed\",\"purpose\":\"business\",\"distance_miles\":1847}}"
+      "diff": "{\"label\":\"ORD → SFO 2026-12-03\",\"row\":{\"ticket_id\":\"a9ccb789-2c2d-4033-8d6f-408fa9646609\",\"marketing_carrier\":\"UA\",\"flight_number\":\"684\",\"origin\":\"ORD\",\"destination\":\"SFO\",\"flight_date\":\"2026-12-03\",\"departure_time\":\"09:15\",\"arrival_time\":\"12:00\",\"cabin\":\"Economy\",\"booking_class\":\"L\",\"status\":\"ticketed\",\"purpose\":\"business\",\"distance_miles\":1847}}"
     },
     {
       "id": "92490afd-d04a-45b8-bd17-2869eebb99d0",
@@ -3796,7 +3796,7 @@
       "op": "create",
       "tbl": "segments",
       "row_id": "48c5796f-487b-490b-a0c0-b3ae24720972",
-      "diff": "{\"label\":\"SFO → SIN 2026-09-05\",\"row\":{\"ticket_id\":\"a9ccb789-2c2d-4033-8d6f-408fa9646609\",\"marketing_carrier\":\"UA\",\"flight_number\":\"29\",\"origin\":\"SFO\",\"destination\":\"SIN\",\"flight_date\":\"2026-09-05\",\"departure_time\":\"14:05\",\"arrival_time\":\"22:00\",\"cabin\":\"Economy\",\"booking_class\":\"L\",\"status\":\"ticketed\",\"purpose\":\"business\",\"distance_miles\":8445}}"
+      "diff": "{\"label\":\"SFO → SIN 2026-12-03\",\"row\":{\"ticket_id\":\"a9ccb789-2c2d-4033-8d6f-408fa9646609\",\"marketing_carrier\":\"UA\",\"flight_number\":\"29\",\"origin\":\"SFO\",\"destination\":\"SIN\",\"flight_date\":\"2026-12-03\",\"departure_time\":\"14:05\",\"arrival_time\":\"22:00\",\"cabin\":\"Economy\",\"booking_class\":\"L\",\"status\":\"ticketed\",\"purpose\":\"business\",\"distance_miles\":8445}}"
     },
     {
       "id": "199ce805-a450-4735-a02a-56b38cf10ffd",
@@ -3804,7 +3804,7 @@
       "op": "create",
       "tbl": "segments",
       "row_id": "25fa00cc-7c94-42e9-89be-3bcecafc0101",
-      "diff": "{\"label\":\"SIN → SFO 2026-09-13\",\"row\":{\"ticket_id\":\"a9ccb789-2c2d-4033-8d6f-408fa9646609\",\"marketing_carrier\":\"UA\",\"flight_number\":\"30\",\"origin\":\"SIN\",\"destination\":\"SFO\",\"flight_date\":\"2026-09-13\",\"departure_time\":\"09:40\",\"arrival_time\":\"09:15\",\"cabin\":\"Economy\",\"booking_class\":\"L\",\"status\":\"ticketed\",\"purpose\":\"business\",\"distance_miles\":8445}}"
+      "diff": "{\"label\":\"SIN → SFO 2026-12-11\",\"row\":{\"ticket_id\":\"a9ccb789-2c2d-4033-8d6f-408fa9646609\",\"marketing_carrier\":\"UA\",\"flight_number\":\"30\",\"origin\":\"SIN\",\"destination\":\"SFO\",\"flight_date\":\"2026-12-11\",\"departure_time\":\"09:40\",\"arrival_time\":\"09:15\",\"cabin\":\"Economy\",\"booking_class\":\"L\",\"status\":\"ticketed\",\"purpose\":\"business\",\"distance_miles\":8445}}"
     },
     {
       "id": "5ea85899-a7d8-4efa-a43e-5132a0fa455b",
@@ -3812,7 +3812,7 @@
       "op": "create",
       "tbl": "segments",
       "row_id": "214d8df2-a434-477b-9b39-d5e1931a2281",
-      "diff": "{\"label\":\"SFO → ORD 2026-09-13\",\"row\":{\"ticket_id\":\"a9ccb789-2c2d-4033-8d6f-408fa9646609\",\"marketing_carrier\":\"UA\",\"flight_number\":\"2033\",\"origin\":\"SFO\",\"destination\":\"ORD\",\"flight_date\":\"2026-09-13\",\"departure_time\":\"11:30\",\"arrival_time\":\"17:55\",\"cabin\":\"Economy\",\"booking_class\":\"L\",\"status\":\"ticketed\",\"purpose\":\"business\",\"distance_miles\":1847}}"
+      "diff": "{\"label\":\"SFO → ORD 2026-12-11\",\"row\":{\"ticket_id\":\"a9ccb789-2c2d-4033-8d6f-408fa9646609\",\"marketing_carrier\":\"UA\",\"flight_number\":\"2033\",\"origin\":\"SFO\",\"destination\":\"ORD\",\"flight_date\":\"2026-12-11\",\"departure_time\":\"11:30\",\"arrival_time\":\"17:55\",\"cabin\":\"Economy\",\"booking_class\":\"L\",\"status\":\"ticketed\",\"purpose\":\"business\",\"distance_miles\":1847}}"
     },
     {
       "id": "1ae85729-751c-4514-8f02-4377366a8517",

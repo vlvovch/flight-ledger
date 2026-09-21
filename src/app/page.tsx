@@ -343,10 +343,22 @@ export default function DashboardPage() {
               /* "0 United-posted" was on every ledger: United publishes a
                  lifetime TOTAL, never a per-segment figure, so that number can
                  only ever be zero. What the figure is worth comparing against
-                 is everything flown. */
-              sub={`of ${fmtInt(data.totals.miles)} mi flown`}
+                 is everything flown — UNLESS a lifetime baseline is set, when
+                 the balance exceeds the flown total by miles the ledger never
+                 saw and "≈291k of 178k flown" reads as a broken fraction. The
+                 line then explains the gap instead of inviting the question. */
+              sub={
+                (data.settings.lifetime_baseline_miles || 0) > 0
+                  ? `incl. ${fmtInt(data.settings.lifetime_baseline_miles)} before this ledger`
+                  : `of ${fmtInt(data.totals.miles)} mi flown`
+              }
               accent={C.miles}
-              title="Estimated from the distance of every flight that credits to MileagePlus, at United's 500-mile segment minimum. United posts a lifetime total, not per-flight values — enter a posted figure on a flight to override its estimate."
+              title={
+                "Estimated from the distance of every flight that credits to MileagePlus, at United's 500-mile segment minimum. United posts a lifetime total, not per-flight values — enter a posted figure on a flight to override its estimate." +
+                ((data.settings.lifetime_baseline_miles || 0) > 0
+                  ? `\n\nIncludes the ${fmtInt(data.settings.lifetime_baseline_miles)}-mile baseline from Settings — flying from before this ledger began. ${fmtInt(data.totals.miles)} mi are on record here.`
+                  : "")
+              }
             />
             <StatCard
               label={`${year} spend`}
