@@ -32,8 +32,11 @@ async function main() {
   await call("/api/settings", "PUT", {
     reporting_currency: "USD",
     award_valuation_cpm: 1.2,
-    lifetime_baseline_miles: 120000,
-    lifetime_baseline_date: "2021-12-31",
+    /* No lifetime baseline: a demo number should be traceable to flights the
+       viewer can open. Real users discover the carry-in when their own
+       balance needs it. */
+    lifetime_baseline_miles: 0,
+    lifetime_baseline_date: null,
     missing_posting_delay_days: 7,
   });
 
