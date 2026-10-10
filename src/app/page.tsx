@@ -8,6 +8,11 @@ import type { ReconcileReport } from "@/lib/reconcile";
 import type { EnrichedSegment, SegmentRow, TicketRow } from "@/lib/types";
 import { rollupYears } from "@/lib/metrics";
 import { trackEvent } from "@/lib/track";
+import {
+  loadTombstone,
+  noteLedgerAlive,
+  type Tombstone,
+} from "@/lib/browser/tombstone";
 import { api, fmtCpm, fmtDate, fmtInt, fmtMoney, fmtMonth } from "@/lib/format";
 import { EmptyState, MilesBasisToggle, Panel, StatCard, StatusChip, toast } from "@/components/ui";
 import FlightForm from "@/components/FlightForm";
@@ -66,6 +71,27 @@ export default function DashboardPage() {
     api<{ tickets: TicketRow[] }>("/api/tickets").then((r) => setTickets(r.tickets)).catch(() => {});
   }, []);
   useEffect(refresh, [refresh]);
+
+  /* The tombstone, kept and consulted. A ledger with data re-attests it on
+     every dashboard visit; an empty ledger whose tombstone remembers data is
+     a browser that ATE the ledger, and the empty state must say so instead
+     of offering a demo over the grave. (The October incident: a phone's
+     evicted storage read as an innocent empty ledger, and one sync press
+     pushed the void to Drive.) */
+  const [lost, setLost] = useState<Tombstone | null>(null);
+  useEffect(() => {
+    if (!data) return;
+    api<{ active: string }>("/api/accounts")
+      .then(({ active }) => {
+        if (!data.ledgerEmpty) {
+          noteLedgerAlive(active);
+          setLost(null);
+        } else {
+          setLost(loadTombstone(active));
+        }
+      })
+      .catch(() => setLost(null));
+  }, [data]);
 
   /* Every year the ledger touches. A 12- or 24-month window cannot reach 2020
      through 2023 at all, so without this four of the seven years on file were
@@ -214,6 +240,26 @@ export default function DashboardPage() {
       </header>
 
       {!hasData ? (
+        lost && data.ledgerEmpty ? (
+          <Panel className="reveal">
+            <EmptyState
+              title="This browser lost your ledger"
+              body={`A ledger${
+                lost.flights != null ? ` of ${lost.flights} flights` : ""
+              } lived in this browser as recently as ${lost.at.slice(0, 10)}, and the browser's storage has let it go — that happens on phones under storage pressure. The data may still be safe outside this browser: restore a backup file, or press sync to pull your Google Drive copy if sync was set up. If you erased the ledger on purpose, erasing again from Settings clears this notice.`}
+              action={
+                <div className="flex flex-wrap justify-center gap-2">
+                  <Link href="/settings" className="btn btn-primary">
+                    Restore from Settings
+                  </Link>
+                  <Link href="/settings#drive-sync" className="btn btn-ghost">
+                    Google Drive sync
+                  </Link>
+                </div>
+              }
+            />
+          </Panel>
+        ) : (
         <Panel className="reveal">
           <EmptyState
             title="No flights on the board"
@@ -254,6 +300,7 @@ export default function DashboardPage() {
             }
           />
         </Panel>
+        )
       ) : (
         <>
           {/* stat cards */}

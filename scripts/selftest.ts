@@ -114,6 +114,7 @@ import {
   stableStringify,
   summarizeBackup,
   syncOnce,
+  type LedgerSummary,
   type RemoteMeta,
   type SyncMarker,
   type SyncSnapshot,
@@ -9384,6 +9385,43 @@ async function driveSyncChecks() {
     "plan: same content re-uploaded elsewhere — adopt the new version",
     reup.action === "noop" && reup.adopt === true
   );
+  /* The erasure guards: a sync may move data, but replacing data with
+     nothing is a decision. These four rows are the October incident. */
+  const erasePush = plan({
+    localFingerprint: "zzz", localEmpty: true,
+    remote: R({ fingerprint: "bbb" }), marker: M(), remoteEmpty: false,
+  });
+  check(
+    "plan: an emptied ledger with a marker refuses to push over data",
+    erasePush.action === "conflict" && erasePush.code === "erase-push"
+  );
+  check(
+    "plan: unknown remote content counts as data — still a conflict",
+    plan({ localFingerprint: "zzz", localEmpty: true, remote: R({ fingerprint: "bbb" }), marker: M() })
+      .action === "conflict"
+  );
+  check(
+    "plan: empty over empty is just a push, no ceremony",
+    plan({
+      localFingerprint: "zzz", localEmpty: true,
+      remote: R({ fingerprint: "bbb" }), marker: M(), remoteEmpty: true,
+    }).action === "push"
+  );
+  const erasePull = plan({
+    remote: R({ version: "4", fingerprint: "bbb" }), marker: M(), remoteEmpty: true,
+  });
+  check(
+    "plan: a known-empty Drive copy never pulls over data unasked",
+    erasePull.action === "conflict" && erasePull.code === "erase-pull"
+  );
+  const lostPlan = plan({
+    localFingerprint: "zzz", localEmpty: true, localLost: true,
+    remote: R({ fingerprint: "bbb" }),
+  });
+  check(
+    "plan: the tombstone outranks the arithmetic — local-lost conflict",
+    lostPlan.action === "conflict" && lostPlan.code === "local-lost"
+  );
 
   /* ---- the client against the fake Drive ---- */
   const d1 = fakeDrive();
@@ -9646,6 +9684,94 @@ async function driveSyncChecks() {
       (await syncOnce(sidePorts)).action === "noop" &&
       mainLedger.tickets.length === 1 &&
       sideLedger.tickets.length === 2
+  );
+
+  /* ---- the October incident, re-run against the guards ----
+     Act one: a phone whose storage died still holding its sync marker
+     pressed sync; the three-way read "local changed (to nothing) → push"
+     and notarized the loss as Drive's new truth. Act two: a desktop that
+     hadn't changed read "Drive moved → pull" and silently swallowed the
+     void. Every write below was silent before the guards. */
+  const d5 = fakeDrive();
+  const c5 = createDriveClient({ getToken: d5.tokenSource, fetchFn: d5.fetchFn });
+  let phone = basePayload({ tickets: [fakeTicket("P1"), fakeTicket("P2")] });
+  const phoneMarker = memMarker();
+  const phoneStashes: string[] = [];
+  const phonePorts = {
+    client: c5,
+    loadLocal: async () => phone,
+    applyRemote: async (json: string) => {
+      phone = JSON.parse(json) as BackupPayload;
+    },
+    markerStore: phoneMarker,
+    stashLocal: (json: string) => {
+      phoneStashes.push(json);
+    },
+  };
+  check(
+    "incident: the phone backs up its real ledger first",
+    (await syncOnce(phonePorts)).action === "push"
+  );
+  phone = basePayload(); // the browser evicts the database; the marker survives
+  const actOne = await syncOnce(phonePorts);
+  check(
+    "incident: the emptied phone no longer pushes the void — erase-push conflict",
+    actOne.action === "conflict" &&
+      actOne.code === "erase-push" &&
+      (JSON.parse([...d5.files.values()][0].content) as BackupPayload).tickets.length === 2
+  );
+  check(
+    "incident: the chooser is told exactly what the push would erase",
+    actOne.remoteSummary?.tickets === 2 && actOne.localSummary?.tickets === 0
+  );
+  const lostOut = await syncOnce({ ...phonePorts, localLost: () => true });
+  check(
+    "incident: with a tombstone the same press says the truth — local-lost",
+    lostOut.action === "conflict" && lostOut.code === "local-lost"
+  );
+  const healed = await syncOnce({ ...phonePorts, localLost: () => true }, "pull");
+  check(
+    "incident: resolving by pull restores the phone, and an empty side stashes nothing",
+    healed.action === "pull" && phone.tickets.length === 2 && phoneStashes.length === 0
+  );
+
+  let desk = basePayload({ tickets: [fakeTicket("P1"), fakeTicket("P2")] });
+  const deskStashes: { json: string; summary: LedgerSummary }[] = [];
+  const deskPorts = {
+    client: c5,
+    loadLocal: async () => desk,
+    applyRemote: async (json: string) => {
+      desk = JSON.parse(json) as BackupPayload;
+    },
+    markerStore: memMarker(),
+    stashLocal: (json: string, summary: LedgerSummary) => {
+      deskStashes.push({ json, summary });
+    },
+  };
+  check(
+    "incident: the desktop adopts the shared content and tracks the file",
+    (await syncOnce(deskPorts)).action === "noop"
+  );
+  const fid5 = [...d5.files.keys()][0];
+  const void5 = basePayload();
+  d5.bump(fid5, JSON.stringify(void5), { fingerprint: await backupFingerprint(void5) });
+  const actTwo = await syncOnce(deskPorts);
+  check(
+    "incident: the desktop refuses the silent pull of a void — erase-pull conflict",
+    actTwo.action === "conflict" && actTwo.code === "erase-pull" && desk.tickets.length === 2
+  );
+  check(
+    "incident: the refusal names both sides for the chooser",
+    actTwo.localSummary?.tickets === 2 && actTwo.remoteSummary?.tickets === 0
+  );
+  const chosen = await syncOnce(deskPorts, "pull");
+  check(
+    "incident: choosing the void on purpose still parachutes a snapshot first",
+    chosen.action === "pull" &&
+      desk.tickets.length === 0 &&
+      deskStashes.length === 1 &&
+      (JSON.parse(deskStashes[0].json) as BackupPayload).tickets.length === 2 &&
+      deskStashes[0].summary.tickets === 2
   );
 }
 

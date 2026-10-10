@@ -7,8 +7,11 @@ import { ErrorNote, Field, Modal, Panel, toast } from "@/components/ui";
 import { C } from "@/components/charts";
 import {
   DRIVE_BACKUP_NAME,
+  backupIsEmpty,
   createDriveClient,
+  summarizeBackup,
   syncOnce,
+  type ConflictCode,
   type LedgerSummary,
   type SyncOutcome,
   type SyncPorts,
@@ -18,6 +21,17 @@ import {
   driveTokenSource,
   localMarkerStore,
 } from "@/lib/browser/drive";
+import {
+  clearTombstone,
+  loadTombstone,
+  noteLedgerAlive,
+} from "@/lib/browser/tombstone";
+import {
+  listSnapshots,
+  loadSnapshot,
+  saveSnapshot,
+  type SnapshotMeta,
+} from "@/lib/browser/snapshots";
 import type { BackupPayload } from "@/lib/repo";
 
 /* Phase 2 of design doc §23: the UI over the sync lib. Everything that can
@@ -127,11 +141,38 @@ export function useDriveSync(onPulled?: () => void) {
             account === "default"
               ? DRIVE_BACKUP_NAME
               : `flight-ledger-${account}.json`,
-          loadLocal: () => api<BackupPayload>("/api/export?what=backup"),
+          loadLocal: async () => {
+            const p = await api<BackupPayload>("/api/export?what=backup");
+            /* The tombstone is written where the data is seen: every sync
+               re-attests that this browser holds a real ledger. */
+            if (!backupIsEmpty(p)) {
+              const s = summarizeBackup(p);
+              noteLedgerAlive(account!, { flights: s.flights, tickets: s.tickets });
+            }
+            return p;
+          },
           applyRemote: async (json) => {
             await api("/api/backup", { method: "POST", body: json });
+            /* The tombstone follows the content just written. A pull the
+               user explicitly resolved to an empty copy is a deliberate
+               erase — remembering the old ledger past that point would
+               raise false alarms forever. */
+            try {
+              const applied = JSON.parse(json) as BackupPayload;
+              if (backupIsEmpty(applied)) clearTombstone(account!);
+              else {
+                const s = summarizeBackup(applied);
+                noteLedgerAlive(account!, { flights: s.flights, tickets: s.tickets });
+              }
+            } catch {
+              /* unparseable json would have failed the restore first */
+            }
           },
           markerStore: localMarkerStore(markerKey),
+          /* The engine says empty; does this browser remember better? */
+          localLost: () => loadTombstone(account!) !== null,
+          stashLocal: (json, s) =>
+            saveSnapshot(account!, json, { flights: s.flights, tickets: s.tickets }),
         };
         const out = await syncOnce(ports, resolve);
         if (out.action === "conflict") {
@@ -147,6 +188,22 @@ export function useDriveSync(onPulled?: () => void) {
            toast belongs to the caller, who knows whether the page it would
            appear on is about to be replaced. */
         if (out.action === "push") toast("Backed up to Google Drive.");
+        /* Once a month, pin the freshly pushed revision keepForever. Drive
+           prunes ordinary revisions after ~30 days, and a pruned revision
+           was nearly the difference between recovery and loss in October.
+           Best effort: a failed pin never fails the sync that worked. */
+        if (out.action === "push" && out.remote?.fileId && ports.client.pinHeadRevision) {
+          const pinKey = `drive-pin-month:${account}`;
+          const month = new Date().toISOString().slice(0, 7);
+          if (localStorage.getItem(pinKey) !== month) {
+            try {
+              await ports.client.pinHeadRevision(out.remote.fileId);
+              localStorage.setItem(pinKey, month);
+            } catch {
+              /* next sync this month will try again */
+            }
+          }
+        }
         if (out.action === "pull") onPulled?.();
         return out;
       } catch (e) {
@@ -219,17 +276,49 @@ export function ConflictChooser({
   onResolve: (choice: "push" | "pull") => void;
   onClose: () => void;
 }) {
+  /* The guard conflicts are not "both sides changed" — they are the sync
+     refusing to erase data on its own authority. Each gets its warning in
+     its own words; the buttons and the facts stay the same. */
+  const COPY: Record<ConflictCode | "default", { title: string; body: string }> = {
+    default: {
+      title: "Both sides have changed",
+      body:
+        "This ledger and the copy in your Drive have both changed since they " +
+        "last matched. They can't be combined, so one has to win. Here is " +
+        "what each side holds:",
+    },
+    "erase-push": {
+      title: "This would erase the Drive backup",
+      body:
+        "This ledger is empty, but the copy in your Drive holds data. " +
+        "Backing up now would replace that copy with nothing. If you erased " +
+        "this browser's data on purpose, you can still choose to push. " +
+        "Here is what each side holds:",
+    },
+    "erase-pull": {
+      title: "The Drive copy is empty",
+      body:
+        "The copy in your Drive is empty, but this ledger holds data. " +
+        "Restoring the Drive copy would erase everything here. Here is " +
+        "what each side holds:",
+    },
+    "local-lost": {
+      title: "This browser lost its ledger",
+      body:
+        "This browser held a ledger, and the browser's storage has since " +
+        "let it go — the data on screen is not missing from your Drive. " +
+        "Keep the Drive copy to restore it here. Here is what each side " +
+        "holds:",
+    },
+  };
+  const copy = COPY[conflict.code ?? "default"];
   return (
     <Modal
-      title="Both sides have changed"
+      title={copy.title}
       subtitle="Pick which version to keep"
       onClose={onClose}
     >
-      <p className="text-[13.5px] text-ink2">
-        This ledger and the copy in your Drive have both changed since they
-        last matched. They can&rsquo;t be combined, so one has to win. Here is
-        what each side holds:
-      </p>
+      <p className="text-[13.5px] text-ink2">{copy.body}</p>
       {/* Facts, not adjectives — and two equal buttons. The old chooser
           styled "Keep this ledger" as the affirmative default and said
           nothing about contents, and a stale ledger overwrote a real one
@@ -288,6 +377,26 @@ export function DriveSyncPanel({ onPulled }: { onPulled?: () => void }) {
   const [chooser, setChooser] = useState(false);
   const [auto, setAuto] = useState(false);
   useEffect(() => setAuto(autoSyncEnabled()), []);
+
+  /* The parachute's rip cord: the newest pre-pull snapshot, restorable in
+     two clicks. Listed after every sync because a pull is what creates one. */
+  const [snaps, setSnaps] = useState<SnapshotMeta[]>([]);
+  const [confirmSnap, setConfirmSnap] = useState<string | null>(null);
+  useEffect(() => {
+    if (!sync.account) return;
+    void listSnapshots(sync.account).then(setSnaps);
+  }, [sync.account, sync.outcome]);
+  const restoreSnap = async (id: string) => {
+    setConfirmSnap(null);
+    const json = await loadSnapshot(id);
+    if (!json) {
+      toast("That snapshot could not be read.");
+      return;
+    }
+    await api("/api/backup", { method: "POST", body: json });
+    toast("Snapshot restored.");
+    onPulled?.();
+  };
 
   const press = async (resolve?: "push" | "pull") => {
     setChooser(false);
@@ -375,6 +484,41 @@ export function DriveSyncPanel({ onPulled }: { onPulled?: () => void }) {
                   renews it
                 </span>
               </label>
+            )}
+            {snaps.length > 0 && (
+              <p className="mt-3 text-[12px] text-mute">
+                Safety snapshot — this ledger as it stood before the last
+                restore from Drive: {fmt(snaps[0].at)} ·{" "}
+                <span className="t-num">
+                  {snaps[0].flights} flights · {snaps[0].tickets} tickets
+                </span>
+                {" · "}
+                {confirmSnap === snaps[0].id ? (
+                  <>
+                    replace the current ledger with it?{" "}
+                    <button
+                      className="text-ink2 underline decoration-dotted underline-offset-2 transition-colors hover:text-ink"
+                      onClick={() => void restoreSnap(snaps[0].id)}
+                    >
+                      Yes, restore
+                    </button>
+                    {" · "}
+                    <button
+                      className="underline decoration-dotted underline-offset-2 transition-colors hover:text-ink2"
+                      onClick={() => setConfirmSnap(null)}
+                    >
+                      cancel
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    className="underline decoration-dotted underline-offset-2 transition-colors hover:text-ink2"
+                    onClick={() => setConfirmSnap(snaps[0].id)}
+                  >
+                    Restore
+                  </button>
+                )}
+              </p>
             )}
             {!sync.envClientId && (
               <button

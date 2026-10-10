@@ -101,11 +101,16 @@ export interface RemoteMeta {
 
 export type SyncAction = "push" | "pull" | "noop" | "conflict";
 
+/** Why a conflict opened — the chooser words its warning off this, not off
+ *  prose matching. Absent on an ordinary divergence. */
+export type ConflictCode = "erase-push" | "erase-pull" | "local-lost";
+
 export interface SyncPlan {
   action: SyncAction;
   reason: string;
   /** noop, but the marker should be (re)written: content already matches. */
   adopt?: boolean;
+  code?: ConflictCode;
 }
 
 export interface SyncSnapshot {
@@ -113,6 +118,14 @@ export interface SyncSnapshot {
   localEmpty: boolean;
   marker: SyncMarker | null;
   remote: RemoteMeta | null;
+  /** Whether the Drive copy's CONTENT is empty — null/undefined when nobody
+   *  has looked inside it yet. The planner treats unknown as "assume data"
+   *  wherever emptiness would make a write destructive. */
+  remoteEmpty?: boolean | null;
+  /** The tombstone's verdict: this browser's storage once held a real
+   *  ledger, and the engine now reports nothing. An empty ledger that
+   *  REMEMBERS being full must never speak for the user. */
+  localLost?: boolean;
 }
 
 /**
@@ -138,6 +151,17 @@ export function planSync(s: SyncSnapshot): SyncPlan {
      remember that it does. */
   if (local === remote.fingerprint)
     return { action: "noop", adopt: true, reason: "this ledger and the Drive copy are already identical" };
+  /* A browser whose storage DIED still holding a marker is the one state
+     where the three-way arithmetic lies: "local changed (to nothing)" reads
+     as a push, and the push notarizes the loss. The tombstone outranks the
+     arithmetic — a ledger that remembers being full never speaks for the
+     user. (Two empty sides were already caught by the identical check.) */
+  if (s.localLost && localEmpty)
+    return {
+      action: "conflict",
+      code: "local-lost",
+      reason: "this browser lost its local data; the Drive copy still stands",
+    };
   const marker = s.marker && s.marker.fileId === remote.fileId ? s.marker : null;
   if (!marker) {
     if (localEmpty)
@@ -148,10 +172,31 @@ export function planSync(s: SyncSnapshot): SyncPlan {
   const remoteChanged = remote.version !== marker.version;
   if (!localChanged && !remoteChanged)
     return { action: "noop", reason: "no changes since the last sync" };
-  if (localChanged && !remoteChanged)
+  if (localChanged && !remoteChanged) {
+    /* An erasure is never silent: syncing may move data, but replacing a
+       backup that holds data with an empty one is a decision, not a sync.
+       Unknown remote content counts as data — the caller that wants the
+       quiet push must first look inside the file and say what it saw. */
+    if (localEmpty && s.remoteEmpty !== true)
+      return {
+        action: "conflict",
+        code: "erase-push",
+        reason: "this ledger is empty; backing up now would erase the Drive copy",
+      };
     return { action: "push", reason: "local changes since the last sync" };
-  if (!localChanged && remoteChanged)
+  }
+  if (!localChanged && remoteChanged) {
+    /* The mirror guard. The planner usually cannot see inside the remote
+       before the download, so the executor re-checks after it — but when a
+       probe already looked, refuse here. */
+    if (s.remoteEmpty === true && !localEmpty)
+      return {
+        action: "conflict",
+        code: "erase-pull",
+        reason: "the Drive copy is empty; restoring it would erase this ledger",
+      };
     return { action: "pull", reason: "the Drive copy changed since the last sync" };
+  }
   return { action: "conflict", reason: "changed both here and in Drive since the last sync" };
 }
 
@@ -210,6 +255,11 @@ export interface DriveClient {
     props: Record<string, string>,
     fileId?: string
   ): Promise<RemoteMeta>;
+  /** Marks the file's current head revision keepForever, exempting it from
+   *  Drive's ~30-day revision pruning — the pruning that nearly ate the
+   *  only good copy during the October incident. Optional: fakes and older
+   *  clients may not carry it, and a failed pin must never fail a sync. */
+  pinHeadRevision?(fileId: string): Promise<void>;
 }
 
 interface DriveFileResource {
@@ -303,6 +353,17 @@ export function createDriveClient(opts: {
       });
       return toMeta((await res.json()) as DriveFileResource);
     },
+
+    async pinHeadRevision(fileId) {
+      const head = await request(`${API}/files/${fileId}?fields=headRevisionId`);
+      const { headRevisionId } = (await head.json()) as { headRevisionId?: string };
+      if (!headRevisionId) return;
+      await request(`${API}/files/${fileId}/revisions/${headRevisionId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ keepForever: true }),
+      });
+    },
   };
 }
 
@@ -317,6 +378,13 @@ export interface SyncPorts {
   loadLocal(): Promise<BackupPayload>;
   applyRemote(json: string): Promise<void>;
   markerStore: SyncMarkerStore;
+  /** The tombstone's answer: did this browser once hold a real ledger that
+   *  its storage has since lost? Consulted only when the export is empty. */
+  localLost?(): boolean;
+  /** Called with the outgoing local export just before a pull replaces it —
+   *  the undo for a wrong choice. A stash that fails must not stop the
+   *  sync the user asked for; the port owns its own errors. */
+  stashLocal?(json: string, summary: LedgerSummary): Promise<void> | void;
 }
 
 /** What a side holds, in the units a person weighs it in. Exists because a
@@ -347,6 +415,7 @@ export function summarizeBackup(p: BackupPayload): LedgerSummary {
 export interface SyncOutcome {
   action: SyncAction;
   reason: string;
+  code?: ConflictCode;
   /** The head as last seen (after a push: as uploaded). The conflict chooser
    *  shows its dates, so "the Drive copy" has a when attached. */
   remote?: RemoteMeta | null;
@@ -371,11 +440,29 @@ export async function syncOnce(
   const payload = await ports.loadLocal();
   const fingerprint = await backupFingerprint(payload);
   const remote = await ports.client.findFile(name);
+  const localEmpty = backupIsEmpty(payload);
+  /* An empty export facing an existing Drive copy is the one suspicious
+     shape, and it is rare — so spend a download on it up front. Knowing
+     what the file holds lets the planner refuse the erasing push itself,
+     and the chooser state what would be lost. A failed probe stays null,
+     which the planner treats as "assume data". */
+  let remoteJson: string | null = null;
+  let remoteEmpty: boolean | null = null;
+  if (remote && localEmpty) {
+    try {
+      remoteJson = await ports.client.download(remote.fileId);
+      remoteEmpty = backupIsEmpty(JSON.parse(remoteJson) as BackupPayload);
+    } catch {
+      remoteJson = null;
+    }
+  }
   let plan = planSync({
     localFingerprint: fingerprint,
-    localEmpty: backupIsEmpty(payload),
+    localEmpty,
     marker: ports.markerStore.load(),
     remote,
+    remoteEmpty,
+    localLost: localEmpty ? (ports.localLost?.() ?? false) : false,
   });
   if (plan.action === "conflict" && resolve)
     plan = {
@@ -395,10 +482,31 @@ export async function syncOnce(
   }
 
   if (plan.action === "pull" && remote) {
-    const json = await ports.client.download(remote.fileId);
+    const json = remoteJson ?? (await ports.client.download(remote.fileId));
+    const parsed = JSON.parse(json) as BackupPayload;
+    /* The executor's half of the erasure guard: the planner usually plans a
+       pull without seeing the content, so the content is judged here, after
+       the download and before anything is replaced. An explicit resolution
+       means the chooser already said what this file holds. */
+    if (!resolve && backupIsEmpty(parsed) && !localEmpty)
+      return {
+        action: "conflict",
+        code: "erase-pull",
+        reason: "the Drive copy is empty; restoring it would erase this ledger",
+        remote,
+        localSummary: summarizeBackup(payload),
+        remoteSummary: summarizeBackup(parsed),
+      };
     /* Fingerprint what was actually in the file, not what its appProperties
        claim — a hand-edited Drive copy stamps itself honestly on the way in. */
-    const pulled = await backupFingerprint(JSON.parse(json) as BackupPayload);
+    const pulled = await backupFingerprint(parsed);
+    if (!localEmpty) {
+      try {
+        await ports.stashLocal?.(JSON.stringify(payload, null, 2), summarizeBackup(payload));
+      } catch {
+        /* the stash is a parachute, not a gate */
+      }
+    }
     await ports.applyRemote(json);
     ports.markerStore.save({ fileId: remote.fileId, version: remote.version, fingerprint: pulled });
     return { action: "pull", reason: plan.reason, remote };
@@ -411,13 +519,14 @@ export async function syncOnce(
     let remoteSummary: LedgerSummary | null = null;
     try {
       remoteSummary = summarizeBackup(
-        JSON.parse(await ports.client.download(remote.fileId)) as BackupPayload
+        JSON.parse(remoteJson ?? (await ports.client.download(remote.fileId))) as BackupPayload
       );
     } catch {
       remoteSummary = null;
     }
     return {
       action: "conflict",
+      code: plan.code,
       reason: plan.reason,
       remote,
       localSummary: summarizeBackup(payload),

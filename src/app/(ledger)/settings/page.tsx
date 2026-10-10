@@ -8,6 +8,7 @@ import {
   apiDownload, api } from "@/lib/format";
 import { Confirm, ErrorNote, Field, Panel, toast } from "@/components/ui";
 import { DriveSyncPanel } from "@/components/DriveSync";
+import { clearTombstone } from "@/lib/browser/tombstone";
 import { C } from "@/components/charts";
 import { markColor } from "@/components/premier-ui";
 
@@ -182,6 +183,15 @@ export default function SettingsPage() {
     setError(null);
     try {
       await api("/api/backup?confirm=wipe", { method: "DELETE" });
+      /* A wipe is emptiness on purpose. Leave the tombstone standing and
+         every later visit cries "the browser lost your ledger" over a
+         ledger nobody lost. */
+      try {
+        const { active } = await api<{ active: string }>("/api/accounts");
+        clearTombstone(active);
+      } catch {
+        /* the dashboard banner self-corrects on the next real data */
+      }
       setRestoreMsg("All flight and ticket data erased.");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
