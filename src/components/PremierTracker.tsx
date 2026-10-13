@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { PremierSource, PremierYear } from "@/lib/premier";
-import { shortfall } from "@/lib/premier";
+import { programIsPqpOnly, shortfall } from "@/lib/premier";
 import { fmtDate, fmtInt } from "@/lib/format";
 import { Panel } from "./ui";
 import { AwardBalanceChart, C, LifetimeBalanceChart, PremierChart } from "@/components/charts";
@@ -82,7 +82,6 @@ type Route = "both" | "pqpOnly";
  *  against different bars; award miles is a different series entirely — which
  *  is why the route is held separately rather than as a third route value: it
  *  has to survive a trip through the award view unchanged. */
-type ChartView = Route | "award";
 
 function YearDetail({ y }: { y: PremierYear }) {
   /* null = follow the suggestion below; set = the user's own choice, which
@@ -98,6 +97,11 @@ function YearDetail({ y }: { y: PremierYear }) {
   const proj = y.projection;
   const withBooked = includeBooked && proj != null;
   const net = y.closingAward - y.openingAward;
+  /* From 2027 there is one route: PQP alone (the UA-flight floor stays). The
+     two-gauge "points + flights OR points alone" furniture would show the
+     same number twice with an OR between — so a one-route year renders one
+     gauge and no route chooser. */
+  const oneRoute = programIsPqpOnly(y.program);
 
   const slices = (pick: "pqp" | "pqf"): GaugeSlice[] => {
     const base: GaugeSlice[] = mergeOther(y.sources, pick).map((s) => ({
@@ -141,7 +145,7 @@ function YearDetail({ y }: { y: PremierYear }) {
             <h3 className="t-label !text-[10px]">
               Next rung — {next.name}
               <span className="ml-2 normal-case tracking-normal text-mute">
-                either route qualifies
+                {oneRoute ? "qualifies on PQP alone" : "either route qualifies"}
               </span>
             </h3>
             {proj && !y.closed && (
@@ -167,25 +171,31 @@ function YearDetail({ y }: { y: PremierYear }) {
               and the "OR" beside another. Below xl the two routes stack with
               OR between them; the gauge pair itself goes side by side from
               sm up and stacks under that, so no gauge ever clips. */}
-          <div className="flex flex-col items-center justify-center gap-y-2 xl:flex-row xl:gap-x-1">
-            <div className="text-center">
-              <div className="mb-1 text-[11.5px] text-mute">
-                points <span className="text-ink2">+</span> flights
-              </div>
-              <div className="flex flex-col items-center gap-1 sm:flex-row">
-                <PremierGauge slices={pqpSlices} target={next.pqp} unit="PQP" size={182} />
-                <span className="t-num text-[18px] text-mute">+</span>
-                <PremierGauge slices={pqfSlices} target={next.pqf} unit="PQF" size={182} />
-              </div>
-            </div>
-            <div className="mx-2 hidden h-[150px] self-center border-l border-line xl:block" />
-            <span className="t-display px-1.5 text-[12px] text-mute">OR</span>
-            <div className="text-center">
-              <div className="mb-1 text-[11.5px] text-mute">points alone</div>
+          {oneRoute ? (
+            <div className="flex justify-center">
               <PremierGauge slices={pqpSlices} target={next.pqpOnly} unit="PQP" size={182} />
             </div>
-          </div>
-          <Legend slices={[...pqpSlices, ...pqfSlices]} />
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-y-2 xl:flex-row xl:gap-x-1">
+              <div className="text-center">
+                <div className="mb-1 text-[11.5px] text-mute">
+                  points <span className="text-ink2">+</span> flights
+                </div>
+                <div className="flex flex-col items-center gap-1 sm:flex-row">
+                  <PremierGauge slices={pqpSlices} target={next.pqp} unit="PQP" size={182} />
+                  <span className="t-num text-[18px] text-mute">+</span>
+                  <PremierGauge slices={pqfSlices} target={next.pqf} unit="PQF" size={182} />
+                </div>
+              </div>
+              <div className="mx-2 hidden h-[150px] self-center border-l border-line xl:block" />
+              <span className="t-display px-1.5 text-[12px] text-mute">OR</span>
+              <div className="text-center">
+                <div className="mb-1 text-[11.5px] text-mute">points alone</div>
+                <PremierGauge slices={pqpSlices} target={next.pqpOnly} unit="PQP" size={182} />
+              </div>
+            </div>
+          )}
+          <Legend slices={oneRoute ? pqpSlices : [...pqpSlices, ...pqfSlices]} />
           <p className="mt-2 text-center text-[11.5px] text-ink2">
             {shortfall(y, withBooked)}
           </p>
@@ -224,7 +234,7 @@ function YearDetail({ y }: { y: PremierYear }) {
             : 0;
           const onlyPct = next ? pct(y.pqp, next.pqpOnly) : 0;
           const suggested: Route = bothPct >= onlyPct ? "both" : "pqpOnly";
-          const route: Route = routeChoice ?? suggested;
+          const route: Route = oneRoute ? "pqpOnly" : (routeChoice ?? suggested);
           /* Scale to the rungs actually in play. Including 1K when you're at
              6,000 PQP flattens the line into the bottom of the frame and hides
              the thing the chart is for — the pace. */
@@ -314,8 +324,14 @@ function YearDetail({ y }: { y: PremierYear }) {
                 <div className="flex overflow-hidden rounded-md border border-line">
                   {(
                     [
-                      ["both", "PQP + PQF"],
-                      ["pqpOnly", "PQP only"],
+                      /* one route, one button: the both/only pair would draw
+                         identical bars under two different names */
+                      ...(oneRoute
+                        ? ([["pqpOnly", "PQP"]] as const)
+                        : ([
+                            ["both", "PQP + PQF"],
+                            ["pqpOnly", "PQP only"],
+                          ] as const)),
                       ...(hasAward ? ([["award", "Award miles"]] as const) : []),
                       ...(hasLifetime ? ([["lifetime", "Lifetime miles"]] as const) : []),
                     ] as const
@@ -344,9 +360,13 @@ function YearDetail({ y }: { y: PremierYear }) {
                             ? `Bars at the PQP half of each tier's points-plus-flights route${
                                 next ? ` — ${fmtInt(next.pqp)} PQP with ${next.pqf} PQF for ${next.name}` : ""
                               }`
-                            : `Bars at each tier's points-alone route${
-                                next ? ` — ${fmtInt(next.pqpOnly)} PQP, no flight minimum` : ""
-                              }`
+                            : oneRoute
+                              ? `Bars at each tier's PQP requirement${
+                                  next ? ` — ${fmtInt(next.pqpOnly)} PQP for ${next.name}` : ""
+                                }`
+                              : `Bars at each tier's points-alone route${
+                                  next ? ` — ${fmtInt(next.pqpOnly)} PQP, no flight minimum` : ""
+                                }`
                       }
                       className={`t-display px-2.5 py-1 text-[10px] tracking-[0.1em] transition-colors pointer-coarse:py-2.5 ${
                         (showLifetime ? "lifetime" : showAward ? "award" : route) === r

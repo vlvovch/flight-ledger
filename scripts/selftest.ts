@@ -161,6 +161,7 @@ import {
   buildPremierYears,
   pathFor,
   programFor,
+  programIsPqpOnly,
   shortfall,
 } from "../src/lib/premier";
 import {
@@ -7684,7 +7685,45 @@ console.log("premier status:");
     build([seg("2023-06-01", 3072, 10)])[0].tier === null
   );
   check("the raised set applies from 2025", programFor(2025).tiers[0].pqp === 5000);
-  check("…and stays in force after that", programFor(2026).tiers[3].pqp === 22000);
+  check("…and 2026 flying still uses it", programFor(2026).tiers[3].pqp === 22000);
+  /* October 2026 announcement: PQF discontinued from 2027 flying. Every
+     tier is PQP-alone at the old points-only figure, except 1K, raised
+     28,000 → 32,000. The four-UA-flight floor stays. */
+  const p27 = programFor(2027);
+  check(
+    "2027 flying drops PQF — one PQP route per tier, 1K raised to 32,000",
+    programIsPqpOnly(p27) &&
+      p27.tiers[0].pqpOnly === 6000 &&
+      p27.tiers[2].pqpOnly === 18000 &&
+      p27.tiers[3].pqpOnly === 32000 &&
+      p27.minFlights === 4
+  );
+  check("…while 2026 remains a two-route program", !programIsPqpOnly(programFor(2026)));
+  check(
+    "a pqf-0 tier is a missing route, not a free one — the UA floor still binds",
+    pathFor(32000, 0, p27.tiers[3], p27.minFlights, 0) === null &&
+      pathFor(32000, 0, p27.tiers[3], p27.minFlights, 4) === "pqp-only"
+  );
+  const y27 = build([
+    seg("2027-03-01", 1550, 1),
+    seg("2027-04-02", 1550, 1),
+    seg("2027-05-03", 1550, 1),
+    seg("2027-06-04", 1550, 1),
+  ])[0];
+  check(
+    "2027 totals qualify through the points door, floor satisfied",
+    y27.tier?.name === "Premier Silver",
+    y27.tier?.name ?? "none"
+  );
+  const partial27 = build([seg("2027-03-01", 4000, 1), seg("2027-04-02", 0, 1)])[0];
+  const line27 = shortfall(partial27) ?? "";
+  check(
+    "a one-route shortfall is one sentence — the ask and the floor, no phantom second route",
+    /2,000 more PQP/.test(line27) &&
+      /2 more paid UA flights/.test(line27) &&
+      !line27.includes(" — or "),
+    line27
+  );
   /* years before the model's own floor mint no chips: PQP/PQF began in 2020,
      and a diary import of 2012 travel must not conjure "no status" years the
      table can't score */

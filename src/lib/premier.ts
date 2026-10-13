@@ -83,7 +83,30 @@ export const DEFAULT_PREMIER_PROGRAMS: PremierProgram[] = [
       { name: "Premier 1K", pqp: 22000, pqf: 60, pqpOnly: 28000 },
     ],
   },
+  {
+    /* PQF discontinued, announced October 2026: from 2027 flying every tier
+       qualifies on PQP alone, at what was the points-only figure — raised
+       for 1K (28,000 → 32,000), unchanged below. The four-UA-flight floor
+       survives the metric it used to hide behind. A one-route tier is
+       encoded as pqf 0 with both PQP figures equal, and pathFor treats
+       pqf 0 as "this route does not exist" — NOT as "this route is free",
+       which would wave partner-only spending past the floor. */
+    from: 2027, // status 2028
+    minFlights: 4,
+    tiers: [
+      { name: "Premier Silver", pqp: 6000, pqf: 0, pqpOnly: 6000 },
+      { name: "Premier Gold", pqp: 12000, pqf: 0, pqpOnly: 12000 },
+      { name: "Premier Platinum", pqp: 18000, pqf: 0, pqpOnly: 18000 },
+      { name: "Premier 1K", pqp: 32000, pqf: 0, pqpOnly: 32000 },
+    ],
+  },
 ];
+
+/** True for a program whose tiers qualify on PQP alone (2027 onward): the
+ *  flight-inclusive route is gone, and route choosers have nothing to choose. */
+export function programIsPqpOnly(p: PremierProgram): boolean {
+  return p.tiers.every((t) => t.pqf === 0 && t.pqp === t.pqpOnly);
+}
 
 /** The set in force for a qualification year: the latest one that had started. */
 export function programFor(
@@ -107,7 +130,11 @@ export function pathFor(
   minFlights: number,
   uaFlights: number
 ): QualifyingPath | null {
-  if (pqp >= tier.pqp && pqf >= tier.pqf) return "pqp+pqf";
+  /* pqf 0 means the flight-inclusive route does not exist for this tier
+     (2027 onward), not that it is satisfied for free — without the gate,
+     partner-only spending would qualify past the UA-flight floor that only
+     the points-only branch checks. */
+  if (tier.pqf > 0 && pqp >= tier.pqp && pqf >= tier.pqf) return "pqp+pqf";
   /* The floor is UNITED FLIGHTS, not PQF. PQF used to stand in for it here,
      and the two differ exactly where it matters: partner metal earns PQF but
      United's fine print wants "flights operated by United or United
@@ -868,6 +895,17 @@ export function shortfall(y: PremierYear, includeBooked = false): string | null 
   const needPqf = Math.max(0, next.pqf - basePqf);
   const needPqpOnly = Math.max(0, next.pqpOnly - basePqp);
   const n = (v: number) => v.toLocaleString();
+  /* A one-route tier (2027 onward) has one sentence: the ask and the UA
+     floor, never a second route that is the same route wearing "or". */
+  if (next.pqf === 0 && next.pqp === next.pqpOnly) {
+    const parts = [
+      needPqpOnly > 0 ? `${n(needPqpOnly)} more PQP` : null,
+      y.needMinFlights > 0
+        ? `${n(y.needMinFlights)} more paid UA flight${y.needMinFlights === 1 ? "" : "s"}`
+        : null,
+    ].filter(Boolean);
+    return parts.length === 0 ? null : `${next.name} needs ${parts.join(" and ")}.`;
+  }
   const viaFlights = [
     needPqp > 0 ? `${n(needPqp)} more PQP` : null,
     needPqf > 0 ? `${n(needPqf)} more flight${needPqf === 1 ? "" : "s"}` : null,
