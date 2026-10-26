@@ -3590,19 +3590,21 @@ console.log("receipt supersession (reissues & cancellations):");
   }
 
   /* The flown boundary, where the receipt prints a schedule, is the
-     SCHEDULED ARRIVAL — destination clock from longitude, next-day shift
-     for overnight arrivals, six hours of margin — not the calendar date.
-     One rule (arrival.ts) answers for the import and for Reconcile alike. */
+     SCHEDULED ARRIVAL — both clocks pinned to their real zones, the
+     arrival's calendar day chosen as the earliest after departure (the
+     duration column's own resolution), six hours of margin — not the
+     calendar date. One rule (arrival.ts) answers for the import and for
+     Reconcile alike. */
   {
     const fraSfo = {
       ...leg("2026-08-08", "FRA", "SFO"),
       departure_time: "13:20",
       arrival_time: "16:05",
     };
-    // SFO sits near lon −122° → UTC−8; 16:05 local is 00:05Z the next day
+    // 13:20 CEST = 11:20Z; 16:05 PDT the same day = 23:05Z — an 11h45m leg
     check(
-      "scheduled arrival: destination clock from longitude",
-      scheduledArrivalUtc(fraSfo) === Date.parse("2026-08-09T00:05:00Z"),
+      "scheduled arrival: real zones at both ends, same-day westbound",
+      scheduledArrivalUtc(fraSfo) === Date.parse("2026-08-08T23:05:00Z"),
       new Date(scheduledArrivalUtc(fraSfo) ?? 0).toISOString()
     );
     const ewrFco = {
@@ -3610,12 +3612,46 @@ console.log("receipt supersession (reissues & cancellations):");
       departure_time: "17:40",
       arrival_time: "07:55",
     };
-    // arrival clock before departure clock = the red-eye lands next day;
-    // FCO near lon 12° → UTC+1
+    // 07:55 CEST on the 8th is BEFORE the 21:40Z departure — the earliest
+    // arrival after departure is the next day's 07:55, the red-eye resolved
+    // by arithmetic instead of clock comparison
     check(
       "scheduled arrival: an overnight arrival lands the next day",
-      scheduledArrivalUtc(ewrFco) === Date.parse("2026-08-09T06:55:00Z"),
+      scheduledArrivalUtc(ewrFco) === Date.parse("2026-08-09T05:55:00Z"),
       new Date(scheduledArrivalUtc(ewrFco) ?? 0).toISOString()
+    );
+    /* The date line, both directions — where the old clock-comparison rule
+       failed both ways. Tokyo→LA lands the SAME calendar day on an earlier
+       wall clock (the rule read it as next-day, a day late); LA→Tokyo lands
+       the NEXT day on a later wall clock (the rule read it as same-day,
+       placing the landing before the departure). */
+    const nrtLax = {
+      ...leg("2026-10-25", "NRT", "LAX"),
+      departure_time: "17:05",
+      arrival_time: "10:40",
+    };
+    check(
+      "scheduled arrival: eastbound over the date line lands the same day",
+      scheduledArrivalUtc(nrtLax) === Date.parse("2026-10-25T17:40:00Z"),
+      new Date(scheduledArrivalUtc(nrtLax) ?? 0).toISOString()
+    );
+    const laxNrt = {
+      ...leg("2026-10-25", "LAX", "NRT"),
+      departure_time: "11:00",
+      arrival_time: "14:25",
+    };
+    check(
+      "scheduled arrival: westbound over the date line lands AFTER departure",
+      scheduledArrivalUtc(laxNrt) === Date.parse("2026-10-26T05:25:00Z"),
+      new Date(scheduledArrivalUtc(laxNrt) ?? 0).toISOString()
+    );
+    // with no departure clock the longitude approximation stands in:
+    // SFO near lon −122° → UTC−8, so 16:05 local reads as 00:05Z next day
+    const arrOnly = { ...leg("2026-08-08", "FRA", "SFO"), arrival_time: "16:05" };
+    check(
+      "scheduled arrival: longitude fallback when only the arrival is printed",
+      scheduledArrivalUtc(arrOnly) === Date.parse("2026-08-09T00:05:00Z"),
+      new Date(scheduledArrivalUtc(arrOnly) ?? 0).toISOString()
     );
     const timed = mkReceipt({
       confirmation: "ARR001", ticket_number: "0167900000093",
@@ -3627,7 +3663,7 @@ console.log("receipt supersession (reissues & cancellations):");
         .segments[0].data.status;
     check(
       "a leg is ticketed until its scheduled arrival plus margin has passed",
-      // 03:00Z next day: the DATE has passed, but arrival+6h ends 06:05Z —
+      // 03:00Z next day: the DATE has passed, but arrival+6h ends 05:05Z —
       // the day rule would have called this flown; the schedule knows better
       statusAt("2026-08-08T22:00:00Z") === "ticketed" &&
         statusAt("2026-08-09T03:00:00Z") === "ticketed" &&

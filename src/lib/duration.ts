@@ -128,7 +128,7 @@ export function clockMinutes(
   return best;
 }
 
-function addDays(date: string, k: number): string {
+export function addDays(date: string, k: number): string {
   const [y, m, d] = date.split("-").map(Number);
   const t = new Date(Date.UTC(y, m - 1, d + k));
   return `${t.getUTCFullYear()}-${String(t.getUTCMonth() + 1).padStart(2, "0")}-${String(t.getUTCDate()).padStart(2, "0")}`;
