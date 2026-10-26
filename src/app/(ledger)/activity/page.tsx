@@ -97,6 +97,64 @@ export default function ActivityPage() {
       .catch(() => {});
   }, []);
 
+  /* Page-level drop, the same shape Flights and Tickets carry: dragenter and
+     dragleave are depth-counted because they refire on every child crossing,
+     the window swallows stray drops so a miss can't navigate away, and an
+     open dialog owns its own drop zone. The My Activity CSV is this page's
+     whole diet — making the tab itself the drop target saves the Import
+     click the file was always going to end in. */
+  const [dragging, setDragging] = useState(false);
+  const [dropped, setDropped] = useState<File | null>(null);
+  const importOpen = useRef(false);
+  useEffect(() => {
+    importOpen.current = showImport;
+  }, [showImport]);
+
+  useEffect(() => {
+    let depth = 0;
+    const hasFiles = (e: DragEvent) =>
+      Array.from(e.dataTransfer?.types ?? []).includes("Files");
+
+    const onEnter = (e: DragEvent) => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      depth++;
+      if (!importOpen.current) setDragging(true);
+    };
+    const onOver = (e: DragEvent) => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = "copy";
+    };
+    const onLeave = (e: DragEvent) => {
+      if (!hasFiles(e)) return;
+      depth = Math.max(0, depth - 1);
+      if (depth === 0) setDragging(false);
+    };
+    const onDrop = (e: DragEvent) => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      depth = 0;
+      setDragging(false);
+      if (importOpen.current) return;
+      const file = e.dataTransfer?.files?.[0];
+      if (!file) return;
+      setDropped(file);
+      setShowImport(true);
+    };
+
+    window.addEventListener("dragenter", onEnter);
+    window.addEventListener("dragover", onOver);
+    window.addEventListener("dragleave", onLeave);
+    window.addEventListener("drop", onDrop);
+    return () => {
+      window.removeEventListener("dragenter", onEnter);
+      window.removeEventListener("dragover", onOver);
+      window.removeEventListener("dragleave", onLeave);
+      window.removeEventListener("drop", onDrop);
+    };
+  }, []);
+
   /* Arriving from Reconcile as /activity?activity=<id>. Same landing as the
      tickets page: open on the row the exception named, not on the top of the
      log. The Log tab is selected because the row lives there, and the filters
@@ -195,6 +253,20 @@ export default function ActivityPage() {
 
   return (
     <div className="mx-auto max-w-[1200px]">
+      {dragging && !showImport && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(6,11,22,0.72)] p-8 backdrop-blur-[2px]">
+          <div className="pointer-events-none flex flex-col items-center rounded-lg border border-dashed border-s-miles bg-[var(--tint-accent)] px-16 py-14 text-center">
+            <FileUp size={30} className="mb-3 text-s-miles" />
+            <p className="t-display text-[20px] leading-none text-ink">
+              Drop a CSV to import
+            </p>
+            <p className="mt-2 text-[12.5px] text-mute">
+              MileagePlus My&nbsp;Activity, myFlightradar24 or Flighty export —
+              the format is recognized automatically
+            </p>
+          </div>
+        </div>
+      )}
       <header className="reveal mb-5 flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="t-label mb-1 text-s-miles">Every posting on your account</div>
@@ -401,8 +473,10 @@ export default function ActivityPage() {
 
       {showImport && (
         <ImportModal
+          initialFile={dropped}
           onClose={() => {
             setShowImport(false);
+            setDropped(null);
             /* back(), not push("/"): the CTA always ARRIVES by a push from
                the dashboard, so going back lands there — while push added a
                third entry and left /activity one Back-press away, dialogless.
